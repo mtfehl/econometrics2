@@ -1,5 +1,5 @@
 ---
-title: "Project 01"
+title: "Panel Data Estimator: Fixed Effects"
 author: "Michael Fehl"
 date: 01-26-2026
 format:
