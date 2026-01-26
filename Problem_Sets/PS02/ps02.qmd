@@ -1,0 +1,9 @@
+---
+title: "Problem Set 02: FE/FD/Arellano-Bond"
+author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones, Wu Chen"
+problem-set: true
+format:
+  html:
+    embed-resources: true
+---
+

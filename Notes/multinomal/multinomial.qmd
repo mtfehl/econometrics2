@@ -2,6 +2,7 @@
 title: "Multinomial Models"
 author: "Michael Fehl"
 date: 26-01-2026
+class-notes: true
 format:
   html:
     embed-resources: true

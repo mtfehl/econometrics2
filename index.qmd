@@ -1,0 +1,69 @@
+---
+title: "Econometrics: Panel Data"
+listing:
+  - id: class-notes
+    contents: 
+      - Notes/pooled_ols
+      - Notes/random_effects
+      - Notes/fixed_effect
+      - Notes/first_diff
+      - Notes/gmm
+      - Notes/anderson_arellano
+      - Notes/mle
+      - Notes/binary_choice
+      - Notes/multinomial
+      #- Notes/nested_logit
+    include:
+      class-notes: true
+    type: grid
+    grid-columns: 3
+    categories: false
+    fields: [image, title, reading-time, description]
+    
+  - id: problem-sets
+    contents: 
+      - Problem_Sets/PS01
+      - Problem_Sets/PS02
+    include:
+      problem-set: true
+    type: grid
+    grid-columns: 3
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    fields: [image, title, reading-time, description]
+    
+  - id: projects
+    contents: 
+      - Projects/Project01
+      #- projects/project02
+    include:
+      project: true
+    type: grid
+    grid-columns: 3
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    fields: [image, title, reading-time, description]
+---
+
+## Class Notes
+
+::: {#class-notes}
+
+:::
+
+## Problem Sets
+
+::: {#problem-sets}
+
+:::
+
+
+## Projects
+
+::: {#projects}
+
+:::

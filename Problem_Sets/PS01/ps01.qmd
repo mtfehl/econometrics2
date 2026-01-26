@@ -1,0 +1,7 @@
+---
+title: "Problem Set 01: POLS/RE/FE/FD"
+author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones"
+problem-set: true
+format: html
+---
+

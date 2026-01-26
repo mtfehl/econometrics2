@@ -2,38 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Projects/Project01/pj01.html</loc>
-    <lastmod>2026-01-26T22:46:24.785Z</lastmod>
+    <lastmod>2026-01-26T23:09:28.371Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS01/ps01.html</loc>
+    <lastmod>2026-01-26T23:06:48.354Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/pooled_ols/pols.html</loc>
-    <lastmod>2026-01-26T22:44:45.400Z</lastmod>
+    <lastmod>2026-01-26T23:08:31.727Z</lastmod>
   </url>
   <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/gmm/gmm.html</loc>
-    <lastmod>2026-01-26T22:44:05.412Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/first_diff/fd.html</loc>
-    <lastmod>2026-01-26T22:43:41.020Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/anderson_arellano/abond.html</loc>
-    <lastmod>2026-01-26T22:45:31.145Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/binary_choice/logit_probit.html</loc>
-    <lastmod>2026-01-26T22:42:23.029Z</lastmod>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/mle/mle.html</loc>
+    <lastmod>2026-01-26T23:08:00.899Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/fixed_effects/fe.html</loc>
-    <lastmod>2026-01-26T22:43:24.851Z</lastmod>
+    <lastmod>2026-01-26T23:08:48.611Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/binary_choice/logit_probit.html</loc>
+    <lastmod>2026-01-26T23:08:41.991Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/index.html</loc>
+    <lastmod>2026-01-26T23:02:39.361Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/anderson_arellano/abond.html</loc>
+    <lastmod>2026-01-26T23:08:38.544Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/first_diff/fd.html</loc>
+    <lastmod>2026-01-26T23:08:44.960Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/gmm/gmm.html</loc>
+    <lastmod>2026-01-26T23:08:52.526Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/multinomal/multinomial.html</loc>
-    <lastmod>2026-01-26T22:48:52.814Z</lastmod>
+    <lastmod>2026-01-26T23:08:34.930Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/random_effects/re.html</loc>
-    <lastmod>2026-01-26T22:43:10.763Z</lastmod>
+    <lastmod>2026-01-26T23:08:28.333Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS02/ps02.html</loc>
+    <lastmod>2026-01-26T23:06:59.140Z</lastmod>
   </url>
 </urlset>

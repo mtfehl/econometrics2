@@ -1,0 +1,17 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/Notes/binary_choice/logit_probit.html",
+      "/Notes/gmm/gmm.html",
+      "/Notes/mle/mle.html",
+      "/Notes/first_diff/fd.html",
+      "/Notes/pooled_ols/pols.html",
+      "/Notes/random_effects/re.html",
+      "/Notes/anderson_arellano/abond.html",
+      "/Problem_Sets/PS01/ps01.html",
+      "/Problem_Sets/PS02/ps02.html",
+      "/Projects/Project01/pj01.html"
+    ]
+  }
+]

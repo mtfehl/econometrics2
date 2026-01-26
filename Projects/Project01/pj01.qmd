@@ -1,6 +1,7 @@
 ---
 title: "Project 01"
 author: "Michael Fehl"
+project: true
 date: 01-26-2026
 format:
   html:

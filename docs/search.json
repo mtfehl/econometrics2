@@ -7,6 +7,13 @@
     "text": "Back to top"
   },
   {
+    "objectID": "Problem_Sets/PS01/ps01.html",
+    "href": "Problem_Sets/PS01/ps01.html",
+    "title": "Problem Set 01: POLS/RE/FE/FD",
+    "section": "",
+    "text": "Back to top"
+  },
+  {
     "objectID": "Notes/pooled_ols/pols.html",
     "href": "Notes/pooled_ols/pols.html",
     "title": "Panel Data Estimator: Pooled OLS",
@@ -14,23 +21,16 @@
     "text": "Back to top"
   },
   {
-    "objectID": "Notes/gmm/gmm.html",
-    "href": "Notes/gmm/gmm.html",
-    "title": "Generalized Method of Moments Estimators",
+    "objectID": "Notes/mle/mle.html",
+    "href": "Notes/mle/mle.html",
+    "title": "Maximum Likelihood Estimators",
     "section": "",
     "text": "Back to top"
   },
   {
-    "objectID": "Notes/first_diff/fd.html",
-    "href": "Notes/first_diff/fd.html",
-    "title": "Panel Data Estimator: First Differences",
-    "section": "",
-    "text": "Back to top"
-  },
-  {
-    "objectID": "Notes/anderson_arellano/abond.html",
-    "href": "Notes/anderson_arellano/abond.html",
-    "title": "Panel Data Estimators: Anderson-Hsiao & Arellano Bond",
+    "objectID": "Notes/fixed_effects/fe.html",
+    "href": "Notes/fixed_effects/fe.html",
+    "title": "Panel Data Estimator: Fixed Effects",
     "section": "",
     "text": "Back to top"
   },
@@ -42,9 +42,51 @@
     "text": "Back to top"
   },
   {
-    "objectID": "Notes/fixed_effects/fe.html",
-    "href": "Notes/fixed_effects/fe.html",
-    "title": "Panel Data Estimator: Fixed Effects",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Econometrics: Panel Data",
+    "section": "",
+    "text": "1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#class-notes",
+    "href": "index.html#class-notes",
+    "title": "Econometrics: Panel Data",
+    "section": "",
+    "text": "1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#problem-sets",
+    "href": "index.html#problem-sets",
+    "title": "Econometrics: Panel Data",
+    "section": "Problem Sets",
+    "text": "Problem Sets\n\n\n\n\n\n\n\n\nProblem Set 01: POLS/RE/FE/FD\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\nProblem Set 02: FE/FD/Arellano-Bond\n\n1 min\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#projects",
+    "href": "index.html#projects",
+    "title": "Econometrics: Panel Data",
+    "section": "Projects",
+    "text": "Projects\n\n\n\n\n\n\n\n\nProject 01\n\n1 min\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "Notes/anderson_arellano/abond.html",
+    "href": "Notes/anderson_arellano/abond.html",
+    "title": "Panel Data Estimators: Anderson-Hsiao & Arellano Bond",
+    "section": "",
+    "text": "Back to top"
+  },
+  {
+    "objectID": "Notes/first_diff/fd.html",
+    "href": "Notes/first_diff/fd.html",
+    "title": "Panel Data Estimator: First Differences",
+    "section": "",
+    "text": "Back to top"
+  },
+  {
+    "objectID": "Notes/gmm/gmm.html",
+    "href": "Notes/gmm/gmm.html",
+    "title": "Generalized Method of Moments Estimators",
     "section": "",
     "text": "Back to top"
   },
@@ -94,6 +136,13 @@
     "objectID": "Notes/random_effects/re.html",
     "href": "Notes/random_effects/re.html",
     "title": "Panel Data Estimator: Random Effects",
+    "section": "",
+    "text": "Back to top"
+  },
+  {
+    "objectID": "Problem_Sets/PS02/ps02.html",
+    "href": "Problem_Sets/PS02/ps02.html",
+    "title": "Problem Set 02: FE/FD/Arellano-Bond",
     "section": "",
     "text": "Back to top"
   }
