@@ -1,0 +1,105 @@
+
+/* EXAMPLE LOW BIRTH WEIGHT */
+
+use lowbirth.dta, clear
+
+encode state, gen(id)
+
+xtset id year
+
+/* Pooled OLS */
+regress lowbrth d90 afdcprc physicpc bedspc pcinc lpopul
+
+/* Pooled OLS allowing for arbitrary heteroskedasticity and serial correlation in u_it */
+regress lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, vce(cluster id)
+/* Nothing significant apart from pcinc */
+
+
+/* RANDOM EFFECTS MODEL */
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, re
+
+/* Allowing for arbitrary heteroskedasticity and serial correlation in u_it */
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, re vce(cluster id)
+
+/* Here, still only significant negative effect of pcinc */
+/* Beds per capita have no effect whatsoever */
+/* Note variability in SE across specifications - should always cluster */
+
+
+
+/* FIXED EFFECTS MODEL */
+/* Of course, could be that there are unobserved factors that are correlated both with afdcprc and physicpc. For example, states with more inequality have both higher low birth weight rates and a higher percentage of the population in the welfare program. */
+/* Reason to believe one should use fixed effects. So we use variation in the percentage of the population on welfare over time */
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, fe
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, fe vce(cluster id)
+/* Results show (mildly) significant effect of afdcprc. */
+/* Since we only have two years in our data, the variation in the explanatory variables does not allow precise estimates */
+
+
+
+/* DUMMY VARIABLE APPROACH */
+reg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul i.id
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, fe
+/* Without the clustering identical to the fixed effects model. */
+
+reg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul i.id, vce(cluster id)
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, fe vce(cluster id) dfadj
+
+
+
+/* FIRST DIFFERENCE MODEL */
+reg s3.lowbrth s3.d90 s3.afdcprc s3.physicpc s3.bedspc s3.pcinc s3.lpopul, noconst
+/* In this form identical to the non-clustered fixed effects and dummy variable approach */
+reg s3.lowbrth s3.d90 s3.afdcprc s3.physicpc s3.bedspc s3.pcinc s3.lpopul, noconst vce(cluster id)
+/* Since after first differencing we only have 1 time period left, this is identical to specifying the robust option */
+/* In first difference models one should always allow for serial correlation!!! */
+
+
+/* Or, do the differencing automatically.. */
+xtset id year, delta(3)
+xi: xtivreg lowbrth i.year afdcprc physicpc bedspc pcinc (lpopul=lpopul), fd regress
+/* Problem here is that this command does not allow for clustering in the fd which it should! */
+
+
+/* Manual demeaning (not recommended!)... */
+foreach k in "lowbrth" "d90" "afdcprc" "physicpc" "bedspc" "pcinc" "lpopul" { 
+by id: egen mean`k'=mean(`k')
+gen devmean`k'=`k'-mean`k'
+}
+reg devmeanlowbrth devmeand90 devmeanafdcprc devmeanphysicpc devmeanbedspc devmeanpcinc devmeanlpopul, noconst
+xtreg lowbrth d90 afdcprc physicpc bedspc pcinc lpopul, fe
+/* Exactly the same parameter estimates, but incorrect standard errors. Reason is that in the first case (the "manual" fixed effects) the wrong degrees of freedom are used (see Wooldridge p. 271/272) */
+/* To get the right SE one would have to multiply each SE by ((NT-K)/(N(T-1)-K))^0.5. In our case this is ((50*2-6)/(50*1-6))^0.5 = 1.46163. Try it out... It works. Lesson: Use official Stata commands! */
+
+
+
+
+/* EXAMPLE MURDER */
+
+use murder.dta, clear
+
+xtset id year
+
+regress mrdrte exec unem i.year, vce(cluster id)
+/* Significant impact of the unemployment rate on murder rate. Also, 1990 was a busy year for murderers.. */
+
+
+/* FIXED EFFECTS */
+/* It is possible that there are permanent differences across states in murder rates due to unobserved permanent differences in state characteristics (composition of population, rural vs. urban) that are correlated with both high unemployment, the number of executions, and the number of murders. Also, there could be reversed causality from murders to executions (depending on the timing and the speed of convictions to executions).*/
+xtreg mrdrte exec unem i.year, fe vce(cluster id)
+/* Now, unemployment becomes insignificant but there seems to be a small, marginally significant deterrence effect of executions */
+
+
+
+/* FIRST DIFFERENCES */
+reg s3.mrdrte s3.exec s3.unem i.year
+reg s3.mrdrte s3.exec s3.unem i.year, vce(cluster id)
+
+/* Look at the difference in SE - shows that one really has to cluster in the FD models and that typically SE become smaller */
+/* Relative to fixed effects, the estimates here are now different (we have 3 rather than 2 periods as before) */
+/* The reason could be the failure of the strict exogeneity assumption - shocks affect murder rates which affect executions in future periods - which leads to both estimators being inconsistent and having different probability limits. */
+
+xtset id year, delta(3)
+xi: xtivreg mrdrte exec (unem=unem) i.year, fd noconst
+/* Again, note that this estimator does not account for serial correlation which it should! */
+

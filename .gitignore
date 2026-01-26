@@ -1,6 +1,10 @@
-*.log        
-*.smcl       
-*.dta.tmp    
-*.stpr       
-.DS_Store    
-Thumbs.db    
+*.log
+*.smcl
+*.dta.tmp
+*.stpr
+.DS_Store
+Thumbs.db
+.Rproj.user
+
+/.quarto/
+**/*.quarto_ipynb

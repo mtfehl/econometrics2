@@ -20,7 +20,7 @@ tab year, gen(yr_) // create dummy vars manually since issues with i.year on hau
 regress satisf_std sex education health_org i.year has_kids, vce(cluster id)
 estimates store pols
 
-* (c) Compare the effect using Pooled OLS and Fixed Effects. What does the difference tell you about the unobserved effect fi and its covariance with has kids?
+* (c) Compare the effect using Pooled OLS and Fixed Effects. What does the difference tell you about the unobserved effect f_i and its covariance with 'has_kids'?
 xtreg satisf_std sex education health_org i.year has_kids, fe vce(cluster id)
 estimates store fixed1
 
@@ -31,10 +31,13 @@ esttab pols fixed1, ///
 	mtitles("Pooled OLS" "Fixed Effects") ///
 	nonumbers 
 	
-** The POLS estimator tends to overestimate the variance (therefore the SEs) --
+
+** The POLS estimator tends to overestimate the variance (therefore the SEs) -- thus (idk)
+* ...
 	
 *** Q2. *** 
 * (a) Why has the coefficient on gender disappeared in the fixed effects regression? 
+
 ** the gender variable is a time-invariant regressor: the fixed effects estimator 'demeans' our variables in the model. Since sex is time-invariant, the sample average of Z_i wrt t is equal to Z_i; thus, our 'demeaned' Z_i would be (Z_i - Z_i)'gamma, which is equal to 0.
 
 
@@ -43,10 +46,13 @@ gen gender_kids_interaction = sex*has_kids
 
 xtreg satisf_std sex education health_org yr_2 yr_3 yr_4 yr_5 has_kids gender_kids_interaction, fe vce(cluster id)
 
-estimates store fixed
+estimates store fixed2
 
 * (c) Are women and men affected differentially? How do you interpret the magnitudes of the estimated coefficients?
-**
+
+** yes, since we see the has_kids has a positive coefficient, yet the interaction between the two leads to a negative coefficient value, meaning there is an inverse relationship between men and women in relation to their std_satisf when interacting w/ having kids.
+
+** how to interpret magnitudes ... hmmm... good question...
 
 
 *** Q3. ***
@@ -56,10 +62,18 @@ xtreg satisf_std sex education health_org yr_2 yr_3 yr_4 yr_5 has_kids gender_ki
 estimates store random
 
 * (b) Does the has_kids coefficient differ from the fixed effects model?
-
+esttab fixed2 random, ///
+	b(3) se(2) aic(0) label ///
+	title("Comparing Pooled OLS and Fixed Effects") ///
+	mtitles("Pooled OLS" "Fixed Effects") ///
+	nonumbers 
+	
+* yes, it is different in sign & magnitude.
 
 
 * (c) What can you infer from this regarding the trust you place in RE assumptions? Why/Why not?
+
+* maybe have to do with variance-covariance matrix? or something to do with homosk assumptions? need to review assumptions...
 
 
 
@@ -69,9 +83,9 @@ estimates store random
 xtreg satisf_std sex education health_org yr_2 yr_3 yr_4 yr_5 has_kids gender_kids_interaction, re vce(cluster id)
 xtoverid
 
-hausman random fixed, force
+hausman random fixed2, force
 
 * (b) Do you reject the null hypothesis, and what does this result tell you?
-** Yes, with a p-value = 0.00, we reject at all standard significance levels. This result tells us that the H_0: RE is consistent is not true given our data structure.
+** Yes, with a p-value = 0.00, we reject at all standard significance levels. This result tells us that the H_0: RE is consistent is not true given our data structure; thus, we should use an alternative estimator which would be fixed effects in this case.
 
 

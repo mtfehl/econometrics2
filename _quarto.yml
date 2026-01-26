@@ -1,0 +1,9 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  site-url: "https://mtfehl.github.io/econometrics2/"
+  
+metadata-files:
+  - ../../../_website.yml
