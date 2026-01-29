@@ -5,7 +5,7 @@ listing:
     contents: 
       - Notes/pooled_ols
       - Notes/random_effects
-      - Notes/fixed_effect
+      - Notes/fixed_effects
       - Notes/first_diff
       - Notes/gmm
       - Notes/anderson_arellano

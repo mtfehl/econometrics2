@@ -1,7 +1,9 @@
 
 /* EXAMPLE LOW BIRTH WEIGHT */
-
+pwd
+cd "C:/Users/T14/7Programming/STATA/02Classes/01EconometricsII/demos/paneldata"
 use lowbirth.dta, clear
+br
 
 encode state, gen(id)
 

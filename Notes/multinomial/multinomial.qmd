@@ -1,6 +1,7 @@
 ---
 title: "Multinomial Models"
 author: "Michael Fehl"
+description: "Conditional Logit & Multinomial Logit Models"
 date: 26-01-2026
 class-notes: true
 format:
