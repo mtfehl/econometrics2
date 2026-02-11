@@ -1,0 +1,249 @@
+---
+title: "Nested Models"
+author: "Michael Fehl"
+description: "Nested Logit & Multinomial Probit"
+date: 28-01-2026
+image: /images/nlogit_flowchart.png
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---
+
+# Theory
+
+## Motivation
+
+Recall that from our multinomial models that they only hold under the IID alternatives assumption; this tells us that alternatives are completely independent of each other, each being drawn randomly with equal chance. Of course, we can think of immediate examples that would violate this assumption: cities such as Barcelona and Madrid are likely correlated; they share similar characteristics in language, culture, food, etc. Thus, deciding to move to one of these cities is surely influenced by each cities' similarities.
+
+Indirectly, this IID assumption leads to the "**Independence of Irrelevant Alternatives**" assumption, derived from the fact that relative probabilities for any two alternatives depend only on the attributes of those two alternatives. This implies that adding another alternative or changing the characteristics of a third does not affect the relative odds between any two alternatives $j$ and $\ell$.
+
+## Nested Logit
+
+To relax this assumption, we are going to allow for some correlation between errors.
+
+To understand the **Nested Logit** model, it's helpful to look at a diagram to understand the structure behind it. Let's imagine an example of how and individual decides to choose to pursue a Master's in Economics. The first decision you might make is the <u>location</u>: will you study at a university that is *abroad* or *domestic*? This first decision split consists of the "**limbs**". From there, we make another nested decision between the universities themselves: these final points of our tree are the *branches*. 
+
+```{mermaid}
+flowchart TD
+  %% 1. Define a "plain" style: No border (stroke-width:0px), white background
+  classDef plain fill:#fff,stroke-width:0px,color:#000;
+
+  A{Masters in Economics} --> |Limb 1|B{Abroad}
+  A -->|Limb 2| C{Home}
+  B -->|Branch 1| D{BSE}
+  B -->|Branch 2| E{Carlos III}
+  C -->|Branch 1| F{UNC}
+  C -->|Branch 2| G{Duke}
+
+  %% 2. Create the "Text" nodes below using HTML for math
+  %% We use `---` to connect them, which creates a simple line
+  D --- D_text["V<sub>11</sub> + &epsilon;<sub>11</sub>"]
+  E --- E_text["V<sub>12</sub> + &epsilon;<sub>12</sub>"]
+  F --- F_text["V<sub>21</sub> + &epsilon;<sub>21</sub>"]
+  G --- G_text["V<sub>22</sub> + &epsilon;<sub>22</sub>"]
+
+  %% 3. Apply the "plain" style to your text nodes
+  class D_text,E_text,F_text,G_text plain
+```
+
+### Assumption: Error Distribution
+
+In our previous multinomial model, we assumed that these branches within the same branches were uncorrelated; now, <u>we allow for same-branch limbs to be correlated</u>. However, it is important to note that there still is **no correlation across limbs**; i.e., $Corr(\varepsilon_{11},\varepsilon_{21}) = 0$. In our above example, this means that *BSE* and *Carlos III* are allow to be correlated in our model; i.e., $Corr(\varepsilon_{11},\varepsilon_{12})\neq0$. This is a reasonable relaxation; we would expect both universities to share similar characteristics in language, professional network, grading scheme, etc.
+
+A major challenge with these types of nested models is the decision of structure itself; there are many ways we can construct this decision tree. For example, perhaps our first choice is based on cost; then on rankings, then faculty, then location... etc.
+
+To relax this assumption of IID alternatives, rather than assuming $\varepsilon_i \sim \mathcal{Gumbel}$ as we did before, we now assume that the errors follow a **General Extreme Value Distribution**; formally, $$\varepsilon_i \sim GEV$$
+
+Where the GEV CDF is written as the following: $$F(\varepsilon) = \exp \left( - \sum_{m=1}^{K} \left( \sum_{\ell=1}^{K_m} e^{\frac{-\varepsilon_{m\ell}}{\rho_m}} \right)^{\rho_m} \right)$$
+
+### Closed-Form Joint PDF
+
+Plugging this distribution into our joint pdf of the errors (integral), this simplifies into:
+
+$$ 
+P_{jk}
+= \Pr(y_i = jk \mid X_i)
+= 
+\left[
+\underbrace{
+\frac{\exp\!\left( V_{jk} / \rho_m \right)}
+{\sum\limits_{k \in m} \exp\!\left( V_{jk} / \rho_m \right)}
+}_{\text{within-nest choice}}
+\;\times\;
+\underbrace{
+\frac{
+\left( \sum\limits_{k \in m} \exp\!\left( V_{jk} / \rho_m \right) \right)^{\rho_m}
+}{
+\sum\limits_{\ell=1}^{M}
+\left( \sum\limits_{k \in \ell} \exp\!\left( V_{jk} / \rho_\ell \right) \right)^{\rho_\ell}
+}
+}_{\text{nest choice}}
+\right]
+$$
+
+Where the *within-nest choice* is a logit model conditional on being in nest m, where we choose the best option available. The second term is the *nest choice*, where we decide the nest structure that has the best option inside each nest, on average.
+
+Essentially, we are decomposing the choice probability into these two components, seen below:
+
+### Choice Probability Decomposition
+
+Suppose there are $J$ limbs to choose from. The $j^{th}$ limb has $K_j$ branches: $j1, ..., jk,...,jK_j$
+
+The utility for the alternative in the kth branch of the jth limb is:
+
+$$U_{jk} = V_{jk} + \varepsilon_{jk}$$
+where $k = 1, 2, ..., K_j$ and $j = 1, 2, ..., J$. For a model with this nesting, $p_{jk}$ , the joint probability of being on limb $j$ and branch $k$ can be factored as $p_j$ , the probability of choosing limb $j$, times $p_{k \mid j}$ , the probability of choosing branch $k$ conditional on being on limb $j$:
+
+$$
+P_{jk}=P_j × P_{k \mid i}
+$$
+
+This get rewritten as:
+
+$$
+P_{jk}
+=
+\Pr(y_i = jk \mid X_i)
+=
+\left[
+\frac{
+e^{V_{jk}}
+\;
+\frac{\partial}{\partial e^{V_{jk}}}
+\left[
+\sum_{m=1}^{K}
+\left(
+\sum_{\ell =1}^{K_m}
+\left(e^{V_{\ell m}}\right)^{1/\rho_m}
+\right)^{\rho_m}
+\right]
+}{
+\sum_{m=1}^{K}
+\left(
+\sum_{\ell = 1}^{K_m}
+\left(e^{V_{\ell m}}\right)^{1/\rho_m}
+\right)^{\rho_m}
+}
+\right]
+$$
+
+Where $\rho_m$ is defined as our "scale parameter", measuring correlation b/w same-limb errors
+
+$$
+\rho_m = \sqrt{1-Corr(\varepsilon_{m_\ell},\varepsilon_{mk})} \in [0,1] \\
+\rho_m = \begin{cases}
+   1 &\text{if no correlation b/w errors} \\
+   0 &\text{if perfect correlation b/w errors} 
+\end{cases}
+$$
+
+Note that if $\rho_m =1$, this formula collapses back down into the multinomial logit form from before. 
+
+### Example
+
+Suppose we estimate the following model:
+
+$$V_{jk} = Z_j'\alpha + X_{jk}'\beta_j$$
+
+Where $Z_j$ are our limb-specific regressors, i.e. varies over limbs *only*, and $X_{jk}$ varies both over *limbs* AND *branches*. $\alpha, \beta$ are the regression parameters.
+
+Our next step is to maximize $p_{jk} = p_j \times p_{k \mid j}$ w.r.t. $\alpha, \beta, \text{and } \rho$. Thus, we plug in our value for $V_{jk}$ into our $p_{jk}$ expression.
+
+The joint distribution yields the nested logit model:
+
+$$
+P_{jk} = P_j \times P_{k|j} = \frac{\exp(z'_j \alpha + \rho_j I_j)}{\sum_{m=1}^{J} \exp(z'_m \alpha + \rho_m I_m)} \times \frac{\exp(x'_{jk} \beta_j / \rho_j)}{\sum_{l=1}^{K_j} \exp(x'_{jl} \beta_j / \rho_j)}
+$$
+
+where the so-called inclusive value $I_j$, is defined as:
+
+$$
+I_j = \ln \left( \sum_{l=1}^{K_j} \exp(x'_{jl} \beta_j / \rho_j) \right)
+$$
+
+
+Note that this also works for regressors that do not vary over alternatives. In this case, $V_{jk} = z′\alpha_j + x′\beta_{jk}$, and we must normalize one of the $\beta_{jk}$ for identification.
+
+### Estimation
+
+To estimate the model parameters, we employ Maximum Likelihood Estimation (MLE).
+
+**1. Data Structure**
+
+Let $y_{ijk}$ be an indicator variable for the observed choice of the $i$-th individual.
+
+$$
+y_{ijk} =
+\begin{cases}
+1 & \text{if individual } i \text{ chooses alternative } k \text{ in nest } j \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+**2. Joint Probability**
+
+The probability of observing a specific choice is the product of the marginal probability of choosing the nest (limb) and the conditional probability of choosing the alternative (branch) within that nest:
+
+$$
+p_{ijk} = p_{ij} \times p_{ik|j}
+$$
+
+**3. The Likelihood Function**
+
+For a single observation $y_i$, the probability mass function combines the choice probabilities with the observed indicator variables. Since $y_{ijk}=0$ for non-chosen alternatives (and $p^0=1$), only the chosen alternative contributes to the likelihood:
+
+$$
+f(y_i) = \prod_{j=1}^{J} \prod_{k=1}^{K_j} (p_{ij} \times p_{ik|j})^{y_{ijk}}
+$$
+
+**4. The Log-Likelihood Function**
+
+We maximize the log-likelihood function, $l(\alpha, \beta, \rho)$. Taking the natural logarithm allows us to decompose the estimation into two additive components: the choice of the nest and the choice within the nest.
+
+$$
+\ell(\alpha, \beta, \rho) = \sum_{i=1}^{N} \left( \underbrace{\sum_{j=1}^{J} y_{ij} \ln p_{ij}}_{\text{Limb Choice}} + \underbrace{\sum_{j=1}^{J} \sum_{k=1}^{K_j} y_{ijk} \ln p_{ik|j}}_{\text{Branch Choice}} \right)
+$$
+
+The solution to this maximization problem yields our estimators:
+
+$$
+(\hat{\alpha}, \hat{\beta}, \hat{\rho}) = \operatorname*{argmax}_{\alpha, \beta, \rho} \ l(\alpha, \beta, \rho)
+$$
+
+## Multinomial Probit
+
+Similar motivations and logic as Nested Logit, with the only different being the form of the error distribution. As with regular probit regression, we assumed the errors to follow a normal distribution; more formally,
+
+$$\varepsilon_i \sim \mathcal{N}(0, \Sigma)$$
+
+Where $\varepsilon$ is a $(mx1)$ matrix, and 
+
+$$
+\Sigma = 
+\begin{bmatrix}
+  \begin{bmatrix}
+    - & - \\
+    - & -
+  \end{bmatrix} & 0 \\
+  0 & \begin{bmatrix}
+    - & - \\
+    - & -
+  \end{bmatrix}
+\end{bmatrix}
+$$
+
+Such that the variance of the errors allows for a nesting structure: errors amongst same-branch observations are allowed to be correlated (diagonal), but NOT across limbs (off-diagonal). This is very similar to the clustering standard errors from the heteroskedasticity relaxation from our random/fixed effects models.
+
+**Issue**: Multinomial Probit choice probability does <u>not</u> have a closed-form solution; for an $m$ choice problem, we have to solve for a $m-1$ fold integral; computationally very expensive as we move beyond 5 or so alternatives.
+
+# Applied: Stata
+
+,```{stata nested logit}
+nlogit depvar [indepvars] [|| lev1 equation [|| lev2 equation ...]] || altvar: [byaltvarlist], case(varname)
+,```
+
+
+,```{stata multinomal probit}
+mprobit depvar [indepvars]
+,```

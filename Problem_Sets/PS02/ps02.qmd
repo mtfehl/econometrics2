@@ -1,9 +1,256 @@
 ---
-title: "Problem Set 02: FE/FD/Arellano-Bond"
+title: "Problem Set 02"
 author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones, Wu Chen"
+description: "Linear Models: Fixed Effects, First-Diffs, & Arellano-Bond"
 problem-set: true
 format:
   html:
     embed-resources: true
+    self-contained: true
 ---
 
+# Question 1:
+
+
+
+# Question 2:
+
+2. Consider the following model:
+$$y_{it} = \alpha + x_{it}\beta + z_{it}\gamma + f_i + u_{it} \quad \text{for } i=1,\dots,N \text{ and } t=1,\dots,T,$$
+where $x_{it}$ and $z_{it}$ are scalars, $f_i$ is a permanent unobserved effect and the error term $u_{it}$ is homoscedastic and serially uncorrelated. Furthermore, assume that $x_{it}$ is strictly exogenous:
+$$E(u_{it}|x_{i1}, \dots, x_{iT}, f_i) = 0. \tag{1}$$
+
+a) Suppose the only thing we can safely assume is that the orthogonality condition (1) holds and you take first differences to estimate the model. For different assumptions regarding the exogeneity of $z_{it}$ and the relationship between $z_{it}$ and $f_i$, state the properties of your estimator (consistency and efficiency) when OLS is used to estimate $\beta$ and $\gamma$ in the first differences model?
+
+*Note* that the FD model takes the form: $\Delta y_i = \Delta x_i' \beta + \Delta z_i' \gamma + \Delta \mu_i$
+
+Case 1.1: $E[f_i \mid z_i, x_i] = 0$ & Strict exo
+
+**Consistent**
+
+**Not efficient**: random effects would be efficient model here
+
+$$
+
+$$
+
+Case 1.2: $E[f_i \mid z_i, x_i] \neq 0$ & Strict exo
+
+**Consistent**
+
+**Not efficient**: fixed effects would be efficient (serially correlated errors); for FD random walk is more efficient model
+
+b) Now suppose $T=5$ and the additional assumption holds:
+$$E(u_{it}|z_{i1}, \dots, z_{it-1}, f_i) = 0.$$
+
+Case 2.1: $E[f_i \mid z_i, x_i] = 0$ & weak exo
+
+**Inconsistent**: 
+$$
+\begin{align}
+  E[\Delta z_{it} \Delta \mu_{it}] &= \underbrace{E[z_{it} \mu_{it}]}_{=0} - \underbrace{E[z_{it-1} \mu_{it}]}_{\neq 0} \\
+  &- \underbrace{E[z_{it-1} \mu_{it}]}_{=0} - \underbrace{E[z_{it-1} \mu_{it-1}]}_{=0}
+  
+\end{align}
+$$
+
+Hence, when we try to apply asymptotic properties, it does **not** converge in probability to zero; rather, it converges to a non-zero value. Thus, it is not consistent.
+
+Case 2.2: $E[f_i \mid z_i, x_i] \neq 0$ & weak exo
+
+**Inconsistent**: 
+
+b) Now suppose $T=5$ and the additional assumption holds:
+$E(\mu_{it}|z_{i1}, ..., z_{it−1}, f_i) = 0$. (NOT weak exogenity; contemperous error terms)
+
+(i). How would you now estimate $\beta$ and $\gamma$ efficiently?
+
+We need instruments to estimate our FD model *efficiently*; specifically, an instrument for $\Delta z_{it}$
+
+Note that our error assumption does NOT include exogenity of the error term from the same time period of z. I.e., we need to make sure that our instrument does not include correlations between $\mu_{it}$ and $z_{it}$
+
+For example, let's explore AH (use $z_{it-1}$ as an IV): 
+
+$$E[z_{it-1} \Delta \mu_{it}] = E[z_{it-1} \mu_{it} - z_{it-1} \mu_{it-1}] \neq 0$$
+
+Does not work -- need to go further back in time. Let's try $z_{it-2}$ as an IV
+
+$$E[z_{it-2} \Delta \mu_{it}] = E[z_{it-2} \mu_{it} - z_{it-2} \mu_{it-1}] = 0$$
+
+So, as long as we take any IV that is at least $t-2$ periods prior (and that the regressor is still correlated with $x_{it}$)
+
+Since we have five periods; the first time period we can use is $t=3$; we cannot instrument anything earlier ($t=3, t=4, t=5$). In other words, the first regressors we can include in the model are from t=3 to t=5 ...? corresponding to ($\Delta z_{i3}, \Delta z_{i4}, \Delta z_{i5}$)
+
+Case 1: $\Delta z_{i3}$
+
+$E[z_{i1} \Delta \mu_{i3}] = 0$
+
+Case 2: $\Delta z_{i4}$
+
+$E[z_{i1} \Delta \mu_{i4}] = 0$
+$E[z_{i2} \Delta \mu_{i4}] = 0$
+
+Case 3: $\Delta z_{i5}$
+
+$E[z_{i1} \Delta \mu_{i5}] = 0$
+$E[z_{i2} \Delta \mu_{i5}] = 0$
+$E[z_{i3} \Delta \mu_{i5}] = 0$
+
+** These are all the moment conditions we can get; assuming we want to use this class of estimators to find all the orthogonality conditions in our model to instrument $\Delta z_{it}$
+
+Now the question is to how to combine all of these into one big instrument matrix that we then put into our GMM estimator. The instrument matrix that we select is the following:
+
+$$
+z_i =
+\begin{bmatrix}
+  z_{i1} &0 & 0& 0&0 &0 & \Delta x_{i3} \\
+  0 & z_{i1} & z_{i1} & 0 &0 & 0& \Delta x_{i4} \\
+  0 & 0 & 0 & z_{i1} & z_{i1} & z_{i1} & \Delta x_{i5} 
+\end{bmatrix}
+$$
+
+Such that we satisfy the condition:
+
+$$
+E[z_i' \mu_i] = E\left(
+\begin{bmatrix}
+  z_{i1} &0 & 0& 0&0 &0 & \Delta x_{i3} \\
+  0 & z_{i1} & z_{i1} & 0 &0 & 0& \Delta x_{i4} \\
+  0 & 0 & 0 & z_{i1} & z_{i1} & z_{i1} & \Delta x_{i5} 
+\end{bmatrix} '
+
+\begin{bmatrix}
+  \Delta \mu_{i3} \\
+  \Delta \mu_{i4} \\
+  \Delta \mu_{i4}
+\end{bmatrix}
+
+\right) = 0
+$$
+Which leads us to the decision to use AB estimator as we care about *efficiency*. We want each condition above to have its **own** moment condition; i.e., we use every orthogonality condition available in the model.
+
+Now we can define $k_i$ as the following:
+
+$$
+k_i = 
+\begin{bmatrix}
+  \Delta x_{i3} & \Delta z_{i3} \\
+  \Delta x_{i4} & \Delta z_{i4} \\
+  \Delta x_{i5} & \Delta z_{i5} 
+\end{bmatrix}
+$$
+
+Which we plug into our standard GMM estimator form:
+
+$$
+\hat{\beta}_{GMM} = \left( \left(\sum k_i'z_i \right) \hat{\Omega}^{-1} \left(\sum z_i'zk_i \right)^{-1}
+\left(\sum k_i'z_i \right) \hat{\Omega}^{-1} \left(\sum z_i'\Delta y_i \right)
+
+\right)
+$$
+
+Note that the weighting matrix form that gives us the min. variance takes the form:
+
+$$
+plim \hat{ \Omega} = Var(z_i \Delta \mu_i)
+$$
+
+To achieve this, it depends on our error term assumption. If we assume homoskedasticity, we can derive the variance directly since we assume the functional form of the errors. If we have heteroskedasticity, we cannot do that (since we lack a functional for); for which we implement a two-step form. Since this problem assumes <u>homoskedasticity</u>, we can proceed with the first option.
+
+(ii). Derive the variance of your estimator.
+
+If homoskedastic: 
+
+$$
+\hat{\Omega} = \frac{1}{N}\sum_{i=1}^N z_i'
+\begin{bmatrix}
+  2 & -1 & 0 \\
+  -1 & 2 & -1 \\
+  0 & -1 & 2 \\
+\end{bmatrix}
+z_i
+$$
+
+Note that if $\mu_{it}$ were serially correlated, our model would fail here.
+
+Usually, we are heteroskedastic. So we must get an estimate of Var(zi'deltamu_i) in the first step:
+
+i.e. an estimate for $E[z_i'\Delta \mu_i \Delta \mu_i ' z_i]$
+
+step 1: use residuals from \beta_{gmm} using whatever weighting matrix we want (we can even compute it the same step as above, assuming homosked)
+
+$$
+\hat{\Omega}_{\text{optimal}} = \frac{1}{N}\sum z_i'\Delta \hat{\mu}_i \Delta \hat{\mu}_i ' z_i
+$$
+
+
+
+step 2: plug in this newly found 'optimal' weighting matrix back into our GMM equation, and we find the optimal variance to take the form:
+
+$$
+\begin{align}
+  \widehat{Avar}(\hat{\beta}_{GMM}) = \frac{1}{N}\left(
+  \frac{\sum k_i' z_i}{N} \hat{\Omega}_{optimal}^{-1} \frac{\sum z_i' k_i}{N}
+  \right)^{-1}
+\end{align}
+$$
+
+
+
+c) Suppose $z_{it} = y_{it-1}$ and you know that $\gamma = 1$. How would you estimate the model? Provide the estimator and its variance matrix.
+
+Our model would then take the form:
+
+$$y_{it} = \alpha + x_{it}\beta + y_{it-1} + f_i + u_{it} $$
+
+Which leads us to the standard FE model:
+
+$$\Delta y_{it} = \alpha + x_{it}\beta + f_i + u_{it}$$
+
+Which leads us to the FE estimate:
+
+$$\hat{\beta}_{FE} = \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i \right)^{-1} \sum_{i=1}^N \tilde{X}_i'\Delta \tilde{y}_i$$
+
+Which has the following variance form:
+
+$$\widehat{Avar}(\hat{\beta}_{FE}) = \sigma^2 \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i \right)^{-1}$$
+
+# Question 3: Empirical
+
+```{r}
+library(Statamarkdown)
+```
+
+```{stata}
+use "soep_lebensz_en.dta", clear
+
+// question 1 //
+gen has_kids = (no_kids > 0 & no_kids != .) // has_kids dummy
+label var has_kids "kids dummy"
+
+sort id year
+by id: gen obs_no = _n 
+keep if obs_no <= 2  // only keep the first two obs for an individal
+
+by id: gen total_obs = _N
+keep if total_obs == 2 // only keep obs with exactly two obs
+
+by id: gen year_gap = (year-year[_n-1])
+by id: egen total_gap = max(year_gap)
+keep if total_gap == 1 // only keep obs with exactly one year differences
+
+sort id year
+xtset id year
+```
+
+
+```{stata}
+// first-diff 
+reg d.satisf_std d.has_kids d.health_std d.education, noconstant
+estimate store firstdiff1
+
+// fixed effects
+xtreg satisf_std has_kids health_std education, fe
+estimate store fixed1
+
+```

@@ -1,7 +1,11 @@
 ---
-title: "Problem Set 01: POLS/RE/FE/FD"
+title: "Problem Set 01"
 author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones"
+date: 01-17-2026
+description: "Linear Models: Pooled OLS, Random Effects, Fixed Effects, & First Diffs"
 problem-set: true
-format: html
+format:
+  html:
+    self-contained: true
 ---
 

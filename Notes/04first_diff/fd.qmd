@@ -1,0 +1,9 @@
+---
+title: "First Differences"
+author: "Michael Fehl"
+date: 01-12-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---

@@ -1,9 +1,0 @@
----
-title: "Panel Data Estimators: Anderson-Hsiao & Arellano Bond"
-author: "Michael Fehl"
-date: 01-26-2026
-class-notes: true
-format:
-  html:
-    embed-resources: true
----

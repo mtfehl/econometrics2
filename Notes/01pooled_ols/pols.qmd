@@ -1,0 +1,9 @@
+---
+title: "Pooled OLS"
+author: "Michael Fehl"
+class-notes: true
+date: 01-07-2026
+format:
+  html:
+    embed-resources: true
+---

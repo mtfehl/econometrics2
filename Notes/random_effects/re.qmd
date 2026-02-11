@@ -1,9 +1,0 @@
----
-title: "Panel Data Estimator: Random Effects"
-author: "Michael Fehl"
-class-notes: true
-date: 01-26-2026
-format:
-  html:
-    embed-resources: true
----

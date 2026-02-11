@@ -1,0 +1,9 @@
+---
+title: "Fixed Effects"
+author: "Michael Fehl"
+date: 01-11-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---

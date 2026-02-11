@@ -1,9 +1,0 @@
----
-title: "Maximum Likelihood Estimators"
-author: "Michael Fehl"
-class-notes: true
-format:
-  html:
-    embed-resources: true
----
-

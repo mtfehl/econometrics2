@@ -2,17 +2,23 @@
   {
     "listing": "/index.html",
     "items": [
-      "/Notes/binary_choice/logit_probit.html",
-      "/Notes/gmm/gmm.html",
-      "/Notes/mle/mle.html",
-      "/Notes/multinomial/multinomial.html",
-      "/Notes/first_diff/fd.html",
-      "/Notes/fixed_effects/fe.html",
-      "/Notes/pooled_ols/pols.html",
-      "/Notes/random_effects/re.html",
-      "/Notes/anderson_arellano/abond.html",
-      "/Problem_Sets/PS01/ps01.html",
+      "/Notes/01pooled_ols/pols.html",
+      "/Notes/02random_effects/re.html",
+      "/Notes/03fixed_effects/fe.html",
+      "/Notes/04first_diff/fd.html",
+      "/Notes/05gmm/gmm.html",
+      "/Notes/06anderson/ahsiao.html",
+      "/Notes/06arellano/abond.html",
+      "/Notes/07mle/mle.html",
+      "/Notes/08binary_choice/logit_probit.html",
+      "/Notes/09multinomial/multinomial.html",
+      "/Notes/11ordered_response/ordered_response.html",
+      "/Notes/12censored_truncated/tobit.html",
+      "/Notes/13heckman/heckman.html",
+      "/Notes/10nested_logit/nested.html",
       "/Problem_Sets/PS02/ps02.html",
+      "/Problem_Sets/PS03/ps03.html",
+      "/Problem_Sets/PS01/ps01.html",
       "/Projects/Project01/pj01.html"
     ]
   }

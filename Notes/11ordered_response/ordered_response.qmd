@@ -1,0 +1,159 @@
+---
+title: "Ordered Response Models"
+author: "Michael Fehl"
+description: "Latent Variable Models: Unobserved Outcome Variable"
+date: 02-02-2026
+image: /images/alpha_thresholds.jpg
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---
+
+# Theory
+
+## Motivation
+
+So far, we have focused on unordered choice models, in which there was <u>no</u> natural ordering of alternatives or sequencing of decisions. We now look at the case where alternatives can be **ordered**, which then can be estimated with so-called *Ordered Response Models*.
+
+## Ordered Response Model
+
+To understand the ordered response model, we first need to define a **Latent Variable Model**:
+
+We assume a latent (unobserved) outcome variable $y_i^*$, which can be thought of as "Happiness" or "Utility":
+
+$$
+y_i^* = x_i'\beta + u_i
+$$
+
+* **Note:** <u>No intercept is included in this specification</u>. This is because if a constant exists when we try to calculate $\mathbb{P}[\varepsilon_i \leq \alpha_m - x_i'\beta]$, we cannot separately identify the constant (intercept) from the thresholds.
+
+* **Properties:**
+
+    * The observed values $y_i \in \{0, 1, 2, \dots, 10\}$ are **not cardinal**.
+    * Magnitude is meaningless (e.g., the difference between 1 and 2 is not necessarily the same as the difference between 3 and 4).
+    * Linearity assumptions do not hold for the outcome categories.
+    
+This explains why OLS fails in this case; OLS implicitly assumes equidistant thresholds; i.e., the distance between $y_i = 1$ & $y_i = 2$ is the exact same as the distance between $y_i = 2$ & $y_i = 3$. Applied to our latent variable model, the 'width' of a category is determined by the distance between thresholds $(\text{e.g. } \alpha_2 - \alpha_1)$. Let's say that $y_i^*$ represents life satisfaction; the thresholds for life satisfaction 
+$\alpha_1$ $\dots$ $\alpha_m$ likely assume a non-equal form resembling the following structure:
+
+$$ \mid \dots \dots \dots. \mid \dots \dots. \mid \dots .\mid ...\mid . \mid  .\mid ... \mid \dots. \mid \dots \dots.\mid \dots \dots \dots. \mid$$
+
+
+### Define Thresholds
+
+The observed variable $y_i$ is determined by where the latent variable $y_i^*$ falls relative to thresholds (cut-points) $\alpha_m$:
+
+$$
+y_i =
+\begin{cases}
+1 & \text{if } \alpha_0 < y_i^* \leq \alpha_1 \quad (\text{Assumed } \alpha_0 = -\infty) \\
+2 & \text{if } \alpha_1 < y_i^* \leq \alpha_2 \\
+\vdots & \vdots \\
+m & \text{if } \alpha_{m-1} < y_i^* \leq \alpha_m \quad (\text{Assumed } \alpha_m = +\infty)
+\end{cases}
+$$
+
+
+### Ordered Response Probabilities
+
+Deriving the probabilities for each outcome category conditional on $x_i$:
+
+#### 1. Probability of the Lowest Category
+
+$$
+\begin{aligned}
+\mathbb{P}[y_i = 1 \mid X_i] &= \mathbb{P}[y_i^* \leq \alpha_1 \mid X_i] \\
+&= \mathbb{P}[x_i'\beta + u_i \leq \alpha_1 \mid X_i] \\
+&= \mathbb{P}[u_i \leq \alpha_1 - x_i'\beta \mid X_i]
+\end{aligned}
+$$
+
+* Now depends on the distribution assumed on $u_i$.
+* For example, if $u_i \sim \mathcal{N}(0, 1)$ (Standard Normal):
+
+$$
+= F_x(\alpha_1 - x_i'\beta)= \Phi(\alpha_1 - x_i'\beta)
+$$
+
+Which gives us the **Ordered Probit Model**
+
+* *Note:* If $u_i \sim \mathcal{N}(0, \sigma^2)$, we divide by sigma to normalize:
+
+$$
+\Phi\left[ \frac{u_i}{\sigma} \leq \frac{\alpha_1}{\sigma} - x_i'\frac{\beta}{\sigma} \mid X_i \right]
+$$
+
+#### 2. Probability of Intermediate Categories
+
+$$
+\begin{aligned}
+\mathbb{P}[y_i = 2 \mid x_i] &= \mathbb{P}[\alpha_1 < y_i^* \leq \alpha_2 \mid X_i] \\
+&= \mathbb{P}[y_i^* \leq \alpha_2 \mid X_i] - \mathbb{P}[y_i^* \leq \alpha_1 \mid X_i] \\
+&= \Phi(\alpha_2 - x_i'\beta) - \Phi(\alpha_1 - x_i'\beta)
+\end{aligned}
+$$
+
+#### 3. Probability of the Highest Category
+
+$$
+\begin{aligned}
+\mathbb{P}[y_i = m \mid X_i] &= \mathbb{P}[y_i^* > \alpha_{m-1} \mid X_i] \\
+&= 1 - \Phi(\alpha_{m-1} - x_i'\beta)
+\end{aligned}
+$$
+
+### Estimation and Marginal Effects
+
+#### Log-Likelihood Function
+
+The log-likelihood for an individual $i$, denoted $\ell_i(\alpha, \beta)$, combines the probabilities using indicator functions $\mathbf{1}[\cdot]$:
+
+$$
+\begin{aligned}
+\ell_i(\alpha, \beta) &= \mathbf{1}[y_i=1] \log \Phi(\alpha_1 - x_i'\beta) \\
+&+ \mathbf{1}[y_i=2] \log [\Phi(\alpha_2 - x_i'\beta) - \Phi(\alpha_1 - x_i'\beta)] \\
+&   \dots \\
+& + \mathbf{1}[y_i=m] \log \Phi(\alpha_{m-1} - x_i'\beta)
+\end{aligned}
+$$
+
+$\Rightarrow$ MLE yields estimates $\hat{\beta}, \hat{\alpha}$.
+
+##### Feature: Parsimonious Model
+
+An advantage of such models is that they are *parsimonious*: they only require $K + (m-1)$ coefficient estimates $(\# \beta + \# \alpha)$. Compare this to multinomial logit, which requires: $(K+1) \cdot (m-1)$ coefficient estimates.
+
+To see this, consider the following example:
+
+Imagine predicting travel mode choice based on **Income**.
+
+  * **Ordered (Low, Med, High Quality):** Higher income pushes you up the quality ladder uniformly. <u>We need just one slope estimate</u> for "Income" and cut-points for "Low/Med" and "Med/High".
+  * **Multinomial (Bus, Bike, Car):** Higher income might make you *more* likely to drive a Car but *less* likely to Bike. The effect of income is fundamentally different for each outcome, so we need <u>to estimate separate slope parameters for each alternative</u>.
+
+#### Marginal Effects
+
+We are interested in the impact of a change in regressor $x_i$ on the probability of choosing alternative $j$:
+
+$$
+\frac{\partial \mathbb{P}[y_i=j \mid x_i]}{\partial x_i}
+$$
+
+Using the Chain Rule on the probability definitions (where $F' = f$, the PDF):
+
+$$
+= \left[ F'(\alpha_{j-1} - x_i'\beta) - F'(\alpha_j - x_i'\beta) \right] \beta
+$$
+
+* Where $F$ corresponds to the CDF ($\Phi$ for Probit, $\Lambda$ for Logit).
+* The term in brackets determines the sign of the effect (can be $>0$ or $<0$).
+* However, the sign is **ambiguous**: we cannot use the sign of $\beta$ to interpret the sign of the marginal effect. 
+
+
+
+# Applied: Stata
+
+,```{stata}
+, oprobit depvar [indepvars]
+,```
+

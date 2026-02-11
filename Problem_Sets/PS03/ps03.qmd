@@ -1,0 +1,10 @@
+---
+title: "Problem Set 03"
+author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones, Wu Chen"
+description: "MLE: Binary choice, mLogit, oProbit, & Tobit"
+date: 02-11-2026
+problem-set: true
+format:
+  html:
+    self-contained: true
+---

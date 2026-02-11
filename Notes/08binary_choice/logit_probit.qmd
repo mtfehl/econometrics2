@@ -1,0 +1,11 @@
+---
+title: "Binary Choice Models"
+description: "Logit & Probit Models"
+author: "Michael Fehl"
+date: 01-21-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---
+

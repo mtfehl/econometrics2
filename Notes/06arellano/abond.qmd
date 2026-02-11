@@ -1,0 +1,9 @@
+---
+title: "Arellano Bond"
+author: "Michael Fehl"
+date: 01-15-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---

@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/index.html</loc>
-    <lastmod>2026-01-26T23:35:33.942Z</lastmod>
+    <lastmod>2026-02-11T16:59:38.375Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/anderson_arellano/abond.html</loc>
@@ -50,6 +50,50 @@
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS02/ps02.html</loc>
-    <lastmod>2026-01-26T23:06:59.140Z</lastmod>
+    <lastmod>2026-02-06T19:12:50.439Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/10nested_logit/nested.html</loc>
+    <lastmod>2026-02-09T16:51:09.156Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/11ordered_response/ordered_response.html</loc>
+    <lastmod>2026-02-09T17:00:54.046Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/08binary_choice/logit_probit.html</loc>
+    <lastmod>2026-01-26T23:08:41.991Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/06anderson_arellano/abond.html</loc>
+    <lastmod>2026-01-26T23:08:38.544Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/04first_diff/fd.html</loc>
+    <lastmod>2026-01-26T23:08:44.960Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/02random_effects/re.html</loc>
+    <lastmod>2026-01-26T23:08:28.333Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/03fixed_effects/fe.html</loc>
+    <lastmod>2026-01-26T23:08:48.611Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/05gmm/gmm.html</loc>
+    <lastmod>2026-01-26T23:08:52.526Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/07mle/mle.html</loc>
+    <lastmod>2026-01-26T23:08:00.899Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/09multinomial/multinomial.html</loc>
+    <lastmod>2026-02-02T16:44:50.957Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/12censored_truncated/tobit.html</loc>
+    <lastmod>2026-02-02T17:19:10.332Z</lastmod>
   </url>
 </urlset>

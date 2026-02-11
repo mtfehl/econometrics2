@@ -3,20 +3,25 @@ title: "Econometrics: Panel Data"
 listing:
   - id: class-notes
     contents: 
-      - Notes/pooled_ols
-      - Notes/random_effects
-      - Notes/fixed_effects
-      - Notes/first_diff
-      - Notes/gmm
-      - Notes/anderson_arellano
-      - Notes/mle
-      - Notes/binary_choice
-      - Notes/multinomial
-      #- Notes/nested_logit
+      - Notes/01pooled_ols
+      - Notes/02random_effects
+      - Notes/03fixed_effects
+      - Notes/04first_diff
+      - Notes/05gmm
+      - Notes/06anderson
+      - Notes/06arellano
+      - Notes/07mle
+      - Notes/08binary_choice
+      - Notes/09multinomial
+      - Notes/10nested_logit
+      - Notes/11ordered_response
+      - Notes/12censored_truncated
+      - Notes/13heckman
     include:
       class-notes: true
     type: grid
     grid-columns: 3
+    sort: "date asc"
     categories: false
     fields: [image, title, reading-time, description]
     
@@ -24,6 +29,7 @@ listing:
     contents: 
       - Problem_Sets/PS01
       - Problem_Sets/PS02
+      - Problem_Sets/PS03
     include:
       problem-set: true
     type: grid
@@ -48,6 +54,94 @@ listing:
     filter-ui: false
     fields: [image, title, reading-time, description]
 ---
+
+## Road Map
+
+### Part 1: Panel Data
+
+```{mermaid}
+%%| fig-width: 10
+flowchart TD
+    A(Panel Data) --> B(Linear Models)
+    
+    B --> D(Strict Exogeneity)
+    D --> F(Random Effects)
+    D --> G(Fixed Effects)
+    D --> H(First Differences)
+    
+    B --> E(Weak Exogeneity)
+    E --> I(Anderson-Hsiao)
+    E --> J(Arellano-Bond)
+    
+    
+    A --> C(Maximum Likelihood)
+    
+    C --> K(Discrete Choice)
+    K --> M(Binary)
+    
+    K --> N(Other)
+    N --> O(Multinomial)
+    N --> P(Nested Logit)
+    N --> Q(Ordered Response)
+    
+    C --> L(Tobit & Selection)
+    L --> R(Heckman)
+    
+    
+    PS1([Problem Set 1])
+    PS2([Problem Set 2])
+    PS3([Problem Set 3])
+
+    %% Invisible link to nudge P near C/D without drawing a line
+    G ~~~ PS1
+    B ~~~ PS2
+    P ~~~ PS3
+
+    click D "Notes/01pooled_ols/pols.html" "Go to Pooled OLS Notes"
+    click F "Notes/02random_effects/re.html" "Go to Random Effects Notes"
+    click G "Notes/03fixed_effects/fe.html" "Go to Fixed Effects Notes"
+    click H "Notes/04first_diff/fd.html" "Go to First Differences Notes"
+    click E "Notes/05gmm/gmm.html" "Go to GMM Notes"
+    click I "Notes/06anderson/ahsiao.html" "Go to Anderson-Hsiao Notes"
+    click J "Notes/06arellano/abond.html" "Go to Arellano-Bond Notes"
+    click C "Notes/07mle/mle.html" "Go to MLE Notes"
+    click M "Notes/08binary_choice/logit_probit.html" "Go to Binary Choice Notes"
+    click O "Notes/09multinomial/multinomial.html" "Go to Multinomial Choice Notes"
+    click P "Notes/10nested_logit/nested.html" "Go to Nested Logit Notes"
+    click Q "Notes/11ordered_response/ordered_response.html" "Go to Ordered Response Notes"
+    click L "Notes/12censored_truncated/tobit.html" "Go to Tobit Notes"
+    click R "Notes/13heckman/heckman.html" "Go to Heckman Notes"
+    
+    click PS1 "Problem_Sets/PS01/ps01.html" "Go to Problem Set 1"
+    click PS2 "Problem_Sets/PS02/ps02.html" "Go to Problem Set 2"
+    click PS3 "Problem_Sets/PS03/ps03.html" "Go to Problem Set 3"
+
+
+    %% Classes
+    class A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R nav-node
+    class PS1,PS2,PS3 project-node
+
+    %% STYLE THE LINES
+    linkStyle 0 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 1 stroke:#00cc66,stroke-width:2px;
+    linkStyle 2 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 3 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 4 stroke:#00cc66,stroke-width:2px;
+    linkStyle 5 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 6 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 7 stroke:#00cc66,stroke-width:2px;
+    linkStyle 8 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 9 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 10 stroke:#00cc66,stroke-width:2px;
+    linkStyle 11 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 12 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 13 stroke:#00cc66,stroke-width:2px;
+    linkStyle 14 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 15 stroke:#00cc66,stroke-width:2px;
+    linkStyle 16 stroke:#ff4d4d,stroke-width:2px;
+```
+
+### Part 2: Causal Inference
 
 ## Class Notes
 

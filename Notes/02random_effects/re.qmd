@@ -1,0 +1,9 @@
+---
+title: "Random Effects"
+author: "Michael Fehl"
+class-notes: true
+date: 01-09-2026
+format:
+  html:
+    embed-resources: true
+---

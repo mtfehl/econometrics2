@@ -1,0 +1,9 @@
+---
+title: "Generalized Method of Moments Estimators"
+author: "Michael Fehl"
+date: 01-13-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---
