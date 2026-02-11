@@ -342,15 +342,15 @@ As it stands, our current models cannot account for this phenomena; hence, we ne
 
 # Applied
 
-```{stata multinomal logit}
+``{stata multinomal logit}
 # mutlinomial logit regression
 mlogit depvar [indepvars]
-```
+``
 
-```{stata conditional logit}
+``{stata conditional logit}
 # normal conditional logit regression
 clogit depvar [indepvars], group(varname)
 
 # facilitates the data preparation and also allows estimation of a mixed logit model
 asclogit depvar [indepvars], case(varname) alternatives(varname)
-```
+``
