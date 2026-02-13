@@ -2,7 +2,7 @@
 title: "Nested Models"
 author: "Michael Fehl"
 description: "Nested Logit & Multinomial Probit"
-date: 28-01-2026
+date: 01-28-2026
 image: /images/nlogit_flowchart.png
 class-notes: true
 format:

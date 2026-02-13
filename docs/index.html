@@ -942,23 +942,23 @@ window.Quarto = {
     class PS1,PS2,PS3 project-node
 
     %% STYLE THE LINES
-    linkStyle 0 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 1 stroke:#00cc66,stroke-width:2px;
-    linkStyle 2 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 3 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 4 stroke:#00cc66,stroke-width:2px;
-    linkStyle 5 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 6 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 7 stroke:#00cc66,stroke-width:2px;
-    linkStyle 8 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 9 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 10 stroke:#00cc66,stroke-width:2px;
-    linkStyle 11 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 12 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 13 stroke:#00cc66,stroke-width:2px;
-    linkStyle 14 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 15 stroke:#00cc66,stroke-width:2px;
-    linkStyle 16 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 0 stroke:#0000cd,stroke-width:2px;
+    linkStyle 1 stroke:#9381FF,stroke-width:2px;
+    linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 5 stroke:#9381FF,stroke-width:2px;
+    linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 8 stroke:#A20021,stroke-width:2px;
+    linkStyle 9 stroke:#CC183C,stroke-width:2px;
+    linkStyle 10 stroke:#F52F57,stroke-width:2px;
+    linkStyle 11 stroke:#F52F57,stroke-width:2px;
+    linkStyle 12 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 13 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 14 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 15 stroke:#CC183C,stroke-width:2px;
+    linkStyle 16 stroke:#F52F57,stroke-width:2px;
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -968,13 +968,80 @@ window.Quarto = {
 </section>
 <section id="part-2-causal-inference" class="level3">
 <h3 class="anchored" data-anchor-id="part-2-causal-inference">Part 2: Causal Inference</h3>
+<div class="cell" data-fig-width="10" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    N1(Causal Inference) --&gt; N2(Randomized Control Trials)
+    
+    
+    
+    %% PS4([Problem Set 4])
+    %% PS5([Problem Set 5])
+
+    %% Invisible link to nudge P near C/D without drawing a line
+    %% N4 ~~~ PS4
+    %% N9 ~~~ PS5
+
+    click N1 "Notes/14causal/causal_intro.html" "Go to Causal Inference Notes"
+    click N2 "Notes/15rcts/rcts.html" "Go to RCTs Notes"
+    %%click N3 "Notes/16 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N4 "Notes/17 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N5 "Notes/18 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N6 "Notes/19 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N7 "Notes/20 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N8 "Notes/21 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N9 "Notes/22 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N10 "Notes/23 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N11 "Notes/24 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N12 "Notes/25 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N13 "Notes/26 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N14 "Notes/27 RCTs/RCTs .html" "Go to RCTs Notes"
+    
+    %% click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
+    %% click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
+
+
+    %% Classes
+    class N1,N2 nav-node
+    %% class PS4,PS5 project-node
+
+    %% STYLE THE LINES
+    linkStyle 0 stroke:#1e5636,stroke-width:2px;
+    
+   %% green color palette: #1e5636, #578c49, #99be8f
+   %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
+   %% linkStyle 1 stroke:#9381FF,stroke-width:2px;
+   %% linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 5 stroke:#9381FF,stroke-width:2px;
+   %% linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 8 stroke:#A20021,stroke-width:2px;
+   %% linkStyle 9 stroke:#CC183C,stroke-width:2px;
+   %% linkStyle 10 stroke:#F52F57,stroke-width:2px;
+   %% linkStyle 11 stroke:#F52F57,stroke-width:2px;
+   %% linkStyle 12 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 13 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 14 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 15 stroke:#CC183C,stroke-width:2px;
+   %% linkStyle 16 stroke:#F52F57,stroke-width:2px;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="class-notes" class="level2">
 <h2 class="anchored" data-anchor-id="class-notes">Class Notes</h2>
 <div id="listing-class-notes" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-date-sort="1767740400000" data-listing-file-modified-sort="1770829610876" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="0" data-listing-date-sort="1767740400000" data-listing-file-modified-sort="1770913636242" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="2">
 <a href="./Notes/01pooled_ols/pols.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
@@ -984,6 +1051,8 @@ Pooled OLS
 </h5>
 <div class="listing-reading-time card-text text-muted">1 min</div>
 <div class="card-text listing-description delink">
+
+
 
 </div>
 </div>
@@ -1109,7 +1178,7 @@ Binary Choice Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="9" data-listing-date-sort="1769468400000" data-listing-file-modified-sort="1770830069774" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2070">
+<div class="g-col-1" data-index="9" data-listing-date-sort="1769468400000" data-listing-file-modified-sort="1770913702961" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2210">
 <a href="./Notes/09multinomial/multinomial.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1119,14 +1188,31 @@ Binary Choice Models
 <h5 class="no-anchor card-title listing-title">
 Multinomial Models
 </h5>
-<div class="listing-reading-time card-text text-muted">11 min</div>
+<div class="listing-reading-time card-text text-muted">12 min</div>
 <div class="card-text listing-description delink">
 <p>Conditional Logit &amp; Multinomial Logit Models</p>
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="10" data-listing-date-sort="1769986800000" data-listing-file-modified-sort="1770829482483" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="777">
+<div class="g-col-1" data-index="10" data-listing-date-sort="1769554800000" data-listing-file-modified-sort="1770906813266" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1329">
+<a href="./Notes/10nested_logit/nested.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/nlogit_flowchart.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Nested Models
+</h5>
+<div class="listing-reading-time card-text text-muted">7 min</div>
+<div class="card-text listing-description delink">
+<p>Nested Logit &amp; Multinomial Probit</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="11" data-listing-date-sort="1769986800000" data-listing-file-modified-sort="1770829482483" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="777">
 <a href="./Notes/11ordered_response/ordered_response.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1143,7 +1229,7 @@ Ordered Response Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="11" data-listing-date-sort="1770159600000" data-listing-file-modified-sort="1770829673444" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1242">
+<div class="g-col-1" data-index="12" data-listing-date-sort="1770159600000" data-listing-file-modified-sort="1770829673444" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1242">
 <a href="./Notes/12censored_truncated/tobit.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1160,7 +1246,7 @@ Tobit Model
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="12" data-listing-date-sort="1770246000000" data-listing-file-modified-sort="1770829516196" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="13" data-listing-date-sort="1770246000000" data-listing-file-modified-sort="1770905681868" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="12">
 <a href="./Notes/13heckman/heckman.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
@@ -1170,24 +1256,7 @@ Heckit Estimator
 </h5>
 <div class="listing-reading-time card-text text-muted">1 min</div>
 <div class="card-text listing-description delink">
-
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="13" data-listing-date-sort="1838152800000" data-listing-file-modified-sort="1770655869156" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1329">
-<a href="./Notes/10nested_logit/nested.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./images/nlogit_flowchart.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Nested Models
-</h5>
-<div class="listing-reading-time card-text text-muted">7 min</div>
-<div class="card-text listing-description delink">
-<p>Nested Logit &amp; Multinomial Probit</p>
+``{stata} heckman depvar [indepvars], select(depvar s = varlist s) [twostep]
 </div>
 </div>
 </div></a>

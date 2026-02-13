@@ -1,0 +1,10 @@
+---
+title: "Intro to Causal Inference"
+author: "Michael Fehl"
+date: 02-09-2026
+class-notes: true
+format:
+  html:
+    embed-resources: true
+---
+

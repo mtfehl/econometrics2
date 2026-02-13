@@ -8,3 +8,16 @@ format:
     embed-resources: true
 ---
 
+# Theory
+
+## Motivation
+
+## 
+
+# Applied
+
+
+``{stata}
+heckman depvar [indepvars], select(depvar s = varlist s) [twostep]
+
+``

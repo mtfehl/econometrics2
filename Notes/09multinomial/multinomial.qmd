@@ -342,15 +342,30 @@ As it stands, our current models cannot account for this phenomena; hence, we ne
 
 # Applied
 
+NOTE: It is important to recognize whether we are working with cross-sectional or panel data. In the case of cross-sectional data (not the same individual at different time periods), we aren't worried about any dependency between observations, since individuals are assumed to be exogenous from one another. 
+
+For example, let's take the data set (insert_name_aquí); 
+
 ``{stata multinomal logit}
 # mutlinomial logit regression
 mlogit depvar [indepvars]
 ``
 
-``{stata conditional logit}
+{stata conditional logit}
 # normal conditional logit regression
 clogit depvar [indepvars], group(varname)
 
 # facilitates the data preparation and also allows estimation of a mixed logit model
 asclogit depvar [indepvars], case(varname) alternatives(varname)
-``
+
+
+However, in the case we are working with panel data, we must treat it with care and proceed by telling Stata that we are working with panel data, and use slightly different commands. More information can be found [here](https://www.stata.com/features/overview/panel-data-multinomial-logit/). Further, we can use [this](https://www.stata.com/manuals/xtxtmlogit.pdf) as a reference guide for the details behind the `xtmlogit` code usage and its variations.
+
+{stata}
+xtset id // declare our data as panel data
+
+xtmlogit restaurant age // assumed 
+
+xtmlogit restaurant age, covariance(unstructured) // robust se's - 
+
+xtmlogit restaurant age, fe // conditional fixed-effects

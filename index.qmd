@@ -122,26 +122,86 @@ flowchart TD
     class PS1,PS2,PS3 project-node
 
     %% STYLE THE LINES
-    linkStyle 0 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 1 stroke:#00cc66,stroke-width:2px;
-    linkStyle 2 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 3 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 4 stroke:#00cc66,stroke-width:2px;
-    linkStyle 5 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 6 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 7 stroke:#00cc66,stroke-width:2px;
-    linkStyle 8 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 9 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 10 stroke:#00cc66,stroke-width:2px;
-    linkStyle 11 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 12 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 13 stroke:#00cc66,stroke-width:2px;
-    linkStyle 14 stroke:#ff4d4d,stroke-width:2px;
-    linkStyle 15 stroke:#00cc66,stroke-width:2px;
-    linkStyle 16 stroke:#ff4d4d,stroke-width:2px;
+    linkStyle 0 stroke:#0000cd,stroke-width:2px;
+    linkStyle 1 stroke:#9381FF,stroke-width:2px;
+    linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 5 stroke:#9381FF,stroke-width:2px;
+    linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
+    linkStyle 8 stroke:#A20021,stroke-width:2px;
+    linkStyle 9 stroke:#CC183C,stroke-width:2px;
+    linkStyle 10 stroke:#F52F57,stroke-width:2px;
+    linkStyle 11 stroke:#F52F57,stroke-width:2px;
+    linkStyle 12 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 13 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 14 stroke:#F75C7B,stroke-width:2px;
+    linkStyle 15 stroke:#CC183C,stroke-width:2px;
+    linkStyle 16 stroke:#F52F57,stroke-width:2px;
 ```
 
 ### Part 2: Causal Inference
+
+```{mermaid}
+%%| fig-width: 10
+flowchart LR
+    N1(Causal Inference) --> N2(Randomized Control Trials)
+    
+    
+    
+    %% PS4([Problem Set 4])
+    %% PS5([Problem Set 5])
+
+    %% Invisible link to nudge P near C/D without drawing a line
+    %% N4 ~~~ PS4
+    %% N9 ~~~ PS5
+
+    click N1 "Notes/14causal/causal_intro.html" "Go to Causal Inference Notes"
+    click N2 "Notes/15rcts/rcts.html" "Go to RCTs Notes"
+    %%click N3 "Notes/16 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N4 "Notes/17 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N5 "Notes/18 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N6 "Notes/19 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N7 "Notes/20 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N8 "Notes/21 rcts/rcts .html" "Go to RCTs Notes"
+    %%click N9 "Notes/22 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N10 "Notes/23 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N11 "Notes/24 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N12 "Notes/25 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N13 "Notes/26 RCTs/RCTs .html" "Go to RCTs Notes"
+    %%click N14 "Notes/27 RCTs/RCTs .html" "Go to RCTs Notes"
+    
+    %% click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
+    %% click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
+
+
+    %% Classes
+    class N1,N2 nav-node
+    %% class PS4,PS5 project-node
+
+    %% STYLE THE LINES
+    linkStyle 0 stroke:#1e5636,stroke-width:2px;
+    
+   %% green color palette: #1e5636, #578c49, #99be8f
+   %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
+   %% linkStyle 1 stroke:#9381FF,stroke-width:2px;
+   %% linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 5 stroke:#9381FF,stroke-width:2px;
+   %% linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
+   %% linkStyle 8 stroke:#A20021,stroke-width:2px;
+   %% linkStyle 9 stroke:#CC183C,stroke-width:2px;
+   %% linkStyle 10 stroke:#F52F57,stroke-width:2px;
+   %% linkStyle 11 stroke:#F52F57,stroke-width:2px;
+   %% linkStyle 12 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 13 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 14 stroke:#F75C7B,stroke-width:2px;
+   %% linkStyle 15 stroke:#CC183C,stroke-width:2px;
+   %% linkStyle 16 stroke:#F52F57,stroke-width:2px;
+```
 
 ## Class Notes
 
