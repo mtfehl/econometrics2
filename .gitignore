@@ -8,3 +8,8 @@ Thumbs.db
 
 /.quarto/
 **/*.quarto_ipynb
+
+*.png
+*.jpg
+!images/
+!docs/images/
