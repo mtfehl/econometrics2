@@ -8,3 +8,5 @@ Thumbs.db
 
 /.quarto/
 **/*.quarto_ipynb
+*.dta
+*.pdf
