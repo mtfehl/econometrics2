@@ -10,4 +10,366 @@ format:
 
 # Theory
 
+## Background: What is Panel Data?
+
+* Time series of cross-sections where the same individual units are followed over a time period(s); i.e., a collection of $N$ time series.
+* 2-Dimensional:
+    * **Cross-sectional**
+      * number of ind, households, countries... $i = 1, 2, \dots, N$
+    * **Time-series**
+      * number of time periods... $t = 1, 2, \dots, T$
+
+* Two data collection processes:
+    1.  Individual units collected until 'lost' / untracked
+    2.  Individual units observed for finite time periods, then dropped
+        * W/o attrition, this is a **balanced panel**
+          * Attrition: *Individual units being lost at some pt*
+        * With attrition - the dataset is **unbalanced**
+    * Assuming attrition exists, we have 2 possibilities:
+        1.  **Exogenous**: The attrition process is independent of $y_i$
+            * Then, balanced & unbalanced panels share same properties
+            * $T_i = T, \forall i$ *(Our assumed case for this course)*
+        2.  **Endogenous**: Attrition process is dependent of $y_i$
+            * i.e. $y_i$ : firm profits, firm failure results from negative profits
+            * Must be modeled
+
+### Structure: Observable Info in a Balanced Panel
+
+$$
+\underset{(NT \times 1)}{\vec{y}} = \begin{bmatrix} \vec{y}_1 \\ \vec{y}_2 \\ \vdots \\ \vec{y}_N \end{bmatrix}_{N} = \begin{bmatrix} y_{11} \\ \vdots \\ y_{1T} \\ \hdashline y_{21} \\ \vdots \\ y_{2T} \\ \hdashline \vdots \\ \hdashline y_{N1} \\ \vdots \\ y_{NT} \end{bmatrix} \quad \vec{y}_i : (T \times 1)
+$$
+
+$$
+\underset{(NT \times K)}{X} = \begin{bmatrix} X_1 \\ X_2 \\ \vdots \\ X_N \end{bmatrix} = \begin{bmatrix} X_{111} & X_{112} & \dots & X_{11K} \\ \vdots & \vdots & & \vdots \\ X_{1T1} & X_{1T2} & \dots & X_{1TK} \\ \hdashline X_{211} & X_{212} & \dots & X_{21K} \\ \vdots & \vdots & & \vdots \\ X_{2T1} & X_{2T2} & \dots & X_{2TK} \\ \hdashline \vdots & \vdots & & \vdots \\ \hdashline X_{NT1} & X_{NT2} & \dots & X_{NTK} \end{bmatrix} \begin{matrix} \leftarrow t=1 \\ \dots \\ \leftarrow t=T \\ \leftarrow t=1 \\ \dots \\ \leftarrow t=T \\ \dots \\ \end{matrix}
+$$
+
+*(Columns: Predictor 1, Predictor 2 ... Predictor K. Rows grouped by Individual 1, Individual 2, ... N)*
+$\quad X_i : (T \times K)$
+
+*Note that* $X'X = (K \times NT)(NT \times K) = (K \times K)$
+
+$$
+\underset{(K \times 1)}{\vec{\beta}} = \begin{bmatrix} \beta_1 \\ \beta_2 \\ \vdots \\ \beta_K \end{bmatrix} 
+\qquad
+\underset{(NT \times 1)}{\vec{v}} = \begin{bmatrix} \vec{v}_1 \\ \vec{v}_2 \\ \vdots \\ \vec{v}_N \end{bmatrix} = \begin{bmatrix} v_{11} \\ \vdots \\ v_{1T} \\ \hdashline v_{21} \\ \vdots \\ v_{2T} \\ \hdashline \vdots \\ \hdashline v_{NT} \end{bmatrix} \quad \vec{v}_i : (T \times 1)
+$$
+
+**Further:**
+
+* $v'v = (1 \times NT)(NT \times 1) = (1 \times 1)$: Sum of Squared Residuals 
+  * (inner product, total magnitude of errors squared; what OLS is minimizing)
+* $vv' = (NT \times 1)(1 \times NT) = (NT \times NT)$: Variance-Covariance Matrix 
+  * (outer product, shows how errors relate to one other across obs)
+
+### **Different types of panel data:**
+
+#### 1. Household & Individual Level Panels
+These datasets track the exact same people and families over years or decades, making them the gold standard for microeconometrics (labor, health, education).
+
+* [Panel Study of Income Dynamics (PSID)](https://psidonline.isr.umich.edu/): The longest-running household panel in the world (USA). Tracks families and their descendants since 1968.
+* [National Longitudinal Surveys (NLSY)](https://www.bls.gov/nls/): US Bureau of Labor Statistics data. Massive for labor econ, tracking specific cohorts (like the 1979 or 1997 cohorts) over their lifespans.
+* [Understanding Society (UKHLS)](https://www.understandingsociety.ac.uk/): The UK's massive household panel study (formerly the British Household Panel Survey or BHPS).
+* [Socio-Economic Panel (SOEP)](https://www.diw.de/en/soep): The German equivalent to the PSID, running since 1984. 
+* [Survey of Health, Ageing and Retirement in Europe (SHARE)](https://share-eric.eu/): Cross-national panel database covering health, socio-economic status, and social networks of individuals aged 50+ in Europe.
+
+#### 2. Firm Level Panels
+These track corporate financials, productivity, and behavior. Note that many of the best firm-level panels require institutional access.
+
+* [Compustat / CRSP (via WRDS)](https://wrds-www.wharton.upenn.edu/): The holy grail for finance and firm-level econ. Tracks massive amounts of data on publicly traded companies over time. (Usually requires university access).
+* [World Bank Enterprise Surveys](https://www.enterprisesurveys.org/en/enterprisesurveys): Firm-level survey data tracking businesses in emerging markets and developing economies.
+* [Longitudinal Business Database (LBD)](https://www.census.gov/programs-surveys/ces/data/restricted-use-data/longitudinal-business-database.html): US Census data tracking establishment openings, closings, and employment. *(Note: Highly restricted access, but famous in literature).*
+
+#### 3. Countries Followed Over Time (Macro Panels)
+Used for cross-country growth regressions, trade, and macroeconomics. 
+
+* [Penn World Table (PWT)](https://www.rug.nl/ggdc/productivity/pwt/): The standard dataset for comparing real GDP, employment, and capital across countries over time.
+* [World Bank Open Data / WDI](https://data.worldbank.org/): The World Development Indicators provide a massive unbalanced panel of hundreds of metrics for almost every country.
+* [IMF Data](https://www.imf.org/en/Data): Great for international financial statistics, government debt, and exchange rate panels.
+
+#### 4. Industries Followed Over Time
+Used to study structural change, automation, and industry-level productivity.
+
+* [EU KLEMS](https://euklems.eu/): Industry-level data on capital, labor, energy, materials, and service inputs for EU countries (and the US). 
+* [NBER-CES Manufacturing Industry Database](https://www.nber.org/research/data/nber-ces-manufacturing-industry-database): Annual data on output, employment, payroll, and investment for US manufacturing industries from 1958 onward.
+* [UNIDO INDSTAT](https://stat.unido.org/): Industrial statistics database maintained by the UN, offering time-series data on manufacturing sectors globally.
+
+### Motivation: Why/When Do We Use Panel Data?
+
+1.  **Endogeneity**: May solve problem of dealing w/ unobserved heterogeneity across $N$
+    * Omitted variable bias: OLS becomes biased & inconsistent in its variance
+    * $\rightarrow$ OLS can consistently estimate $\beta$ for panel under $E[\Delta x_{it}' \Delta u_{it}] = 0$
+2.  **Dynamics**: Required in estimating dynamic econ models in presence of individual lvl heterogeneity
+    * $\rightarrow$ e.g. Behaviors: smoking (habit formation), immigration to a city (motivation to earn $\uparrow$ wage)
+    * $\Rightarrow$ Past levels affect future levels
+    * $\rightarrow$ i.e. Can remove unobservable / endogenous effects using p.d.
+
+### Types of Estimators
+Consistent for:
+
+* $\star$ 1. Fixed $T$, $N \rightarrow \infty$ : *Focus for this class*
+* 2. $T \rightarrow \infty$, fixed $N$ : Time-series techniques
+* 3. $T \rightarrow \infty$ & $N \rightarrow \infty$
+
+$\star$ **We will assume random sampling of observations**: IID observations
+
+* $(y_{it}, \vec{x}_{it}) \perp (y_{jt}, \vec{x}_{jt}) \quad \forall i \neq j$ (Independent)
+* $(y_{it}, \vec{x}_{it}) \sim F, \ (y_{jt}, \vec{x}_{jt}) \sim F \quad \forall i \neq j$ (Same dist)
+
+### The Model
+
+$$
+\begin{aligned}
+y_{it} &= \vec{x}_{it}'\beta + v_{it} \\
+&= \vec{x}_{it}'\beta + f_i + u_{it}
+\end{aligned}
+$$
+
+* $\vec{x}_{it} : (K \times 1)$
+* $\beta : (K \times 1)$ $\Rightarrow \vec{x}_{it}'\beta : (1 \times 1)$
+
+**Error Term Breakdown:**
+
+  - $\star \ V_{it} = f_i + u_{it}$ ("Composite error term")
+  - $\star \ f_i$: "Unobserved effect" $\rightarrow$ time-constant individual heterogeneity
+    * Country's culture, city proximity to coast, innate ability, etc.
+  - $\star \ u_{it}$: "Idiosyncratic error" $\rightarrow$ true random noise
+    * $\rightarrow$ Vary over $t$
+
+**$\star$ Note alt assumptions on the errors:**
+
+* **Str. exogeneity**: $E[u_{it} | x_{i1}, \dots, x_{iT}, f_i] = E[u_{it} | X_i, f_i] = 0$
+    * $\overset{\text{L.I.E.}}{\Rightarrow} E[u_{it}] = 0$
+* **Weak exogeneity**: $E[u_{it} | \{x_{is}\}_{s \leq t}, f_i] = 0$
+    * (Predetermined regs)
+    * $\Rightarrow$ Allows $u_{it}$ to be correlated w/ **future $X$ values** but not w/ **past** ones
+    * $\Rightarrow$ i.e. Past shocks ($u_{i, t-1}$) can influence future values ($x_{i, t+1}$)
+    * *Reasonable assumption*
+
+## Motivation: Pooled OLS
+
+What if try running a Pooled OLS estimator on our data, given the aforementioned model form? First, we need to state our model assumptions to then derive properites of the estimator.
+
+## Assumptions
+
+### 1. Linearity
+
+Here our assumption that the relationship between the regressors $X_i$ and the outcome variable $y_{i}$ is linear. 
+
+$$ 
+y_{it} = x_{it}'\beta + f_i + \mu_{it}
+$$
+
+### 2. Random Individual Effects
+
+We assume that the unobserved effects, $f_i$, are strictly exogenous; in other words, conditional on the regressors $X_i$, the expected value of $f_i$ is zero. More formally:
+
+$$
+\mathbb{E}[f_i \mid x_{i1}, x_{i2}, \cdots, x_{iT}] \equiv \mathbb{E}[f_i \mid X_i] = 0
+$$
+
+### 3. Strictly Exogenous Regressors
+
+We assume that the expected value of the **idiosyncratic** error terms is equal to zero, conditional on the regressors and the unobservable effect(s). More formally,
+
+$$
+\mathbb{E}[\mu_{it} \mid x_{i1}, x_{i2}, \cdots, x_{iT}, f_i] \equiv \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0
+$$
+
+In other words, the error terms are *uncorrelated* with the regressors in this model; to see this, we can use a simple proof:
+
+$$
+\begin{aligned}
+  &\text{Note that } \mathbb{C}\text{ov}(\vec x_{it}, \mu_{it}) = \mathbb{E}[\vec x_{it} \cdot \mu_{it}] + \mathbb{E}[\vec x_{it}] \cdot  \mathbb{E}[\mu_{it}] \\
+  & \text{Via the Law of Iterated Expectation, note that: } \\
+  & \mathbb{E}[\mu_{it}] = \mathbb{E}[\mathbb{E}[\mu_{it} \mid X_i, f_i]] \\
+  & \text{via assumption 3, } \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0; \text{ thus,} \\
+  & \mathbb{E}[\mu_{it}] = 0. \\
+  & \text{Plugging into our equation, we get: } \\
+  &\mathbb{C}\text{ov}(\mu_{it}, \vec x_{it}) = \mathbb{E}[\vec x_{it} \cdot \mu_{it}] + 0 \\
+  & \text{Finally, via LIE, we can show that: } \\
+  & \mathbb{E}[\vec x_{it} \cdot \mu_{it}] = \mathbb{E}[  \mathbb{E}[\vec x_{it} \cdot \mu_{it} \mid \vec x_{it}, f_i]] \\
+  & \text{via the Linearity of Conditional Expectations, } \\
+  & \mathbb{E}[  \mathbb{E}[\vec x_{it} \cdot \mu_{it} \mid \vec x_{it}, f_i]] = 
+    \mathbb{E}[ \vec x_{it} \mathbb{E}[\mu_{it} \mid \vec x_{it}, f_i]] \\
+  & \text{via assumption 3, we get that } \mathbb{E}[\mu_{it} \mid \vec x_{it}, f_i] = 0; \text{thus,} \\
+  & \mathbb{C}\text{ov}(\vec x_{it}, \mu_{it}) = 0. \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \blacksquare
+\end{aligned}
+$$
+
+### 4. Homoskedasticity
+
+For homoskedasticity, we make a total of three assumptions:
+
+$$
+\begin{cases}
+  1. \mathbb{V}\text{ar}(f_i \mid X_i) = \sigma_{f}^2 &\text{Constant Variance in the Unobserved Error} \\
+  2. \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 & \text{Constant Variance in the Idiosyncratic Error} \\
+  3. \mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0 \quad \forall_{t \neq s} & \text{No Serial Correlation}
+\end{cases}
+$$
+
+### 5. Linearly Independent Regressors
+
+$$
+\frac{1}{N} \sum_{i=1}^N X_i'X_i  \xrightarrow{p} \underbrace{\mathbb{E}(X_i'X_i)}_{M_{XX}: \text{ (K x K)}} \text{ has rank K}
+$$
+
+In other words, our matrix of regressors $X_i$ has full column rank, thus, the symmetric matrix $X_i'X_i$ will have full rank, meaning it is invertible. 
+
+### Implications
+
+Note that assumptions 2-4 imply the following properties:
+
+* $\mathbb{E}[v_{it} \mid X_i] = 0$
+  * Proof: 
+  * $\mathbb{E}[v_{it} \mid X_i] = \mathbb{E}[f_i + \mu_{it} \mid X_i] = \mathbb{E}[f_i \mid X_i] + \mathbb{E}[\mu_{it} \mid X_i] =$
+  * $\mathbb{E}[f_i \mid X_i] + \mathbb{E}[ \mathbb{E}[\mu_{it} \mid X_i, f_i] ] = 0$ via assumption.
+* $\mathbb{C}\text{ov}(v_{it}, v_{is} \mid X_i) = \sigma_f^2 + \delta_{ts} \sigma_{\mu}^2$
+  * Proof: 
+  * $\mathbb{C}\text{ov}(v_{it}, v_{is} \mid X_i) = \mathbb{E}[v_{it} v_{is} \mid X_i] + \mathbb{E}[v_{it} \mid X_i] \mathbb{E}[v_{is} \mid X_i] =$
+  * $\mathbb{E}[v_{it} v_{is} \mid X_i] + 0 \cdot 0$ via proof above
+  * $\mathbb{E}[v_{it} v_{is} \mid X_i] = \mathbb{E}[ \left( f_i + \mu_{it} \right) \left( f_i + \mu_{is} \right) \mid X_i] =$
+  * $\mathbb{E}[f_i^2 \mid X_i] + \mathbb{E}[f_i \mu_{it} \mid X_i] + \mathbb{E}[f_i \mu_{is} \mid X_i] + \mathbb{E}[\mu_{it} \mu_{is} \mid X_i] =$
+  * $\sigma_f^2 + \mathbb{E} [f_i \mathbb{E}[\mu_{it} \mid X_i, f_i] ] + \mathbb{E} [f_i \mathbb{E}[\mu_{is} \mid X_i, f_i] ] + \mathbb{E}[\mu_{it} \mu_{is} \mid X_i] =$
+  * $\sigma_f^2 + 0 + 0 + \mathbb{E}[\mu_{it} \mu_{is} \mid X_i]$
+  * Note that if $s=t$, then $\mathbb{E}[\mu_{it}^2 \mid X_i] = \sigma_{\mu}^2$;
+  * However, if $s \neq t$, then $\mathbb{E}[\mu_{it} \mu_{is} \mid X_i] = 0$ (since it must hold under our assumption that $\mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0$). 
+  * Thus, $\mathbb{C}\text{ov}(v_{it}, v_{is} \mid X_i) = \sigma_f^2 + \delta_{ts} \sigma_{\mu}^2$, where $\delta = 1$ if $s=t$, and $\delta = 0$ otherwise.
+
+## Properties of POLS Regressor
+
+### Unbiasedness
+
+To show that the POLS estimator is an unbiased regressor, we want to show that $\mathbb{E}[\hat{\beta}_\text{POLS}] = \beta$. Note that the OLS regressor is derived from minimizing SSR, which is found as:
+
+$$
+\begin{aligned}
+  & \min_{\tilde{\beta}} \sum v_i^2 \equiv \min_{\tilde{\beta}} \quad (y-X{\tilde{\beta}})(y-X{\tilde{\beta}})' \\
+  = & \min_{\tilde{\beta}} \quad y'y - 2{\tilde{\beta}}'X'y + {\tilde{\beta}}'X'X{\tilde{\beta}} \\
+  \text{FOC: } & \frac{\partial y'y}{\partial {\tilde{\beta}} } - \frac{\partial 2{\tilde{\beta}}'X'y}{\partial {\tilde{\beta}}} + \frac{\partial{\tilde{\beta}}'X'X{\tilde{\beta}}}{\partial {\tilde{\beta}}} = 0 \\
+  & 2X'y = 2X'X{\tilde{\beta}} \Rightarrow {\tilde{\beta}} = (X'X)^{-1}X'y
+\end{aligned}
+$$
+
+To show unbiasedness, note that showing $\mathbb{E}[\hat{\beta}] = \beta$ is equivalent to showing $\mathbb{E}[\hat{\beta} - \beta] = 0$, via the linearity of expectations. Furthermore, note that:
+
+$$
+\begin{aligned}
+  \hat{\beta}_\text{POLS} - \beta &= (X'X)^{-1}X'y - \beta \\
+  &= (X'X)^{-1}X'(X\beta + v) - \beta \\
+  &= (X'X)^{-1}X'X\beta + (X'X)^{-1}X'v - \beta \\
+  &= \beta + (X'X)^{-1}X'v - \beta \\
+  &= (X'X)^{-1}X'v
+\end{aligned}
+$$
+
+Which is known as the **sampling error** of our estimator. 
+
+Using this definition, we can finally prove the unbiasedness of our estimator by taking expectations:
+
+$$
+\begin{aligned}
+  \mathbb{E}[\hat{\beta}_\text{POLS} - \beta] &= \mathbb{E}[(X'X)^{-1}X'v] \\
+  &= \mathbb{E}[(X'X)^{-1}X' \underbrace{\mathbb{E}[v \mid X]}_\text{=0}] \\
+  \mathbb{E}[\hat{\beta}_\text{POLS} - \beta] &= 0 \\
+  \mathbb{E}[\hat{\beta}_\text{POLS}] &= \beta   \qquad \qquad    \blacksquare
+\end{aligned}
+$$
+
+### Consistency
+
+To show that $\hat{\beta}_\text{POLS}$ is a consistent estimator, we want to show that the estimator converges in probability to $\beta$; more formally, that:
+
+$$ 
+\begin{aligned}
+  \hat{\beta}_\text{POLS} &\xrightarrow{p} \beta \\
+  &\Leftrightarrow \\
+  \hat{\beta}_\text{POLS} - &\beta \xrightarrow{p} 0
+\end{aligned}
+$$
+
+To do so, we will use a trick of adding in $n$ and $\frac{1}{n}$ which cancel out $\frac{n}{n} = 1$ to impose asymptotic properties such as LLN and CMT.
+
+$$
+\begin{aligned}
+  &\hat{\beta}_\text{POLS} - \beta = \underbrace{\left(\frac{1}{n} \sum X_i'X_i \right)^{-1}}_{(1)} \underbrace{\frac{1}{n} \sum X_i'v_i}_{(2)} \\
+  & (1) \xrightarrow{p} \mathbb{E}[X'X]^{-1} \text{ via LLN and CMT} \\
+  & (2) \xrightarrow{p} \mathbb{E}[X'v] \text{ via LLN} \\
+  & \text{note that } \mathbb{E}[X'(f + \mu)] = \mathbb{E}[X'f] + \mathbb{E}[X'\mu] \\
+  & = \mathbb{E}[X' \mathbb{E}[f \mid X]] + \mathbb{E}[X'\mathbb{E}[\mu \mid X]] = 0 \\
+  & \text{thus, via Slutsky's Theorem, } \mathbb{E}[X'X]^{-1} \cdot 0 \\
+  &\hat{\beta}_\text{POLS} - \beta \xrightarrow{p} 0 \Leftrightarrow \hat{\beta}_\text{POLS} \xrightarrow{p} \beta \qquad \qquad \blacksquare
+\end{aligned}
+$$
+
+### Asymptotic Normality
+
+To understand the distributional form of our estimator, we will invoke the following form of the LHS, in order to use to impose the Lindeberg-Levy CLT:
+
+$$
+\begin{aligned}
+\sqrt{n}\left(\hat{\beta}_\text{POLS} - \beta \right)& = \underbrace{\left(\frac{1}{n} \sum X_i'X_i \right)^{-1}}_{(1)} \underbrace{\frac{1}{\sqrt{n}} \sum X_i'v_i}_{(2)} \\
+  & (1) \xrightarrow{p} \mathbb{E}[X'X]^{-1} \text{ via LLN and CMT} \\
+  & (2) \xrightarrow{d} \mathcal{N}\left(0, \mathbb{V}\text{ar}(X'v) \right) \text{ via CLT} \\
+  & \text{thus, via Slutsky's theorem, } \\
+  \sqrt{n}\left(\hat{\beta}_\text{POLS} - \beta \right)& \xrightarrow{d} \mathcal{N}\left(0, \mathbb{E}[X'X]^{-1}\mathbb{E}(X'vv'X)\mathbb{E}[X'X]^{-1} \right) \quad \blacksquare
+\end{aligned}
+$$
+
+#### Issue: Estimating AVAR
+
+Although the Pooled OLS estimator has very nice properties for our model, the issue lies in estimating its asymptotic variance. To see this, note that from the last section we found 
+
+$$
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{POLS}) = \mathbb{E}[X'X]^{-1}\mathbb{E}(X'vv'X)\mathbb{E}[X'X]^{-1}
+$$
+
+The issue is that we cannot simply assume that $\mathbb{E}[v_iv_i' \mid X_i] = \sigma^2(X'X)^{-1}$ as we could for a regular OLS model; to see the issue, recall that $\mathbb{C}\text{ov}(v_{it}, v_{is}) = \sigma_f^2 + \delta_{ts} \sigma_{\mu}^2$. Thus, our variance-covariance matrix takes the form:
+
+$$
+\mathbb{E}[v_iv_i' \mid X_i] \equiv V_i = \begin{bmatrix}
+\sigma_f^2 + \sigma_{\mu}^2 & \sigma_f^2 & \cdots & \sigma_f^2\\
+\sigma_f^2 & \ddots & \sigma_f^2 & \vdots \\
+\vdots &  \sigma_f^2 & \ddots & \vdots\\
+\sigma_f^2 & \cdots &  & \sigma_f^2 + \sigma_{\mu}^2
+\end{bmatrix}
+$$
+
+This comes from the fact that the asymptotic variance of the OLS estimator is given by the sandwich formula:
+
+$$
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{POLS}) = M_{xx}^{-1} \mathbb{E}[X'vv'X] M_{xx}^{-1}
+$$
+
+*(Note: $vv'$ is unknown. To estimate, we use the analogy principle).*
+
+We substitute the composite error term $v_i = f_i + \mu_{it}$ and expand out the inner term $\mathbb{E}[X'vv'X]$:
+
+$$
+\begin{aligned}
+\mathbb{E}[X'vv'X] &= \mathbb{E}[X'(f+\mu)(f+\mu)'X] \\
+&= \mathbb{E}[X'(f+\mu)(f'+\mu')X] \\
+&= \mathbb{E}[X'ff'X] + \mathbb{E}[X'f\mu'X] + \mathbb{E}[X'\mu f'X] + \mathbb{E}[X'\mu\mu'X] \\
+&= \mathbb{E}[X'ff'X] + 2\mathbb{E}[X'f\mu'X] + \mathbb{E}[X'\mu\mu'X]
+\end{aligned}
+$$
+
+Note that $2\mathbb{E}[X'f\mu'X] = 0$ via strict exogeneity assumption; $\mathbb{E}[\mu_{it} \mid X_i, f_i] = 0$ implies the unobserved effect and idiosyncratic error are uncorrelated.
+
+Using the Law of Iterated Expectations, we can isolate out $\sigma_{\mu}^2$ via homoskedasticity and no serial correlation assumption for $\mu$:
+
+$$
+\mathbb{E}[X'\mu\mu'X] = \mathbb{E}[X' \mathbb{E}[\mu\mu' \mid X] X] = \sigma_\mu^2 \cdot \mathbb{E}[X'X]
+$$
+
+Finally, for the unobserved effect, we can use LIE to get the following:
+
+$$
+\mathbb{E}[X'ff'X] = \mathbb{E}[X' \mathbb{E}[ff' \mid X] X]
+$$
+
+However, note that $f_i$ is constant over time; thus, $\mathbb{E}[ff' \mid X]$ is **not** an identity matrix $\sigma_f^2 I$. Rather, it is a full $T \times T$ matrix of $\sigma_f^2$; therefore, the matrices cannot cancel out, leaving Pooled OLS standard errors heavily biased due to serial correlation.
+
+This motivates the transformation of our model to properly deal with the estimates of the asymptotic variance, named the **Random Effects** estimator.
+
 # Applied

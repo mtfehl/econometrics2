@@ -7,3 +7,68 @@ format:
   html:
     embed-resources: true
 ---
+
+# Theory
+
+## Motivation: RE is BLUE
+
+## Assumptions
+
+### Linearity
+
+
+
+### Random Individual Effects
+
+
+
+### Strictly Exogenous Regressors
+
+
+
+### Homoskedasticity
+
+
+
+### Linearly Independent Regressors
+
+
+### Implications
+
+
+
+## Properties of POLS Regressor
+
+### Unbiasedness
+
+
+
+### Consistency
+
+
+
+### Asymptotic Normality
+
+
+
+## Estimating AVAR
+
+
+
+## Relaxing Homoskedasticity Assumption
+
+
+
+
+### Extension: Clustering on Higher Levels
+
+
+
+In practice, nobody uses the random effects estimator; the assumption of random individual effects is too strong of an assumption. Typically, we expect for there to exist some correlation between the exogenous regressors and the unobserved effect(s). In other words, random effects treats the unobserved effect as a random variable. 
+
+This motivates the introduction of a new estimator, namely the **Fixed Effects** estimator that relaxes this assumption, by allowing for non-zero correlation between $f_i$ and $X_i$
+
+# Applied
+
+
+

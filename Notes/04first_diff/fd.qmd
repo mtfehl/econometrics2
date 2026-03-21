@@ -7,3 +7,52 @@ format:
   html:
     embed-resources: true
 ---
+
+
+# Theory
+
+## Motivation: Alternative Error Covariance Structure
+
+## Assumptions
+
+### Linearity
+
+same
+
+### Fixed Effects
+
+same
+
+### Strictly Exogenous Regressors
+
+same
+
+### Homoskedasticity
+
+NEW: after FD
+
+### Linearly Independent Regressors
+
+NEW: rank is num of time-varying regs on FD x's
+
+### Implications
+
+
+
+## Properties of POLS Regressor
+
+### Unbiasedness
+
+
+
+### Consistency
+
+
+
+### Asymptotic Normality
+
+
+
+#### Issue: Estimating AVAR
+
+# Applied

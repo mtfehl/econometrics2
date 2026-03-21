@@ -7,3 +7,61 @@ format:
   html:
     embed-resources: true
 ---
+
+# Theory
+
+## Motivation: Relaxing Random Effects Assumption
+
+relaxing assumption, including time-invariant (endogenous) regressors ...?
+
+## Assumptions
+
+### Linearity
+
+same as before
+
+### Fixed Effects
+
+NEW
+
+### Strictly Exogenous Regressors
+
+same as before
+
+### Homoskedasticity
+
+same as before
+
+### Linearly Independent Time-Variant Regressors
+
+NEW: rank is num of time-varying regs on demeaned x's
+
+### Implications
+
+"demeaning" our estimator to deal with endogenity
+
+define projection + demeaning matrices
+
+## Properties of POLS Regressor
+
+### Unbiasedness
+
+
+
+### Consistency
+
+
+
+### Asymptotic Normality
+
+
+
+### Estimating AVAR
+
+
+
+## Relaxing Homoskedasticity Assumption
+
+
+
+# Applied

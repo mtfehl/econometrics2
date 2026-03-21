@@ -9,3 +9,187 @@ format:
     embed-resources: true
 ---
 
+# Theory
+
+## Motivation: Discrete Outcomes
+
+We now want to consider models were our outcome variable takes on discrete values. For example, whether or not I decide to purchase a good at a store is a choice of $m=2$ mutually exclusive categories, which can be modeled using a Bernoulli RV.
+
+There are many such cases of this phenomena; perhaps our outcome variable can take $m=j$ categories, such as the different choice of cities to vacation in. There even exists cases such that each category has a natural hierarchy structure, such that $m=1$ is mild and $m=10$ is extreme, and so forth. For now, we will begin by introducing the simplest of these cases in which we have two possible categories; i.e., where $y_i$ can only take on two possible values.
+
+## Binary Models
+
+In the case where our outcome variable $y_i$ can only take on two values, we say that $y \sim Bern$, such that:
+
+$$
+y = 
+\begin{cases}
+  1 & \text{w/ Probability } p \\
+  0 & \text{w/ Probability } (1-p)
+\end{cases}
+$$
+
+When we take the unconditional expectation of a discrete random variable, we use the formula:
+
+$$
+\mathbb{E}[y] = \sum_{i=1}^m y_i \cdot \mathbb{P}(y_i)
+$$
+
+Since we have a binary model, we know that $m=2$, such that:
+
+$$
+\begin{aligned}
+\mathbb{E}[y] &= \sum_{i=1}^2 y_i \cdot \mathbb{P}(y_i) \\
+&= y_i \mathbb{P}(y_i) + (1-y_i) (1-\mathbb{P}(y_i)) \\
+&= 1 \mathbb{P}(y_i) + 0 (1-\mathbb{P}(y_i))  \\
+&= \mathbb{P}(y_i)
+\end{aligned}
+$$
+
+Similarly, for conditional expectations, we know that:
+
+$$
+\begin{aligned}
+\mathbb{E}[y \mid x] &= \sum_{i=1}^2 y_i \cdot \mathbb{P}(y = i \mid x) \\
+&= y_1 \mathbb{P}(y = 1 \mid x) + (1-y_1) (1-\mathbb{P}(y = 1 \mid x)) \\
+&= 1 \cdot \mathbb{P}(y = 1 \mid x) + 0 (1-\mathbb{P}(y = 1 \mid x))  \\
+&= \mathbb{P}(y = 1 \mid x)
+\end{aligned}
+$$
+
+## Modeling
+
+In regression analysis, we write our model as:
+
+$$
+y_i = F(x_i,\beta) +\mu_i
+$$
+
+Where $F(\cdot)$ is some function used to model the probability that $y_i = 1 \mid x$. Our specification of $F(\cdot)$ controls the characteristics of our binary choice models.
+
+If we assumed that $\mathbb{E}[\mu_i \mid x] = 0$ take conditional expectations of our model, we find the following relationship:
+
+$$
+\begin{aligned}
+&\mathbb{E}[y_i \mid x] = F(x_i,\beta) + \underbrace{\mathbb{E}[\mu_i \mid x]}_{=0} \\
+&\mathbb{E}[y_i \mid x] = \mathbb{P}[y_i = 1 \mid x] = F(x_i,\beta) 
+\end{aligned}
+$$
+
+### Linear Probability Model
+
+Suppose that we decide to give $F(\cdot)$ a standard linear form, such that the regressors have a linear relationship with the outcome variable (think standard OLS model) After applying OLS, this is known as the **Linear Probability Model**.
+
+$$
+F(x_i,\beta) = x_i'\beta \quad \text{such that} \quad y_i = x_i'\beta + \mu_i
+$$
+When we apply OLS, we get that:
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+$$
+\mathbb{E}[y_i \mid x] = \mathbb{P}[y_i = 1 \mid x] = x_i'\beta
+$$
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+
+$$
+\text{MEs:} \quad  \frac{\partial \mathbb{P}[y_i = 1 \mid x]}{\partial x_i} = \beta
+$$
+
+:::
+
+::::
+
+#### Issues
+
+Although the LPM has nice interpretability such as the marginal effect simply being the beta coefficients, this is not a good choice to model our binary outcome variable. Specifically, there are three main reasons why linear modeling using OLS is a poor choice:
+
+1. Discrete Variance of Errors
+
+We know that $y_i$ can take on values of either $0$ or $1$; this implies there exists two possible values for the errors:
+
+  (i).  $y_i = 1: \mu_i = 1 - x_i'\beta$ with probability $x_i'\beta$
+  (ii). $y_i = 0: \mu_i = - x_i'\beta$ with probability $1 - x_i'\beta$
+  
+This implies that the error term is a discrete random variable, only able to take on two values.
+
+2. Unbounded Probability
+
+We know that by definition, $0 \leq \mathbb{P}[y_i =1 \mid x] \leq 1$; yet, we find that $\mathbb{P}[y_i =1 \mid x] = x_i'\beta \in (-\infty, +\infty)$. Thus, we have an issue that our probabilities are bounded, yet our fitted values can lead to predictions outside of the $[0,1]$ range. This can lead to negative predicted probabilities and probabilities above 1, which are meaningless in this model.
+
+3. Heteroskedastic Errors
+
+The issue with the error term from (1) is that the variance of the error terms assume a heteroskedastic structure. To see this:
+
+$$
+\begin{aligned}
+  \mathbb{V}\text{ar}( \mu_i \mid x) &= \mathbb{E}[\mu_i^2 \mid x] - \underbrace{\mathbb{E}[\mu_i \mid x]^2}_\text{=0}  \\
+  &= \mathbb{E}[(\mu_i = -x_i'\beta)^2 \mid x ] \mathbb{P}[\mu_i = -x_i'\beta \mid x] + \mathbb{E}[(\mu_i = 1-x_i'\beta)^2 \mid x ] \mathbb{P}[\mu_i = 1-x_i'\beta \mid x]   \\
+  &= (-x_i'\beta)^2(1-p_i) + (1 - x_i'\beta)^2 (p_i) \\
+  &= (-x_i'\beta)^2(1-x_i'\beta) + (1-x_i'\beta)^2(x_i'\beta)\\
+  &= (x_i'\beta)(1-x_i'\beta) \\
+  &= \mathbb{P}[y_i = 1 \mid x] \mathbb{P}[y_i = 0 \mid x]
+\end{aligned}
+$$
+
+Thus, the variance of the $\mu_i$ depends on the $x_i'\beta$; in other words, if $p_i$ is large, then the variance of the errors is tiny. If $p_i \approx 0.5$, the variance of the errors is large. This means the variance is non-constant across observations.
+
+### Logit & Probit
+
+The goal is to constrain the outcome $F(x_i,\beta) \in [0,1]$. To do so, we seek to construct a "single index model" such that $F(\cdot)$ maps the single index $x_i'\beta$ to $y_i$. The most popular models use the form:
+
+$$
+\mathbb{P}[y_i = 1 \mid x] = F(x_i'\beta)
+$$
+
+Where $F(\cdot)$ is chosen as some cumulative distribution function; our choice of this distribution deteremines the properties of our model.
+
+The two most popular choices are **Logit** and **Probit**.
+
+::: {.grid}
+
+::: {.g-col-6}
+
+#### Logit
+
+$$
+F(x_i'\beta) = \Lambda(x_i'\beta) = \frac{\exp(x_i'\beta)}{1 + \exp(x_i'\beta)}
+$$
+
+:::
+  
+::: {.g-col-6}
+
+#### Probit
+
+$$
+\begin{aligned}
+& F(x_i'\beta) = \Phi(x_i'\beta) = \int_{-\infty}^{x_i'\beta} \phi(t)dt \\
+& \text{where } \phi(t) = \frac{1}{2\pi}e^{(\frac{-t^2}{2})}
+\end{aligned}
+$$
+
+:::
+  
+:::  
+
+Both models are very similar in shape, however logit has slightly fatter tails. Both are monotone and increasing functions of $x_i'\beta$; thus, whenever $\uparrow \beta, \uparrow F(x_i'\beta)$.
+
+However, since both models are no longer linear in $\beta$, we <u>cannot</u> use OLS. Instead, we must use [maximum likelihood](..\07mle\mle.qmd) as our estimators. 
+
+
+
+
+
+
+# Applied
+
+
