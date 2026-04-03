@@ -2,10 +2,15 @@
 title: "Pooled OLS"
 author: "Michael Fehl"
 class-notes: true
+description: " "
+image: "/images/pols.png"
 date: 01-07-2026
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory
@@ -373,3 +378,25 @@ However, note that $f_i$ is constant over time; thus, $\mathbb{E}[ff' \mid X]$ i
 This motivates the transformation of our model to properly deal with the estimates of the asymptotic variance, named the **Random Effects** estimator.
 
 # Applied
+
+```{stata}
+#| eval: false
+
+* --- declare panel structure ---
+* xtset tells Stata which variable is the individual ID and which is time
+xtset id year
+
+* --- pooled OLS ---
+* treats the NT observations as if they were independent cross-sectional data
+* standard errors are wrong (serially correlated composite error)
+regress y x1 x2 x3
+
+* --- pooled OLS with cluster-robust standard errors ---
+* clustering at the individual level accounts for within-individual serial correlation
+* this corrects inference without changing the point estimates
+regress y x1 x2 x3, vce(cluster id)
+
+* --- check panel structure ---
+xtdescribe
+xtsum y x1 x2
+```

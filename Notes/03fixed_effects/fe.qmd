@@ -1,67 +1,349 @@
 ---
 title: "Fixed Effects"
 author: "Michael Fehl"
+description: " "
 date: 01-11-2026
+image: "/images/fixed_effects.png"
 class-notes: true
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory
 
-## Motivation: Relaxing Random Effects Assumption
+## Motivation: Relaxing the Random Effects Assumption
 
-relaxing assumption, including time-invariant (endogenous) regressors ...?
+The RE estimator is BLUE under its assumptions, but it requires $\mathbb{E}[f_i \mid X_i] = 0$; the unobserved individual effect must be uncorrelated with the regressors. In many settings this fails. For example, consider a wage regression where $f_i$ captures innate ability: individuals with higher ability self-select into more schooling, so $f_i$ and $x_{it}$ are correlated and RE is inconsistent.
+
+We now consider the case where
+
+$$
+E(f_i \mid X_i) \equiv g(X_i) \neq 0
+$$
+
+for some non-constant function $g$. This is the **fixed effects** assumption: $f_i$ may be an arbitrary function of $X_i$, so $\text{corr}(\mathbf{x}_{it}, f_i) \neq 0$ in general. The FE estimator handles this by eliminating $f_i$ entirely through a within-group transformation, making the correlation structure between $f_i$ and $X_i$ irrelevant.
+
+Note that this comes at a cost: any regressor that is time-invariant (e.g., gender, country of birth) is absorbed by the transformation and cannot be identified under FE.
 
 ## Assumptions
 
-### Linearity
+### 1. Linearity
 
-same as before
+Same as before, however in our model we now include $\mathbf{z}_i$ to consider what happens to time-invariant regressors.
 
-### Fixed Effects
+$$
+y_{it} = \mathbf{x}_{it}'\beta + \mathbf{z}_i'\gamma + f_i + \mu_{it}
+$$
 
-NEW
+### 2. Fixed Individual Effects
 
-### Strictly Exogenous Regressors
+**NEW.** We relax the RE assumption and allow the unobserved effect to be a non-constant function of the regressors:
 
-same as before
+$$
+E(f_i \mid X_i) = g(X_i) \neq 0
+$$
 
-### Homoskedasticity
+The implication is that $\text{corr}(\mathbf{x}_{it}, f_i) \neq 0$ in general. Unlike random effects, $f_i$ is treated as a fixed parameter that need not be modelled.
 
-same as before
+### 3. Strictly Exogenous Regressors
 
-### Linearly Independent Time-Variant Regressors
+Same as before:
 
-NEW: rank is num of time-varying regs on demeaned x's
+$$
+\mathbb{E}[\mu_{it} \mid \mathbf{x}_{i1}, \ldots, \mathbf{x}_{iT}, f_i] \equiv \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0
+$$
 
-### Implications
+### 4. Homoskedasticity
 
-"demeaning" our estimator to deal with endogenity
+We retain homoskedasticity for the idiosyncratic error only, since $f_i$ is no longer modelled as a random variable:
 
-define projection + demeaning matrices
+$$
+\begin{cases}
+1. \ \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 & \text{Constant Variance} \\
+2. \ \mathbb{C}\text{ov}(\mu_{it}, \mu_{is} \mid X_i, f_i) = 0 \quad \forall_{t \neq s} & \text{No Serial Correlation}
+\end{cases}
+$$
 
-## Properties of POLS Regressor
+### 5. Linearly Independent Time-Variant Regressors
+
+**NEW.** The rank condition is imposed on the **demeaned** (within-transformed) regressors $\tilde{X}_i = M_0 X_i$, rather than on the raw regressors:
+
+$$
+\frac{1}{N} \sum_{i=1}^N \tilde{X}_i'\tilde{X}_i \xrightarrow{p} \underbrace{\mathbb{E}(\tilde{X}_i'\tilde{X}_i)}_{M_{\tilde{X}\tilde{X}}: \text{ (K x K)}} \text{ has rank K}
+$$
+
+Since the demeaning annihilates any time-constant column, only time-varying regressors can appear in $X_i$; any time-invariant covariates must be dropped from the model.
+
+### Implications: The Within Transformation
+
+Since $f_i$ is time-invariant, subtracting individual-specific means from both sides of the model eliminates it. Define:
+
+$$
+\bar{y}_{i} = \frac{1}{T}\sum_{t=1}^T y_{it}, \qquad \bar{\mathbf{x}}_{i} = \frac{1}{T}\sum_{t=1}^T \mathbf{x}_{it}, \qquad \bar{\mu}_{i} = \frac{1}{T}\sum_{t=1}^T \mu_{it}
+$$
+
+The **within (demeaned) model** is:
+
+$$
+\underbrace{y_{it} - \bar{y}_{i}}_{\tilde{y}_{it}} = \underbrace{(\mathbf{x}_{it} - \bar{\mathbf{x}}_{i})'}_{\tilde{\mathbf{x}}_{it}'}\beta + \underbrace{(\mu_{it} - \bar{\mu}_{i})}_{\tilde{\mu}_{it}}
+$$
+
+since $f_i - f_i = 0$. The fixed effect drops out entirely, since it is time-invariant: $\frac{1}{T} \sum_{t=1}^T f_i = f_i$; the same holds for $\mathbf{z}_i$.
+
+#### Projection and Annihilator Matrices
+
+In matrix notation, define the $(T \times T)$ **projection (averaging) matrix**, where $\ell_T = (1, 1, \ldots, 1)' \in \mathbb{R}^T$:
+
+
+$$
+P_0 = \frac{1}{T}\ell_T\ell_T' \equiv 1_T(1_T'1_T)^{-1}1_T'
+$$
+
+$$
+P_0 = 
+\begin{bmatrix}
+  \frac{1}{T} & \frac{1}{T} & \cdots \\
+  \frac{1}{T} & \ddots & \vdots \\
+  \vdots & \cdots & \frac{1}{T}
+\end{bmatrix}
+$$
+
+:::{.callout-note}
+The projection matrix has a nice property such that $P_Ty_t = \bar{y}_t$. For a comprehensive list of the projection matrix & annihilator matrix's properties with subsequent proofs, see [Appendix(1)](#appendix-1)
+:::
+
+and the $(T \times T)$ **annihilator (demeaning) matrix**:
+
+$$
+M_0 = (I_T - P_0)
+$$
+
+These satisfy $M_0 + P_0 = I_T$, and both are symmetric and idempotent. The key property is $M_0\ell_T = 0$: the annihilator kills any time-constant vector. The explicit form of $M_0$ is:
+
+$$
+M_0 = \begin{bmatrix}
+1 - \frac{1}{T} & -\frac{1}{T} & \cdots & -\frac{1}{T} \\
+-\frac{1}{T} & 1 - \frac{1}{T} & \cdots & -\frac{1}{T} \\
+\vdots & & \ddots & \vdots \\
+-\frac{1}{T} & \cdots & & 1 - \frac{1}{T}
+\end{bmatrix}
+$$
+
+For the full panel, define the $(NT \times NT)$ **within-group** and **between-group** matrices:
+
+$$
+Q = I_N \otimes M_0 \qquad F = I_N \otimes P_0
+$$
+
+satisfying $Q + F = I_{NT}$. Since $M_0 \ell_T = 0$, applying $Q$ to the stacked model $\mathbf{y}_i = X_i\beta + f_i\ell_T + \mu_i$ gives:
+
+$$
+Q\mathbf{y} = QX\beta + Q\mu
+$$
+
+with $f_i$ eliminated. The **FE estimator** is then OLS applied to this within-transformed system:
+
+$$
+\hat{\beta}_{FE} = (X'QX)^{-1}X'Q\mathbf{y} = \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i\right)^{-1}\left(\sum_{i=1}^N \tilde{X}_i'\tilde{\mathbf{y}}_i\right)
+$$
+
+where the last equality follows from $Q$ being symmetric and idempotent ($Q^2 = Q$), so $X'QX = \tilde{X}'\tilde{X}$ and $X'Q\mathbf{y} = \tilde{X}'\tilde{\mathbf{y}}$.
+
+## Properties of the FE Estimator
 
 ### Unbiasedness
 
+The sampling error of $\hat{\beta}_{FE}$ is:
 
+$$
+\begin{aligned}
+\hat{\beta}_{FE} - \beta &= (X'QX)^{-1}X'Q\mathbf{y} - \beta \\
+&= (X'QX)^{-1}X'Q(X\beta + \mu) - \beta \\
+&= (X'QX)^{-1}X'Q\mu
+\end{aligned}
+$$
+
+Taking conditional expectations:
+
+$$
+\begin{aligned}
+\mathbb{E}[\hat{\beta}_{FE} - \beta \mid X, f] &= (X'QX)^{-1}X'Q \underbrace{\mathbb{E}[\mu \mid X, f]}_{\text{=0 via A3}} = 0 \\
+\Rightarrow \mathbb{E}[\hat{\beta}_{FE}] &= \beta \qquad \blacksquare
+\end{aligned}
+$$
 
 ### Consistency
 
-
+$$
+\begin{aligned}
+\hat{\beta}_{FE} - \beta &= \underbrace{\left(\frac{1}{N}\sum_i \tilde{X}_i'\tilde{X}_i\right)^{-1}}_{(1)} \underbrace{\frac{1}{N}\sum_i \tilde{X}_i'\tilde{\mu}_i}_{(2)} \\
+(1) &\xrightarrow{p} M_{\tilde{X}\tilde{X}}^{-1} \text{ via LLN and CMT} \\
+(2) &\xrightarrow{p} \mathbb{E}[\tilde{X}_i'\tilde{\mu}_i] = \mathbb{E}\left[\tilde{X}_i' \mathbb{E}[\tilde{\mu}_i \mid X_i, f_i]\right] = 0 \text{ via LLN and A3} \\
+\hat{\beta}_{FE} &\xrightarrow{p} \beta \qquad \blacksquare
+\end{aligned}
+$$
 
 ### Asymptotic Normality
 
+$$
+\begin{aligned}
+\sqrt{N}(\hat{\beta}_{FE} - \beta) &= \underbrace{\left(\frac{1}{N}\sum_i \tilde{X}_i'\tilde{X}_i\right)^{-1}}_{(1)} \underbrace{\frac{1}{\sqrt{N}}\sum_i \tilde{X}_i'\tilde{\mu}_i}_{(2)} \\
+(1) &\xrightarrow{p} M_{\tilde{X}\tilde{X}}^{-1} \text{ via LLN and CMT} \\
+(2) &\xrightarrow{d} \mathcal{N}\left(0, \mathbb{V}\text{ar}(\tilde{X}_i'\tilde{\mu}_i)\right) \text{ via CLT}
+\end{aligned}
+$$
 
+Under assumption 4, $\mathbb{E}[\mu_i\mu_i' \mid X_i, f_i] = \sigma_\mu^2 I_T$, so:
+
+$$
+\mathbb{V}\text{ar}(\tilde{X}_i'\tilde{\mu}_i) = \mathbb{E}[\tilde{X}_i'\tilde{\mu}_i\tilde{\mu}_i'\tilde{X}_i] = \mathbb{E}[\tilde{X}_i'(\sigma_\mu^2 I_T)\tilde{X}_i] = \sigma_\mu^2 \mathbb{E}[\tilde{X}_i'\tilde{X}_i] = \sigma_\mu^2 M_{\tilde{X}\tilde{X}}
+$$
+
+Thus, via Slutsky's theorem:
+
+$$
+\sqrt{N}(\hat{\beta}_{FE} - \beta) \xrightarrow{d} \mathcal{N}\left(0, \sigma_\mu^2 M_{\tilde{X}\tilde{X}}^{-1}\right) \qquad \blacksquare
+$$
 
 ### Estimating AVAR
 
+The asymptotic variance under assumption 4 is $\sigma_\mu^2 M_{\tilde{X}\tilde{X}}^{-1}$. To estimate $\sigma_\mu^2$, use the within residuals $\hat{\tilde{\mu}}_{it} = \tilde{y}_{it} - \tilde{\mathbf{x}}_{it}'\hat{\beta}_{FE}$ (since we showed already that $\hat{\beta}_{FE}$ is consistent, unbiased, and asymp. normal).
 
+Note that demeaning costs $N$ degrees of freedom (one per individual mean subtracted), and estimating $\beta$ costs $K$ more; the consistent estimator of $\sigma_\mu^2$ is:
 
-## Relaxing Homoskedasticity Assumption
+$$
+\hat{\sigma}_\mu^2 = \frac{1}{N(T-1) - K}\sum_{i=1}^N\sum_{t=1}^T \hat{\tilde{\mu}}_{it}^2
+$$
 
+Using the analogy principle:
 
+$$
+\hat{\sigma}_\mu^2 \left(\frac{1}{N}\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i\right)^{-1} \xrightarrow{p} \sigma_\mu^2 \mathbb{E}\left[\tilde{X}_i'\tilde{X}_i\right]^{-1}
+$$
+
+:::{.callout-note}
+For a more rigorous proof demonstrating the loss of one time period per individual and how this affects our variance estimation, see Question 2 from Problem Set 1 [here](../../Problem_Sets/PS01/ps01.qmd#question-2)
+:::
+
+## Relaxing Homoskedasticity
+
+If assumption 4 fails (heteroskedasticity or serial correlation in $\mu_{it}$), the homoskedastic AVAR formula is incorrect. We instead use the **cluster-robust sandwich estimator**, clustering at the individual level:
+
+$$
+\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{FE}) = \left(\sum_i \tilde{X}_i'\tilde{X}_i\right)^{-1}\left(\sum_i \tilde{X}_i'\hat{\tilde{\mu}}_i\hat{\tilde{\mu}}_i'\tilde{X}_i\right)\left(\sum_i \tilde{X}_i'\tilde{X}_i\right)^{-1}
+$$
+
+This allows for arbitrary heteroskedasticity and serial correlation in $\mu_{it}$ within each individual $i$, placing no additional restrictions beyond assumptions 1 to 3.
 
 # Applied
+
+```{stata}
+#| eval: false
+
+* --- declare panel structure ---
+xtset id year
+
+* --- fixed effects (within estimator) ---
+* demeans the data within each individual and runs OLS on the transformed model
+* time-invariant regressors are automatically dropped (absorbed by f_i)
+xtreg y x1 x2 x3, fe
+
+* --- FE with cluster-robust standard errors ---
+* standard FE SEs assume no serial correlation; clustering is standard practice
+xtreg y x1 x2 x3, fe vce(cluster id)
+
+* --- FE with year fixed effects (two-way FE) ---
+* absorbs both individual and time fixed effects
+xtreg y x1 x2 x3 i.year, fe vce(cluster id)
+
+* --- areg: OLS with absorbed fixed effects (equivalent to xtreg fe) ---
+* useful when you want to include additional categorical fixed effects easily
+areg y x1 x2 x3, absorb(id) vce(cluster id)
+
+* --- Hausman test: H0 = RE is consistent ---
+* must be run without clustering
+xtreg y x1 x2 x3, fe
+estimates store fe_model
+
+xtreg y x1 x2 x3, re
+estimates store re_model
+
+hausman fe_model re_model, sigmamore
+```
+
+# Appendix
+
+## 1 Projection & Annihilator Matrix Properties
+
+Note that the general projection matrix is $P_X = X(X'X)^{-1}X'$, projecting onto the column space of whatever $X$ you pass in. Here, we are projecting specifically onto the space spanned by a constant, so $X = \ell_T$ (the $T \times 1$ vector of ones). The properties thereby slightly shift their interpretation as a result.
+
+### 1.1 Projection Matrix
+
+#### 1.1.1 Symmetric & Idempotent
+
+**Symmetric** ($P_0' = P_0$):
+
+$$
+P_0' = \left(\frac{1}{T}\ell_T\ell_T'\right)' = \frac{1}{T}(\ell_T')'\ell_T' = \frac{1}{T}\ell_T\ell_T' = P_0 \qquad \blacksquare
+$$
+
+**Idempotent** ($P_0^2 = P_0$):
+
+$$
+P_0^2 = \left(\frac{1}{T}\ell_T\ell_T'\right)\left(\frac{1}{T}\ell_T\ell_T'\right) = \frac{1}{T^2}\ell_T\underbrace{(\ell_T'\ell_T)}_{=T}\ell_T' = \frac{1}{T}\ell_T\ell_T' = P_0 \qquad \blacksquare
+$$
+
+#### 1.1.2 $P_0\ell_T = \ell_T$
+
+$$
+P_0\ell_T = \frac{1}{T}\ell_T\ell_T'\ell_T = \frac{1}{T}\ell_T \cdot T = \ell_T \qquad \blacksquare
+$$
+
+More generally, $P_0 y_i = \bar{y}_i \ell_T$. Applying the projection yields a $T \times 1$ vector filled with the individual time mean:
+
+$$
+P_0 y_i = \frac{1}{T}\ell_T\ell_T'y_i = \frac{1}{T}\ell_T\sum_{t=1}^T y_{it} = \bar{y}_i\ell_T \qquad \blacksquare
+$$
+
+### 1.2 Annihilator Matrix
+
+#### 1.2.1 Symmetric & Idempotent
+
+**Symmetric** ($M_0' = M_0$):
+
+$$
+M_0' = (I_T - P_0)' = I_T' - P_0' = I_T - P_0 = M_0 \qquad \blacksquare
+$$
+
+**Idempotent** ($M_0^2 = M_0$):
+
+$$
+M_0^2 = (I_T - P_0)^2 = I_T - 2P_0 + P_0^2 = I_T - 2P_0 + P_0 = I_T - P_0 = M_0 \qquad \blacksquare
+$$
+
+#### 1.2.2 $M_0\ell_T = 0$
+
+$$
+M_0\ell_T = (I_T - P_0)\ell_T = \ell_T - P_0\ell_T = \ell_T - \ell_T = 0 \qquad \blacksquare
+$$
+
+More generally, $M_0 y_i = \tilde{y}_i$. Applying the annihilator yields the demeaned vector:
+
+$$
+M_0 y_i = (I_T - P_0)y_i = y_i - \bar{y}_i\ell_T = \tilde{y}_i \qquad \blacksquare
+$$
+
+And since $\mu_i$ is just another $T \times 1$ vector, the same argument gives $\tilde{\mu}_i = M_0\mu_i$; that is, the demeaned error is exactly the annihilator applied to the true idiosyncratic error.
+
+#### 1.2.3 $M_0 P_0 = 0$ (Orthogonality)
+
+$P_0$ and $M_0$ are orthogonal complements: the "mean part" and the "demeaned part" of any vector are orthogonal.
+
+$$
+M_0 P_0 = (I_T - P_0)P_0 = P_0 - P_0^2 = P_0 - P_0 = 0 \qquad \blacksquare
+$$
+

@@ -1,74 +1,527 @@
 ---
 title: "Random Effects"
 author: "Michael Fehl"
+description: " "
 class-notes: true
 date: 01-09-2026
+image: "/images/random_effects.png"
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory
 
 ## Motivation: RE is BLUE
 
+As we saw with the pooled OLS estimator, it yields a consistent and unbiased estimator but is not efficient, due to the serial correlation in the composite error induced by the unobserved effect. Thus, there exists an estimator that is efficient under similar conditions, known as the **Random Effects** estimator; this is the equivalent to the generalized least squares (GLS) estimator from finite sample OLS.
+
 ## Assumptions
 
-### Linearity
+Our assumptions here follow almost exactly the same from pooled OLS, with one slight change in assumption 5.
 
+### 1. Linearity
 
+Same as before
 
-### Random Individual Effects
+$$ 
+y_{it} = x_{it}'\beta + f_i + \mu_{it}
+$$
 
+### 2. Random Individual Effects
 
+Same as before
 
-### Strictly Exogenous Regressors
+$$
+\mathbb{E}[f_i \mid x_{i1}, x_{i2}, \cdots, x_{iT}] \equiv \mathbb{E}[f_i \mid X_i] = 0
+$$
 
+### 3. Strictly Exogenous Regressors
 
+Same as before
 
-### Homoskedasticity
+$$
+\mathbb{E}[\mu_{it} \mid x_{i1}, x_{i2}, \cdots, x_{iT}, f_i] \equiv \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0
+$$
 
+### 4. Homoskedasticity
 
+Same as before
 
-### Linearly Independent Regressors
+$$
+\begin{cases}
+  1. \mathbb{V}\text{ar}(f_i \mid X_i) = \sigma_{f}^2 &\text{Constant Variance in the Unobserved Error} \\
+  2. \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 & \text{Constant Variance in the Idiosyncratic Error} \\
+  3. \mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0 \quad \forall_{t \neq s} & \text{No Serial Correlation}
+\end{cases}
+$$
+
+### 5. Linearly Independent Regressors
+
+**SLIGHT MODIFICATION**
+
+$$
+\frac{1}{N} \sum_{i=1}^N X_i' V^{-1} X_i  \xrightarrow{p} \underbrace{\mathbb{E}(X_i'V^{-1}X_i)}_{M_{XVX}: \text{ (K x K)}} \text{ has rank K}
+$$
 
 
 ### Implications
 
+Under the same assumptions as pooled OLS, the only difference in how we derive the estimator. To find the efficient estimator under these conditions, suppose that $B'B = V^{-1}$, where $B$ is some matrix. We can then define our model as:
 
+$$
+By_i = BX_i'\beta + Bv_{i}
+$$
 
-## Properties of POLS Regressor
+This model satisfies all of our assumptions: to see this, check [Appendix (1)](#appendix-1) for a thorough handling.
+
+## Properties of RE Regressor
+
+Similar to pooled OLS, when applying the OLS estimator to our regressor we find it has the form:
+
+$$
+\begin{aligned} 
+  & \hat{\beta}_{RE} = \left( X'V^{-1}X \right)^{-1}X'V^{-1}y  &&\text{RE estimator}\\
+  & \hat{\beta}_{RE} - \beta = \left( X'V^{-1}X \right)^{-1}X'V^{-1}v && \text{sampling error}
+\end{aligned}
+$$
+
+To see the full derivation of the RE estimator and the sampling error, see [Appendix (2)](#appendix-2)
 
 ### Unbiasedness
 
+To see that the RE estimator is an unbiased estimator, we want to show that $\mathbb{E}[\hat{\beta}_{RE}] = \beta \Leftrightarrow \mathbb{E}[\hat{\beta}_{RE} - \beta] = 0$
 
+Thus, we simply need to take expectations of the sampling error:
+
+$$
+\begin{aligned}
+\mathbb{E}[\hat{\beta}_{RE} - \beta] &= \mathbb{E}\left[ X'V^{-1}X \right]^{-1}  \mathbb{E}[X'V^{-1}v] \\
+&=  \mathbb{E}\left[ \mathbb{E}[X'V^{-1}X \mid X]\right]^{-1}  \mathbb{E}[\mathbb{E}[X'V^{-1}v \mid X]] && \text{via LIE}\\
+&= \mathbb{E}\left[ X'V^{-1}X \right]^{-1}  \mathbb{E}[X'V^{-1}\mathbb{E}[v\mid X]] && \text{via LCE} \\
+&= \mathbb{E}[v \mid X] = \mathbb{E}[f + u \mid X] && \text{via def} \\
+&= \mathbb{E}[f \mid X] + \mathbb{E}[u \mid X] = 0 && \text{via assumption} \\
+&= \mathbb{E}\left[ X'V^{-1}X \right]^{-1}  \mathbb{E}[X'V^{-1}\cdot 0] = 0 \qquad \blacksquare 
+\end{aligned}
+$$
 
 ### Consistency
 
-
+$$
+\begin{aligned}
+\hat{\beta}_{RE} - \beta &= \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1} \sum_{i=1}^N X_i'V^{-1}v_i \\
+&= \underbrace{\left(\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}X_i \right)}_{(1)}^{-1} \underbrace{\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}v_i}_{(2)} \\
+(1):&  \text{ via the WLLN, this converges in probability:} \\
+& \left(\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}X_i \right) \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i'V^{-1}X_i \right] \\
+& \text{via the CMT, this convergence implies that:} \\
+& \left(\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1} \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i'V^{-1}X_i \right]^{-1} \\
+(2):& \text{ via the WLLN, this converges in probability:} \\
+& \left(\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}v_i \right) \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i'V^{-1}v_i \right] \\
+&\text{ which we know equals zero due to unbiasedness:} \\
+& \mathbb{E}\left[\sum_{i=1}^N X_i'V^{-1}v_i \right] = 0 \\
+& \text{therefore, via Slutsky's Theorem,} \\
+& \mathbb{E}\left[\sum_{i=1}^N X_i'V^{-1}X_i \right]^{-1} \cdot 0 = 0 \\
+& \hat{\beta}_{RE} - \beta \xrightarrow{p} 0 && \blacksquare
+\end{aligned}
+$$
 
 ### Asymptotic Normality
 
+To derive the asymptotic normality of the RE estimator, we simply rescale the sampling error by $\sqrt{N}$, s.t.:
 
+$$
+\begin{aligned}
+\sqrt{N}\left(\hat{\beta}_\text{RE} - \beta \right)& = \underbrace{\left(\frac{1}{N} \sum_{i=1}^N X_i' V^{-1} X_i \right)^{-1}}_{(1)} \underbrace{\frac{1}{\sqrt{N}} \sum_{i=1}^N X_i' V^{-1} v_i}_{(2)} \\
+  & (1) \xrightarrow{p} \mathbb{E}[X' V^{-1} X]^{-1} \text{ via LLN and CMT} \\
+  & (2) \xrightarrow{d} \mathcal{N}\left(0, \mathbb{V}\text{ar}(X' V^{-1}v) \right) \text{ via CLT} \\
+  & \text{thus, via Slutsky's theorem, } \\
+  \sqrt{N}\left(\hat{\beta}_\text{RE} - \beta \right)& \xrightarrow{d} \mathcal{N}\left(0, \mathbb{E}[X'V^{-1}X]^{-1}\mathbb{E}(X'V^{-1}vv'V^{-1}X)\mathbb{E}[X'V^{-1}X]^{-1} \right)
+\end{aligned}
+$$
 
 ## Estimating AVAR
 
+Note that $\mathbb{E}[vv' \mid X] = V$; thus, using the Linearity of Iterated Expectations, we can rewrite $\text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE})$ as:
+
+$$
+\begin{aligned}
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{RE}) &= \mathbb{E}[X'V^{-1}X]^{-1}\mathbb{E}[X'V^{-1}\mathbb{E}[vv' \mid X]V^{-1}X]\mathbb{E}[X'V^{-1}X]^{-1} \\ 
+&= \mathbb{E}[X'V^{-1}X]^{-1}\mathbb{E}[X'V^{-1} V V^{-1}X] \mathbb{E}[X'V^{-1}X]^{-1} \\
+&= \mathbb{E}[X'V^{-1}X]^{-1}\mathbb{E}[X'V^{-1}X] \mathbb{E}[X'V^{-1}X]^{-1} \\
+&= \mathbb{E}[X'V^{-1}X]^{-1}
+\end{aligned}
+$$
+
+Thus, the RE estimator is the <u>best linear and unbiased estimator</u> (BLUE) under our given model and assumptions. For a formal proof, see [Appendix (3)](#appendix-3)
+
+**Importantly**: $V^{-1}$ is unknown in reality; we need to compute an estimate of the matrix $\hat{V}$ in order to construct $\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{RE})$. In other words, we need to find:
+
+$$
+\hat{V_i} = \mathbb{E}[ \hat{v}_i \hat{v}_i' \mid X ]
+$$
+
+In order to get an estimate of the variance, we thereby need to get estimates of the residuals from our model using an **unbiased** and **consistent** estimator. Fortunately, we already found that $\hat{\beta}_{POLS}$ has these properties and thereby is a valid choice of an estimator! Hence, we can find $v_iv_i' = (y_i - X_i' \beta)(y_i - X_i' \beta)'$.
+
+However, we need to compute *two* separate estimates for the $\hat{V}_i$ matrix:
+
+1. $\mathbb{E}[\widehat{v}_{it}^2 \mid X] = \widehat{\sigma_f^2 + \sigma_{\mu}^2}$: diagonal elements (variance)
+2. $\mathbb{E}[\widehat{v_{it}v_{is}} \mid X] = \widehat{\sigma}_f^2, \forall_{ t \neq s}$: off-diagonal elements (co-variance)
+
+To compute these estimates, we need to use our estimated residuals to construct the variance & co-variance elements composing each matrix, $\forall_{i \in N}$:
+
+$\widehat{\sigma_f^2 + \sigma_{\mu}^2} = \frac{1}{NT-K} \sum_{i=1}^N \sum_{t=1}^T \widehat{v}_{it}^2$
+
+$\widehat{\sigma}_f^2 = \frac{1}{\frac{NT(T-1)}{2}-K} \sum_{i=1}^N \sum_{t=1}^{T-1} \sum_{s=t+1}^T \widehat{v_{it}v_{is}}$
+
+:::{.callout-note}
+
+Note the denominator term for our covariance terms; this simply comes from the fact that for each individual variance-covariance matrix, we are computing $\frac{T^2 -T}{2}$ elements, since our matrix has dimensions $(T \times T)$. To compute the off-diagonal elements of a symmetric matrix, we need to calculate $T^2$ elements, subtracted by the $T$ diagonal elements, and then divide by 2 as we only need to estimate $U \equiv L$. We then iterate through this process for all $N$ individuals, and subtract by the number of $K$ regressors in our model.
+
+:::
+
+Note that the estimated $\hat{V}_i$ variance-covariance matrix is for an individual $i$ for all panels $t= 1, 2, \dots , T$ and is thereby $(T \times T)$; the entire $\hat{V}$ matrix consists of all $\hat{V}_i$ matrices across all $i= 1, 2, \dots, N$ individuals, giving it dimensions $(NT \times NT)$. It is given by the form:
+
+$$
+\underset{(NT \times NT)}{\hat{V}} =
+\begin{bmatrix}
+  \begin{bmatrix}
+    \widehat{\sigma_f^2 + \sigma_{\mu}^2} & \widehat{\sigma_f^2} & \cdots &  \widehat{\sigma_f^2} \\
+    \widehat{\sigma_f^2} & \widehat{\sigma_f^2 + \sigma_{\mu}^2} & \cdots & \widehat{\sigma_f^2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \widehat{\sigma_f^2} & \widehat{\sigma_f^2} & \cdots & \widehat{\sigma_f^2 + \sigma_{\mu}^2}
+  \end{bmatrix}_{i=1} & 0 & \\
+  0 & \begin{bmatrix}
+    \widehat{\sigma_f^2 + \sigma_{\mu}^2} & \widehat{\sigma_f^2} & \cdots &  \widehat{\sigma_f^2} \\
+    \widehat{\sigma_f^2} & \widehat{\sigma_f^2 + \sigma_{\mu}^2} & \cdots & \widehat{\sigma_f^2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \widehat{\sigma_f^2} & \widehat{\sigma_f^2} & \cdots & \widehat{\sigma_f^2 + \sigma_{\mu}^2}
+  \end{bmatrix}_{i=2} \\  &  & \ddots
+\end{bmatrix}
+$$
+
+Thus, to find $\hat{\sigma}_{\mu}$, we simply take the difference between the diagonal (variance) elements $\widehat{\sigma_f^2 + \sigma_{\mu}^2}$ and the off-diagonal (covariance) elements $\widehat{\sigma_f^2}$:
+
+$$
+\widehat{\sigma}_{\mu}^2 = \widehat{\sigma_f^2 + \sigma_{\mu}^2} - \widehat{\sigma}_f^2
+$$
+
+In other words, we can simply retrieve the idiosyncratic variance terms by  off-diagonal from the diagonal. Since the matrix is symmetric across all $\hat{V}_i$ matrices, we simply only need to calculate $\widehat{\sigma_f^2 + \sigma_{\mu}^2}$ and $\widehat{\sigma_f^2}$ to fully determine the entire $(NT \times NT)$ matrix $\hat{V}$. Furthermore, this equicorrelation structure implies that $V^{-1}$ has a known closed-form, allowing us to replace full GLS inversion with the computationally equivalent quasi-demeaning transformation (see here: [Appendix (4)](appendix 4))
+
+Finally, we plug in these $\hat{V}$ estimates back into the RE estimator:
+
+$$
+\hat{\beta}_{RE} = \left(\sum X_i' \hat{V}{}^{-1} X_i \right)^{-1} \left(\sum X_i'\hat{V}{}^{-1} y_i  \right)
+$$
+
+We simply use the analogy principle to get the asymptotic variance matrix:
+
+$$
+\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{RE}) = 
+\frac{1}{N} \left( \frac{1}{N} \sum_{i=1}^N  X_i' \hat{V}{}^{-1} X_i \right)^{-1} \xrightarrow{p} \mathbb{E}[X_i' \hat{V}{}^{-1} X_i]^{-1} 
+= \text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE})
+$$
+
+::: {.callout-note}
+
+Following Woolridge's notation, this equivalently can be expressed as:
+
+$\hat{\beta}_{RE} \sim \mathcal{N}(\beta, \frac{1}{N}\mathbb{E}[X_i' \hat{V}{}^{-1} X_i]^{-1} )$
+
+:::
 
 
 ## Relaxing Homoskedasticity Assumption
 
+If we relax the assumption of homoskedasticity of the idiosyncratic error terms, we cannot reduce down the variance any further and thereby estimate the following "sandwich" form of the variance:
 
+$$
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE}) = 
+\mathbb{E}\left[X_i'V^{-1}X_i\right]^{-1}\mathbb{E}\left[ X_i'V^{-1}v_iv_i'V^{-1}X_i\right] \mathbb{E}\left[ X_i'V^{-1}X_i\right]^{-1}
+$$
 
+To get estimates of the asymptotic variance, we follow a 2-stage process:
+
+1. Apply Pooled OLS and collect $\widehat{v_{it}}$, then use $\widehat{v_{it}}$ to construct $\widehat{\sigma_{f}^2}$ and $\widehat{\sigma_{f}^2 + \sigma_{\mu}^2}$, giving us the invertible matrix $\hat{V}$.
+
+2. Apply RE estimator and collect $\widehat{\widehat{v_{it}}}$; plug in $\widehat{\widehat{v_{it}}}$ and $\hat{V}{}^{-1}$ into the asymptotic variance formula $\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{RE})$.
+
+More formally:
+
+$$
+\begin{aligned}
+  & 1. \quad \widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_\text{POLS})^\text{CLUSTER(id)} =    \left(\sum X_i'X_i\right)^{-1}\left(\sum X_i'\hat{v}_i\hat{v}_i'X_i\right) \left(\sum X_i'X_i\right)^{-1} \\
+  & 2. \quad  \widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_\text{RE})^\text{CLUSTER(id)} =    \left(\sum X_i'\hat{V}{}^{-1}X_i\right)^{-1}\left(\sum X_i'\hat{V}{}^{-1}\hat{\hat{v}}_i\hat{\hat{v}}_i'\hat{V}{}^{-1}X_i\right) \left(\sum X_i'\hat{V}{}^{-1}X_i\right)^{-1}
+\end{aligned}
+$$
+
+:::{.callout-warning}
+
+Note the notation for our two stage-estimation process: **CLUSTER(id)** 
+
+This stands for 'clustering on the individual level,' allowing for arbitrary serial correlation within a given $\begin{bmatrix} V \end{bmatrix}_{i}$, whilst maintaining independence across $i = 1, 2, \dots, N$. In other words, we can treat a single individual's timeline as a single "mega-observation," allowing an individual $i$ to be correlated with itself across periods in the panel.
+
+:::
 
 ### Extension: Clustering on Higher Levels
 
+What if we cluster on a higher level? Rather than the individual level, say we cluster on households, cities, countries, etc. Our asymptotic variance can simply be expressed as:
 
+$$\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{\text{RE}})^\text{CLUSTER(c)} =\left(\sum_c X_c'\hat{V}{}^{-1}X_c \right)^{-1} \left(\sum_c X_c'\hat{V}{}^{-1} \hat{\hat{v}}_c \hat{\hat{v}}_c' \hat{V}{}^{-1}X_c \right) \left(\sum_c X_c'\hat{V}{}^{-1}X_c \right)^{-1}$$
+
+To better understand, imagine simply grouping together multiple different $\begin{bmatrix} V \end{bmatrix}_{i}$ into a single 'cluster' based on some shared factor. For example, we would likely expect individuals within the same household to be correlated with one another; thus, we say that individuals $\begin{bmatrix} V \end{bmatrix}_{1}$ and $\begin{bmatrix} V \end{bmatrix}_{2}$ are both in $c_1$, such that this matrix $c_1$ "supersedes" the original $\begin{bmatrix} V \end{bmatrix}_{1, } \begin{bmatrix} V \end{bmatrix}_{2}$ matrices. This allows for arbitrary serial correlation between individuals in the cluster.
+
+$$
+V = 
+\begin{bmatrix}
+  \begin{bmatrix}
+  \begin{bmatrix} V \end{bmatrix}_{1} \\
+  & \begin{bmatrix} V \end{bmatrix}_{2} \end{bmatrix}_{c_1} & & \\
+  & & \begin{bmatrix} \begin{bmatrix} V \end{bmatrix}_{3} \end{bmatrix}_{c_2} & & \\
+  & & & \begin{bmatrix} \begin{bmatrix} V \end{bmatrix}_{4} \\
+  & & & & \begin{bmatrix} V \end{bmatrix}_{5} \end{bmatrix}_{c_3} \\
+  & & & & & \ddots
+\end{bmatrix}
+$$
+
+:::{.callout-warning}
+
+Note that we still need a sufficient number of clusters for asymptotic properties to hold. At least $\geq$ 30, however, usually it is expected/found that ~50 is the standard. Any lower and we will need clustering bootstrap methods to construct robust standard errors.
+
+Furthermore, we can do 'multi-dimensional' clustering; e.g., on *industry*, then *households*, etc. Of course we need even more data points for such a case.
+
+Clustering is standard practice. Stata does it automatically for us.
+
+:::
+
+## Weakness of RE Estimator
 
 In practice, nobody uses the random effects estimator; the assumption of random individual effects is too strong of an assumption. Typically, we expect for there to exist some correlation between the exogenous regressors and the unobserved effect(s). In other words, random effects treats the unobserved effect as a random variable. 
 
-This motivates the introduction of a new estimator, namely the **Fixed Effects** estimator that relaxes this assumption, by allowing for non-zero correlation between $f_i$ and $X_i$
+This motivates the introduction of a new estimator, namely the **Fixed Effects** estimator that relaxes this assumption, by allowing for non-zero correlation between $f_i$ and $X_i$.
 
 # Applied
 
+```{stata}
+#| eval: false
 
+* --- declare panel structure ---
+xtset id year
+
+* --- random effects GLS ---
+* FGLS: estimates sigma_f and sigma_u from POLS residuals,
+* then applies the quasi-demeaning transformation and runs OLS
+xtreg y x1 x2 x3, re
+
+* --- RE with cluster-robust standard errors ---
+* standard RE SEs assume homoskedasticity; cluster correction is more reliable in practice
+xtreg y x1 x2 x3, re vce(cluster id)
+
+* --- Hausman test: H0 = random effects is consistent (no FE needed) ---
+* must estimate both without clustering (hausman requires classical standard errors)
+xtreg y x1 x2 x3, fe
+estimates store fe_model
+
+xtreg y x1 x2 x3, re
+estimates store re_model
+
+* sigmamore uses the same variance estimate from the efficient estimator (RE)
+hausman fe_model re_model, sigmamore
+
+* --- display variance components ---
+* sigma_u = std. dev. of individual effect f_i
+* sigma_e = std. dev. of idiosyncratic error u_it
+* rho     = fraction of variance due to f_i
+xtreg y x1 x2 x3, re
+xtsum y
+```
+
+# Appendix
+
+## 1 RE Model Satisfies OLS Assumptions {#appendix-1}
+
+To see that our transformed RE regression model satisfies our assumptions, let us check assumption-by-assumption. The check will only be for assumptions 2-5, as we explicitly defined the model to simply be a linear transformation of the original linear model (thus the linearity assumption is trivially satisfied).
+
+### 1. Random Individual Effects
+
+$$
+\mathbb{E}[Bf_i \mid x_{i1}, x_{i2}, \cdots, x_{iT}] = B\mathbb{E}[f_i \mid X_i] = 0 \quad \text{via LCE}
+$$
+
+We know that $B = V^{-\frac{1}{2}}$ and that $V$ is a function of X, since $V = \mathbb{E}[v_iv_i' | x_{it}]$ and we can rewrite $v_i = y_i - X_i'\beta$. Thus, we can remove it from the expectation via the linearity of conditional expectations.
+
+### 2. Strictly Exogenous Regressors
+
+$$
+\mathbb{E}[B\mu_{it} \mid x_{i1}, x_{i2}, \cdots, x_{iT}, f_i] = B\mathbb{E}[\mu_{it} \mid X_i, f_i] = 0 \quad \text{via LCE}
+$$
+
+Again, via the LCE we can remove the B matrix from the expectation and find that the assumption of strictly exogenous regressors holds.
+
+### 3. Homoskedasticity
+
+$$
+\begin{aligned}
+  & 1. \quad \mathbb{V}\text{ar}(Bf_i \mid X_i) = 
+  B \mathbb{V}\text{ar}(f_i \mid X_i) B' =
+  V^{-1}\sigma_{f}^2 &\text{Constant Variance in the Unobserved Error} \\
+  & 2. \quad \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 & \text{Constant Variance in the Idiosyncratic Error} \\
+  & 3.\quad \mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0 \quad \forall_{t \neq s} & \text{No Serial Correlation}
+\end{aligned}
+$$
+
+### 4. Linearly Independent Regressors
+
+We need to show that the rank condition holds for the transformed regressors $X_i^* = BX_i$:
+
+$$
+\frac{1}{N} \sum_{i=1}^N X_i^{*\prime} X_i^* = \frac{1}{N} \sum_{i=1}^N (BX_i)'(BX_i) = \frac{1}{N} \sum_{i=1}^N X_i'B'BX_i = \frac{1}{N} \sum_{i=1}^N X_i'V^{-1}X_i
+$$
+
+By the WLLN, this converges in probability:
+
+$$
+\frac{1}{N} \sum_{i=1}^N X_i'V^{-1}X_i \xrightarrow{p} \mathbb{E}[X_i'V^{-1}X_i] = M_{XVX}
+$$
+
+which has rank $K$ by Assumption 5. $\qquad \blacksquare$
+
+## 2 Derivation of RE Estimator {#appendix-2}
+
+Recall our transformed model: $By_i = BX_i\beta + Bv_i$, where $B'B = V^{-1}$. Since we showed in Appendix (1) that this model satisfies our OLS assumptions, we can apply OLS directly to the transformed data. Define $y_i^* \equiv By_i$, $X_i^* \equiv BX_i$, and $v_i^* \equiv Bv_i$. The OLS estimator on the transformed model is:
+
+$$
+\begin{aligned}
+\hat{\beta}_{RE} &= \left(\sum_{i=1}^N X_i^{*\prime} X_i^* \right)^{-1} \left(\sum_{i=1}^N X_i^{*\prime} y_i^* \right) \\
+&= \left(\sum_{i=1}^N (BX_i)'(BX_i) \right)^{-1} \left(\sum_{i=1}^N (BX_i)'(By_i) \right) \\
+&= \left(\sum_{i=1}^N X_i'B'BX_i \right)^{-1} \left(\sum_{i=1}^N X_i'B'By_i \right) \\
+&= \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i'V^{-1}y_i \right) \qquad \text{via } B'B = V^{-1}
+\end{aligned}
+$$
+
+To derive the sampling error, substitute $y_i = X_i\beta + v_i$:
+
+$$
+\begin{aligned}
+\hat{\beta}_{RE} &= \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i'V^{-1}(X_i\beta + v_i) \right) \\
+&= \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i'V^{-1}X_i\beta + \sum_{i=1}^N X_i'V^{-1}v_i \right) \\
+&= \underbrace{\left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1}\left(\sum_{i=1}^N X_i'V^{-1}X_i\right)}_{= I_K}\beta + \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i'V^{-1}v_i \\
+&= \beta + \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i'V^{-1}v_i
+\end{aligned}
+$$
+
+Thus:
+
+$$
+\hat{\beta}_{RE} - \beta = \left(\sum_{i=1}^N X_i'V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i'V^{-1}v_i \qquad \blacksquare
+$$
+
+## 3 Proof of RE Estimator is BLUE {#appendix-3}
+
+We want to show that for any linear unbiased estimator $\tilde{\beta}$, the difference $\mathbb{V}\text{ar}(\tilde{\beta}) - \mathbb{V}\text{ar}(\hat{\beta}_{RE})$ is positive semi-definite.
+
+Since we showed in [Appendix (1)](#appendix-1) that the transformed model $By_i = BX_i\beta + Bv_i$ satisfies the classical OLS assumptions, we can invoke the Gauss-Markov theorem on the transformed model directly.
+
+By construction, $B'B = V^{-1}$, so:
+
+$$
+\mathbb{V}\text{ar}(Bv_i \mid X_i) = B\mathbb{V}\text{ar}(v_i \mid X_i)B' = BVB'
+$$
+
+Since $B = V^{-1/2}$, we have $BVB' = V^{-1/2}VV^{-1/2} = I_T$. Thus the transformed errors are homoskedastic and serially uncorrelated.
+
+Define $y_i^* = By_i$, $X_i^* = BX_i$, $v_i^* = Bv_i$. Since $\mathbb{E}[v_i^* \mid X_i^*] = 0$ and $\mathbb{V}\text{ar}(v_i^* \mid X_i^*) = I_T$, the Gauss-Markov theorem tells us that OLS on the transformed data is BLUE:
+
+$$
+\hat{\beta}_{OLS}^* = \left(\sum_{i=1}^N X_i^{*\prime}X_i^*\right)^{-1}\sum_{i=1}^N X_i^{*\prime}y_i^*
+$$
+
+has the smallest variance among all linear unbiased estimators in the transformed model.
+
+As shown in [Appendix (2)](#appendix-2):
+
+$$
+\hat{\beta}_{OLS}^* = \left(\sum_{i=1}^N X_i'V^{-1}X_i\right)^{-1}\sum_{i=1}^N X_i'V^{-1}y_i = \hat{\beta}_{RE}
+$$
+
+Let $\tilde{\beta} = \sum_{i=1}^N A_i y_i$ be any linear unbiased estimator. Since $B$ is invertible, we can write $y_i = B^{-1}y_i^*$, so:
+
+$$
+\tilde{\beta} = \sum_{i=1}^N A_i B^{-1} y_i^* = \sum_{i=1}^N \tilde{A}_i y_i^*
+$$
+
+where $\tilde{A}_i \equiv A_iB^{-1}$. This is a linear estimator in the transformed model. If $\tilde{\beta}$ is unbiased for $\beta$ in the original model, it is also unbiased in the transformed model.
+
+By Gauss-Markov, no linear unbiased estimator in the transformed model can have a smaller variance than $\hat{\beta}_{OLS}^*$. Since every linear unbiased estimator in the original model corresponds to one in the transformed model (Step 4), and $\hat{\beta}_{OLS}^* = \hat{\beta}_{RE}$ (Step 3):
+
+$$
+\mathbb{V}\text{ar}(\tilde{\beta} \mid X) - \mathbb{V}\text{ar}(\hat{\beta}_{RE} \mid X) \geq 0 \quad \text{(positive semi-definite)}
+$$
+
+for all linear unbiased $\tilde{\beta}$. Therefore $\hat{\beta}_{RE}$ is BLUE. $\qquad \blacksquare$
+
+## 4 Quasi-Demeaning Equivalence {#appendix-4}
+
+We show that the RE-GLS estimator $\hat{\beta}_{GLS} = \left(\sum_i X_i' V_i^{-1} X_i\right)^{-1}\left(\sum_i X_i' V_i^{-1} y_i\right)$ is algebraically equivalent to pooled OLS on quasi-demeaned data $\tilde{z}_{it} = z_{it} - \hat{\theta} \bar{z}_i$.
+
+Define the two $(T \times T)$ projection matrices:
+
+- $P$: the **between (averaging) matrix**, which maps $z_i$ to its time-mean $\bar{z}_i$, repeated $T$ times.
+- $M \equiv I_T - P$: the **within (annihilator) matrix**, which maps $z_i$ to its deviations from the time-mean $(z_{it} - \bar{z}_i)$.
+
+These are orthogonal idempotent: $M^2 = M$, $P^2 = P$, $MP = 0$, and $M + P = I_T$.
+
+Under our assumptions, $V_i = \sigma_\mu^2 I_T + T\sigma_f^2 P$. Substituting $I_T = M + P$:
+
+$$
+V_i = \sigma_\mu^2(M + P) + T\sigma_f^2 P = \sigma_\mu^2 M + (\sigma_\mu^2 + T\sigma_f^2)P
+$$
+
+Since $M$ and $P$ are orthogonal projectors that span $I_T$, the inverse is:
+
+$$
+V_i^{-1} = \frac{1}{\sigma_\mu^2}M + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}P
+$$
+
+To verify: $V_i V_i^{-1} = \left[\sigma_\mu^2 M + (\sigma_\mu^2 + T\sigma_f^2)P\right]\left[\frac{1}{\sigma_\mu^2}M + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}P\right] = MM + PP = M + P = I_T$, where cross-terms vanish by $MP = 0$.
+
+For any vector $z_i = (z_{i1}, \dots, z_{iT})'$:
+
+$$
+\begin{aligned}
+V_i^{-1}z_i &= \frac{1}{\sigma_\mu^2}Mz_i + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}Pz_i \\
+&= \frac{1}{\sigma_\mu^2}\left[Mz_i + \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}Pz_i\right] \\
+&= \frac{1}{\sigma_\mu^2}\left[(z_{it} - \bar{z}_i) + \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}\bar{z}_i\right] \\
+&= \frac{1}{\sigma_\mu^2}\left[z_{it} - \left(1 - \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}\right)\bar{z}_i\right]
+\end{aligned}
+$$
+
+Let:
+
+$$
+\theta \equiv 1 - \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2} = \frac{T\sigma_f^2}{\sigma_\mu^2 + T\sigma_f^2} \in [0, 1]
+$$
+
+Then Step 3 gives $V_i^{-1}z_i = \frac{1}{\sigma_\mu^2}(z_{it} - \theta\bar{z}_i) \equiv \frac{1}{\sigma_\mu^2}\tilde{z}_{it}$, where $\tilde{z}_{it}$ is the quasi-demeaned observation.
+
+Note the boundary behavior: as $\sigma_f^2 \to \infty$, $\theta \to 1$ and RE collapses to the FE within estimator; as $\sigma_f^2 \to 0$, $\theta \to 0$ and RE collapses to pooled OLS.
+
+Applying Step 4 to both $X_i$ and $y_i$:
+
+$$
+X_i'V_i^{-1}y_i = \frac{1}{\sigma_\mu^2}\tilde{X}_i'\tilde{y}_i, \qquad X_i'V_i^{-1}X_i = \frac{1}{\sigma_\mu^2}\tilde{X}_i'\tilde{X}_i
+$$
+
+Substituting into the GLS formula:
+
+$$
+\begin{aligned}
+\hat{\beta}_{GLS} &= \left(\sum_{i=1}^N \frac{1}{\sigma_\mu^2}\tilde{X}_i'\tilde{X}_i\right)^{-1}\left(\sum_{i=1}^N \frac{1}{\sigma_\mu^2}\tilde{X}_i'\tilde{y}_i\right) \\
+&= \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i\right)^{-1}\left(\sum_{i=1}^N \tilde{X}_i'\tilde{y}_i\right) \qquad \blacksquare
+\end{aligned}
+$$
+
+The $\frac{1}{\sigma_\mu^2}$ scalar appears in both terms and cancels, so the RE estimator reduces to pooled OLS on the quasi-demeaned data.
 

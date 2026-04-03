@@ -2,9 +2,310 @@
 title: "Maximum Likelihood Estimators"
 author: "Michael Fehl"
 date: 01-20-2026
+image: "/images/mle.png"
+description: " "
 class-notes: true
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
+# Theory
+
+## Motivation: Why MLE for Binary Choice?
+
+As discussed in the [binary choice notes](../08binary_choice/logit_probit.qmd), OLS is a poor fit for binary outcomes: it produces unbounded predicted probabilities and heteroskedastic errors. Logit and Probit constrain $F(\mathbf{x}_i'\beta) \in [0,1]$ but are nonlinear in $\beta$, so OLS cannot be applied. The solution is **maximum likelihood estimation**, which finds the parameter vector $\beta$ that makes the observed data most probable under the assumed model.
+
+## Log-Likelihood for Binary Choice
+
+Consider a sample of $N$ independent observations $\{y_i, \mathbf{x}_i\}$ where $y_i \in \{0, 1\}$.
+
+For $y_i = 1$, the contribution to the likelihood is:
+
+$$
+L^i(\beta) = \Pr(y_i = 1 \mid \mathbf{x}_i;\beta) = F(\mathbf{x}_i'\beta)
+$$
+
+For $y_i = 0$, the contribution is:
+
+$$
+L^i(\beta) = \Pr(y_i = 0 \mid \mathbf{x}_i;\beta) = 1 - F(\mathbf{x}_i'\beta)
+$$
+
+These two cases can be written compactly as:
+
+$$
+L^i(\beta) = F(\mathbf{x}_i'\beta)^{y_i}\left[1 - F(\mathbf{x}_i'\beta)\right]^{1-y_i}
+$$
+
+Under random sampling, the joint likelihood for all $N$ observations is:
+
+$$
+L(\beta) = \prod_{i=1}^N \Pr(y_i = 1 \mid \mathbf{x}_i;\beta)^{y_i} \Pr(y_i = 0 \mid \mathbf{x}_i;\beta)^{1-y_i}
+$$
+
+Taking logs yields the **(conditional) log-likelihood function**:
+
+$$
+\ell(\beta) = \ln L(\beta) = \sum_{i=1}^N \left[y_i \ln F(\mathbf{x}_i'\beta) + (1-y_i)\ln\left(1 - F(\mathbf{x}_i'\beta)\right)\right]
+$$
+
+The **MLE** $\hat{\beta}$ is the parameter vector that maximizes $\ell(\beta)$.
+
+### Logit
+
+For the Logit model, $F(\mathbf{x}_i'\beta) = \Lambda(\mathbf{x}_i'\beta)$, so:
+
+$$
+\ell(\beta) = \sum_{i=1}^N \left[y_i \ln \Lambda(\mathbf{x}_i'\beta) + (1-y_i)\ln\left(1 - \Lambda(\mathbf{x}_i'\beta)\right)\right]
+$$
+
+### Probit
+
+For the Probit model, $F(\mathbf{x}_i'\beta) = \Phi(\mathbf{x}_i'\beta)$, so:
+
+$$
+\ell(\beta) = \sum_{i=1}^N \left[y_i \ln \Phi(\mathbf{x}_i'\beta) + (1-y_i)\ln\left(1 - \Phi(\mathbf{x}_i'\beta)\right)\right]
+$$
+
+## First Order Conditions
+
+### General Model
+
+Differentiating the log-likelihood with respect to $\beta$, where $F'(\mathbf{x}_i'\beta) = \partial F(\mathbf{x}_i'\beta)/\partial(\mathbf{x}_i'\beta)$:
+
+$$
+\frac{\partial \ell(\beta)}{\partial \beta} = \ell_\beta(\beta) = \sum_{i=1}^N \left[\frac{y_i}{F(\mathbf{x}_i'\beta)} - \frac{1-y_i}{1-F(\mathbf{x}_i'\beta)}\right] F'(\mathbf{x}_i'\beta)\mathbf{x}_i = 0
+$$
+
+Combining the fractions over a common denominator, the ML first-order conditions simplify to:
+
+$$
+\ell_\beta(\beta) = \sum_{i=1}^N \frac{y_i - F(\mathbf{x}_i'\beta)}{F(\mathbf{x}_i'\beta)\left(1 - F(\mathbf{x}_i'\beta)\right)} F'(\mathbf{x}_i'\beta)\mathbf{x}_i = 0
+$$
+
+There is no closed-form solution; $\hat\beta$ is obtained numerically.
+
+### Logit
+
+For the Logit MLE, since $\Lambda'(\mathbf{x}_i'\beta) = \Lambda(\mathbf{x}_i'\beta)\left[1 - \Lambda(\mathbf{x}_i'\beta)\right]$, the factor $F'/(F(1-F))$ cancels, and the FOCs simplify to:
+
+$$
+\sum_{i=1}^N \left(y_i - \Lambda(\mathbf{x}_i'\beta)\right)\mathbf{x}_i = 0
+$$
+
+This is the same moment condition structure as OLS, but with $\Lambda(\mathbf{x}_i'\beta)$ in place of $\mathbf{x}_i'\beta$.
+
+### Probit
+
+For the Probit model, $\Lambda'$ does not cancel, so the FOCs involve observation-specific weights $w_i$:
+
+$$
+\sum_{i=1}^N w_i \left(y_i - \Phi(\mathbf{x}_i'\beta)\right)\mathbf{x}_i = 0, \qquad w_i = \frac{\phi(\mathbf{x}_i'\beta)}{\Phi(\mathbf{x}_i'\beta)\left[1 - \Phi(\mathbf{x}_i'\beta)\right]}
+$$
+
+Unlike the Logit case, $w_i$ varies across observations.
+
+## Marginal Effects
+
+### General Model
+
+Since $\mathbb{E}[y_i \mid \mathbf{x}_i] = \Pr(y_i = 1 \mid \mathbf{x}_i) = F(\mathbf{x}_i'\beta)$, the marginal effect of $x_{ij}$ on the probability is:
+
+$$
+\frac{\partial \mathbb{E}[y_i \mid \mathbf{x}_i]}{\partial x_{ij}} = F'(\mathbf{x}_i'\beta)\,\beta_j
+$$
+
+This depends on the evaluation point $\mathbf{x}_i$; unlike the LPM, marginal effects are not constant. Two standard choices:
+
+* **Marginal effects at the mean (MEM)**: evaluate at $F'(\bar{\mathbf{x}}'\hat\beta)\,\hat\beta_j$.
+* **Average marginal effects (AME)**: compute $F'(\mathbf{x}_i'\hat\beta)\,\hat\beta_j$ for each $i$, then average: $N^{-1}\sum_i F'(\mathbf{x}_i'\hat\beta)\,\hat\beta_j$.
+
+The AME is generally preferred, as it does not require evaluating the nonlinear model at a possibly artificial or unrepresentative point.
+
+### Logit
+
+Since $\Lambda'(\mathbf{x}_i'\beta) = p_i(1-p_i)$ where $p_i = \Lambda(\mathbf{x}_i'\beta)$:
+
+$$
+\frac{\partial \Pr(y_i = 1 \mid \mathbf{x}_i)}{\partial x_{ij}} = p_i(1-p_i)\,\beta_j
+$$
+
+The marginal effect is largest when $p_i \approx 0.5$ and shrinks toward zero at the tails, consistent with the S-shaped logistic curve.
+
+The Logit model also admits a convenient interpretation via the **odds ratio**. Note that:
+
+$$
+p = \frac{\exp(\mathbf{x}'\beta)}{1 + \exp(\mathbf{x}'\beta)} \implies \frac{p}{1-p} = \exp(\mathbf{x}'\beta) \implies \ln\!\left(\frac{p}{1-p}\right) = \mathbf{x}'\beta
+$$
+
+So $\beta_j$ is the effect of $x_j$ on the log-odds of $y = 1$. A unit increase in $x_j$ multiplies the odds by $\exp(\beta_j)$.
+
+### Probit
+
+Since $F'(\mathbf{x}_i'\beta) = \phi(\mathbf{x}_i'\beta)$:
+
+$$
+\frac{\partial \Pr(y_i = 1 \mid \mathbf{x}_i)}{\partial x_{ij}} = \phi(\mathbf{x}_i'\beta)\,\beta_j
+$$
+
+### Comparing Models
+
+The point estimates $\hat\beta_{Logit}$ and $\hat\beta_{Probit}$ differ by scale since the two distributions have different variances. The marginal effects should be similar across models given that the normal and logistic distributions have similar shapes (logit has fatter tails). Amemiya (1981) suggests the following rules of thumb:
+
+$$
+1.6\,\hat\beta_{Probit} \approx \hat\beta_{Logit} \qquad 4\,\hat\beta_{LPM} \approx \hat\beta_{Logit} \qquad 2.5\,\hat\beta_{LPM} \approx \hat\beta_{Probit}
+$$
+
+If the marginal effects from Logit and Probit differ substantially, this is a signal of model misspecification rather than a sampling artifact.
+
+## Asymptotic Properties of the MLE
+
+The general ML result gives us that $\hat\beta$ is consistent and asymptotically normally distributed:
+
+$$
+\sqrt{N}(\hat\beta - \beta_0) \xrightarrow{d} \mathcal{N}\left(0,\, A_0^{-1}B_0A_0^{-1'}\right)
+$$
+
+where $\beta_0$ is the true parameter vector, and:
+
+$$
+A_0 = \mathbb{E}\!\left[\frac{\partial^2 \ln L^i(\beta)}{\partial\beta\,\partial\beta'}\Bigg|_{\beta_0}\right] \qquad B_0 = \mathbb{E}\!\left[\frac{\partial \ln L^i(\beta)}{\partial\beta}\frac{\partial \ln L^i(\beta)}{\partial\beta'}\Bigg|_{\beta_0}\right]
+$$
+
+$A_0$ is the expected Hessian (second derivative of the log-likelihood, always negative definite at the MLE) and $B_0$ is the expected outer product of the score.
+
+### Information Matrix Equality
+
+If the model is correctly specified, one can show that $B_0 = -A_0$. This is the **Information Matrix Equality (IME)**. As a result, the asymptotic variance simplifies to:
+
+$$
+\sqrt{N}(\hat\beta - \beta_0) \xrightarrow{d} \mathcal{N}\!\left(0,\, (-A_0)^{-1}\right) = \mathcal{N}\!\left(0,\, \mathbb{E}\!\left[\frac{\partial \ln L^i(\beta)}{\partial\beta}\frac{\partial \ln L^i(\beta)}{\partial\beta'}\right]^{-1}\right)
+$$
+
+The IME is a testable implication of correct specification: if the three variance estimators below disagree substantially, it suggests misspecification.
+
+## Variance Estimators
+
+There are three alternative ways to estimate the asymptotic variance.
+
+### 1. Outer Product of Gradient (OPG)
+
+The **OPG estimator** uses only first derivatives of the log-likelihood:
+
+$$
+\hat{V}_0^{OPG} = \hat{B}_0^{-1} = \left(\frac{1}{N}\sum_{i=1}^N \frac{\partial \ln L^i(\beta)}{\partial\beta}\frac{\partial \ln L^i(\beta)}{\partial\beta'}\Bigg|_{\hat\beta}\right)^{-1}
+$$
+
+This only requires computing scores, so it is the cheapest to implement.
+
+### 2. Hessian
+
+The **Hessian estimator** uses the observed second derivatives:
+
+$$
+\tilde{V}_0 = -\hat{A}_0^{-1} = \left(-\frac{1}{N}\sum_{i=1}^N \frac{\partial^2 \ln L^i(\beta)}{\partial\beta\,\partial\beta'}\Bigg|_{\hat\beta}\right)^{-1}
+$$
+
+Most MLE routines in Stata report standard errors based on the Hessian by default.
+
+### 3. Expected Hessian
+
+The **expected Hessian estimator** takes the expectation of the second derivative conditional on $\mathbf{x}_i$ before evaluating:
+
+$$
+\bar{V}_0 = -\bar{A}_0^{-1} = \left(-\frac{1}{N}\sum_{i=1}^N \mathbb{E}\!\left[\frac{\partial^2 \ln L^i(\beta)}{\partial\beta\,\partial\beta'}\Bigg|\mathbf{x}_i\right]\Bigg|_{\hat\beta}\right)^{-1}
+$$
+
+For binary choice models, differentiating the FOC in equation (1) and taking expectations gives the explicit form:
+
+$$
+\widehat{\text{A}\mathbb{V}\text{ar}}(\hat\beta) = \frac{1}{N}\bar{V}_0 = \left(\sum_{i=1}^N \frac{F'(\mathbf{x}_i'\hat\beta)^2}{F(\mathbf{x}_i'\hat\beta)\left(1-F(\mathbf{x}_i'\hat\beta)\right)}\mathbf{x}_i\mathbf{x}_i'\right)^{-1}
+$$
+
+Under the IME, all three estimators are consistent for the same quantity. They will agree in large samples but may differ in finite samples.
+
+### 4. Sandwich (Robust) Estimator
+
+When the distributional assumption is misspecified (but $\mathbb{E}[y \mid \mathbf{x}] = g(\mathbf{x}, \beta_0)$ is still correctly specified), the MLE remains consistent for the parameter of the conditional mean but the standard IME-based variance is incorrect. The **sandwich estimator** remains valid:
+
+$$
+\bar{V}_0^{SW} = \hat{A}_0^{-1}\hat{B}_0\hat{A}_0^{-1'}
+$$
+
+This is also the appropriate correction when observations are correlated across $i$ (e.g., clustered data).
+
+## Hypothesis Testing: Likelihood Ratio Test
+
+Any of the three classical tests (Wald, LM, LR) can be used for hypothesis testing. The **Likelihood Ratio (LR) test** is particularly convenient in the MLE context because the log-likelihood is already computed as part of estimation:
+
+$$
+LR = 2\left[\ell_U(\hat\beta) - \ell_R(\hat\beta)\right] \xrightarrow{d} \chi^2_q \quad \text{under } H_0
+$$
+
+where $\ell_U$ and $\ell_R$ are the log-likelihoods of the unrestricted and restricted models, and $q$ is the number of restrictions imposed. For example, testing $H_0: \beta_2 = 0$ in $\Pr(y_i = 1) = F(\beta_0 + \beta_1 x_i + \beta_2 z_i)$ gives $LR \xrightarrow{d} \chi^2_1$.
+
+## Goodness of Fit
+
+Standard $R^2$ from OLS does not apply to binary choice models. Two common alternatives:
+
+### Percent Correctly Predicted (PCP)
+
+Let $\hat{p}_i = F(\mathbf{x}_i'\hat\beta)$ be the estimated probability. Predict $\hat{y}_i = 1$ if $\hat{p}_i > 0.5$ and $\hat{y}_i = 0$ otherwise. The PCP is:
+
+$$
+\text{PCP} = 1 - \frac{\sum_{i=1}^N (y_i - \hat{y}_i)^2}{N}
+$$
+
+A naive model predicting the modal outcome for every observation sets a natural baseline; a meaningful model should beat this.
+
+### McFadden Pseudo $R^2$
+
+McFadden (1974) proposes:
+
+$$
+\bar{R}^2 = 1 - \frac{\ell_U}{\ell_R}
+$$
+
+where $\ell_U$ is the log-likelihood of the full model and $\ell_R$ is the log-likelihood of a model with only an intercept. Since $\ell_U \geq \ell_R$ (adding regressors weakly improves fit) and $\ell_R \leq \ell_U \leq 0$, the pseudo $R^2$ lies in $[0,1]$. In practice values between 0.2 and 0.4 are considered good fit for binary choice models. Goodness-of-fit is useful context but is generally secondary to statistical and economic significance.
+
+# Applied
+
+```{stata}
+#| eval: false
+
+* --- logit and probit ---
+logit depvar indepvars
+probit depvar indepvars
+
+* --- marginal effects at the mean (MEM) ---
+margins, dydx(*) atmeans
+
+* --- average marginal effects (AME, preferred) ---
+margins, dydx(*)
+
+* --- marginal effects at specific covariate values ---
+margins, dydx(*) at(education=12)
+
+* --- marginal effect plot ---
+marginsplot
+
+* --- likelihood ratio test: H0: beta_z = 0 ---
+* first estimate restricted model and store it
+probit y x
+estimates store restricted
+
+* then estimate full model
+probit y x z
+lrtest restricted .
+
+* --- goodness of fit ---
+* percent correctly predicted
+estat classification
+
+* McFadden pseudo R-squared (reported automatically in logit/probit output)
+* also available via fitstat (user-written package)
+```

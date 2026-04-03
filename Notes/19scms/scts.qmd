@@ -1,0 +1,316 @@
+---
+title: "Synthetic Control Methods"
+author: "Michael Fehl"
+description: " "
+date: 03-07-2026
+class-notes: true
+image: "/images/SCM.png"
+format:
+  html:
+    embed-resources: true
+
+execute:
+  eval: false
+---
+
+# Theory
+
+## Introduction
+
+Synthetic control methods have become standard in empirical work since the early 2000s. The setting is one where treatment is implemented at an aggregate level; e.g., a policy applied to a country, state, or city; and data are available on only a small number of such units. Traditional regression requires large samples and is poorly suited to this setting. Comparative case studies have long been used to evaluate aggregate interventions, but the selection of comparison units is typically informal and hard to replicate. Synthetic control methods formalize this by constructing a weighted combination of untreated units that matches the treated unit's pre-intervention characteristics as closely as possible.
+
+Athey and Imbens (2017) describe synthetic controls as "arguably the most important innovation in the policy evaluation literature in the last 15 years." The key idea is that a combination of unaffected units often provides a more appropriate comparison than any single unaffected unit alone. The overview below follows Abadie (2021, JEL) and the application of Abadie, Diamond and Hainmueller (2015).
+
+## Setting
+
+Suppose there are $J + 1$ units indexed $j = 1, \ldots, J + 1$. Unit $j = 1$ is the **treated unit** and units $j = 2, \ldots, J + 1$ form the **donor pool** -- the set of untreated units not affected by the intervention. There are $T$ time periods and the first $T_0$ periods are before the intervention. For each unit $j$ and period $t$, the outcome $Y_{jt}$ is observed. For each unit $j$, a vector of $k$ predictors $X_{1j}, \ldots, X_{kj}$ is also observed. The predictors may include pre-intervention values of $Y_{jt}$ and are themselves unaffected by the intervention.
+
+Let $Y^N_{jt}$ denote the potential outcome without intervention. Define $Y^I_{1t}$ as the potential outcome for the treated unit under the intervention in post-intervention period $t > T_0$. The treatment effect for the affected unit in period $t$ is:
+
+$$
+\tau_{1t} = Y^I_{1t} - Y^N_{1t} \tag{1}
+$$
+
+While $Y^I_{1t}$ is observed for $t > T_0$, the counterfactual $Y^N_{1t}$ is not. The goal is to estimate it. The treatment effect is allowed to vary over time.
+
+## Estimation
+
+Synthetic control methods approximate $Y^N_{1t}$ using a weighted combination of donor pool outcomes. Given a weight vector $\mathbf{W} = (w_2, \ldots, w_{J+1})'$, the synthetic control estimator of $Y^N_{1t}$ and the corresponding treatment effect estimator are:
+
+$$
+\hat{Y}^N_{1t} = \sum_{j=2}^{J+1} w_j Y_{jt} \qquad \hat{\tau}_{1t} = Y^I_{1t} - \hat{Y}^N_{1t} \tag{2}
+$$
+
+To avoid extrapolation, weights are restricted to be non-negative and sum to one: $w_j \geq 0$ and $\sum_{j=2}^{J+1} w_j = 1$. Typically only a small number of donor units receive positive weights -- the synthetic control is **sparse**.
+
+Abadie and Gardeazabal (2003) propose choosing the synthetic control $\mathbf{W}^* = (w_2^*, \ldots, w_{J+1}^*)'$ to minimize the distance between the treated unit's predictor values and those of the weighted donor pool:
+
+$$
+\|\mathbf{X}_1 - \mathbf{X}_0 \mathbf{W}\| = \left(\sum_{h=1}^k v_h (X_{h1} - w_2 X_{h2} - \ldots - w_{J+1} X_{h,J+1})^2\right)^{1/2}
+$$
+
+subject to $w_j \geq 0$ and $w_2 + \ldots + w_{J+1} = 1$. Here $\mathbf{X}_1$ is the $k \times 1$ vector of predictor values for the treated unit and $\mathbf{X}_0 = [\mathbf{X}_2, \ldots, \mathbf{X}_{J+1}]$ is the $k \times J$ matrix of predictor values for the donor pool. The constants $v_1, \ldots, v_k$ reflect the relative importance assigned to each predictor.
+
+For a given diagonal matrix $\mathbf{V}$ of importance weights, finding $\mathbf{W}^*$ is a constrained quadratic optimization problem. Three approaches to choosing $\mathbf{V}$ are common:
+
+1. Use the inverse of the sample variance of each predictor $X_{h1}, \ldots, X_{h,J+1}$.
+2. Choose $\mathbf{V}$ to minimize the mean squared prediction error of the synthetic control in the pre-intervention period.
+3. Split the pre-intervention period into a *training period* and a *validation period*. Compute $\mathbf{W}^*$ using training period data for a given $\mathbf{V}$. Choose $\mathbf{V}^*$ to minimize the MSPE in the validation period. The final weights are $\mathbf{W}^* = \mathbf{W}(\mathbf{V}^*)$.
+
+## Bias Bound
+
+Abadie, Diamond and Hainmueller (2010) study the bias properties of the synthetic control estimator under a **linear factor model**:
+
+$$
+Y^N_{jt} = \delta_t + \boldsymbol{\theta}_t \mathbf{Z}_j + \boldsymbol{\lambda}_t \boldsymbol{\mu}_j + \varepsilon_{jt} \tag{3}
+$$
+
+where $\delta_t$ is a common time trend, $\mathbf{Z}_j$ is a vector of observed predictors with time-varying coefficients $\boldsymbol{\theta}_t$, $\boldsymbol{\mu}_j$ is a vector of unobserved predictors with time-varying coefficients $\boldsymbol{\lambda}_t$, and $\varepsilon_{jt}$ are zero-mean transitory shocks. In the time-series literature, $\boldsymbol{\theta}_t$ and $\boldsymbol{\lambda}_t$ are common factors and $\mathbf{Z}_j$ and $\boldsymbol{\mu}_j$ are factor loadings.
+
+This model nests the standard DiD and fixed effects panel models as a special case. Restricting $\boldsymbol{\lambda}_t = \lambda$ to be time-invariant gives $Y^N_{jt} = \delta_t + \boldsymbol{\theta}_t \mathbf{Z}_j + \lambda \boldsymbol{\mu}_j + \varepsilon_{jt}$, under which units with the same observed predictors follow parallel mean outcome trends. The linear factor model does not impose this restriction, allowing unobserved heterogeneity $\boldsymbol{\mu}_j$ to have time-varying effects $\boldsymbol{\lambda}_t$.
+
+The bias of $\hat{\tau}_{1t}$ depends positively on the scale of the transitory shocks $\varepsilon_{jt}$ and negatively on the number of pre-intervention periods $T_0$. A good pre-intervention fit -- $\mathbf{X}_1 \approx \mathbf{X}_0 \mathbf{W}^*$ -- and the ability to reproduce the outcome trajectory over an extended pre-intervention period signal low bias.
+
+Two practical implications follow. First, a large donor pool increases the risk of over-fitting, especially when $T_0$ is small. Second, the donor pool should contain units that are similar to the treated unit in both observed attributes $\mathbf{Z}_j$ and expected unobserved attributes $\boldsymbol{\mu}_j$.
+
+## Variable Selection
+
+The credibility of the synthetic control estimator depends on its ability to track the pre-intervention trajectory of the outcome for the treated unit. The choice of predictors in $\mathbf{X}_1$ and $\mathbf{X}_0$ is a fundamental part of the estimation task.
+
+Predictors should include summary measures of pre-intervention outcomes -- for example, the average of $Y_{jt}$ over a sub-period -- along with other relevant covariates, rather than every annual pre-intervention outcome value. Using all annual outcomes as separate predictors increases over-fitting risk and tends to produce a dense synthetic control with poor bias properties. Summary measures lead to sparser weights and lower bias.
+
+A data-driven approach to predictor selection:
+
+1. Divide the pre-intervention period into a training period and a subsequent validation period.
+2. Compute synthetic control weights using training period data for a candidate set of predictors.
+3. Evaluate predictive fit using validation period data only.
+4. Repeat for different predictor sets.
+5. Choose the set with the best out-of-sample predictive power.
+
+## Inference
+
+Abadie et al. (2010) propose a **permutation inference** procedure. The dynamic effect of the intervention is estimated separately for each unit in the donor pool, applying the same synthetic control method as if that unit had been treated. This produces a permutation distribution of "placebo effects." The treatment is considered significant when the magnitude of the estimated effect for the treated unit is extreme relative to this distribution. The logic is similar to randomization inference in RCT settings.
+
+One complication is that for some donor units, the synthetic control may not provide a good pre-intervention fit, so large post-intervention gaps may arise by construction rather than by treatment. The standard measure of pre-intervention fit is the **root mean squared prediction error (RMSPE)**:
+
+$$
+R_j(t_1, t_2) = \left(\frac{1}{t_2 - t_1 + 1} \sum_{t=t_1}^{t_2} (Y_{jt} - \hat{Y}^N_{jt})^2\right)^{1/2}
+$$
+
+Inference can be based on the permutation distribution after discarding placebo runs where $R_j(1, T_0)$ is substantially larger than $R_1(1, T_0)$, the pre-intervention RMSPE for the treated unit.
+
+## Advantages of Synthetic Control Methods
+
+Compared to linear regression estimators, synthetic control methods have several advantages.
+
+### No Extrapolation
+
+Synthetic control weights are non-negative and sum to one, so the estimated counterfactual always lies in the convex hull of the donor pool outcomes -- no extrapolation occurs. A regression-based estimator of $Y^N_{1t}$ uses weights $\mathbf{W}^{reg} = \tilde{\mathbf{X}}_0'(\tilde{\mathbf{X}}_0 \tilde{\mathbf{X}}_0')^{-1} \tilde{\mathbf{X}}_1$, where $\tilde{\mathbf{X}}_0$ augments $\mathbf{X}_0$ with a row of ones. While the regression weights sum to one, they may lie outside $[0, 1]$, meaning the fitted counterfactual may extrapolate outside the support of the data.
+
+### Transparency of Fit
+
+Regression uses extrapolation to guarantee a perfect fit of the treated unit's characteristics by construction: $\mathbf{X}_0 \mathbf{W}^{reg} = \mathbf{X}_1$ holds exactly even when the donor units are completely dissimilar to the treated unit. Synthetic controls, by contrast, make visible the actual discrepancy between the treated unit and the best convex combination of donor units. If the pre-intervention fit is poor, this is immediately apparent.
+
+### Transparency of the Counterfactual
+
+Because synthetic control coefficients are proper weights, the contribution of each comparison unit to the estimated counterfactual is explicit and interpretable. This allows the use of expert knowledge to evaluate whether the counterfactual is credible. In the German reunification application, the synthetic West Germany is a combination of Austria (0.42), Japan (0.16), Netherlands (0.09), Switzerland (0.11), and the United States (0.22).
+
+### Sparsity
+
+Only a small number of donor units typically receive positive weight, making it straightforward to inspect and evaluate the estimated counterfactual. Sparsity can be further increased by imposing a bound on the number of non-zero weights in $\mathbf{W}^*$. Regression estimators are typically not sparse.
+
+### Safeguard Against Specification Searches
+
+Synthetic control methods do not require access to post-treatment outcomes in the design phase of the study. All design decisions -- the donor pool, the predictors, the importance weights -- can be made without knowing how they affect the conclusions. Weights can be computed and pre-registered before post-treatment outcomes are observed. This is a safeguard against specification searches and $p$-hacking, analogous to pre-analysis plans in RCTs.
+
+## Contextual Requirements
+
+There are some contextual conditions under which synthetic controls are appropriate tools for policy evaluation.
+
+**Effect size and volatility.** The method estimates the effect of a single treatment on a single unit. Small effects will be hard to distinguish from the idiosyncratic transitory shocks $\varepsilon_{jt}$. Note that volatility from the common factors $\boldsymbol{\lambda}_t$ is differenced out by the construction of the synthetic control; the challenge comes specifically from unit-specific shocks.
+
+**Availability of a comparison group.** The donor pool should exclude units affected by the same or similar interventions, units subject to large idiosyncratic shocks to $Y_{jt}$, and units whose pre-intervention characteristics are too dissimilar from the treated unit. Including highly dissimilar units increases interpolation bias.
+
+**No anticipation.** If forward-looking agents react in advance to the intervention, or if parts of the policy are put in place before the formal implementation date, the pre-intervention fit will be distorted and the estimator will be biased. If there are signs of anticipation, it is advisable to backdate the intervention start date.
+
+**No interference.** The method relies on the stable unit treatment value assumption (SUTVA): each unit's outcome is unaffected by other units' treatment status. This can be enforced by removing from the donor pool units whose outcomes are likely to be affected by the intervention on the treated unit. There is some tension here, since such units are often the most geographically proximate and thus the most similar. If spillover concerns remain, one can often deduce the direction of the resulting bias.
+
+**Convex hull condition.** The treated unit's pre-intervention characteristics must fall close to the convex hull of the donor units' characteristics. If no combination of untreated units can credibly approximate the treated unit, the standard synthetic control estimator should not be used. Transforming the outcome variable may help in some cases.
+
+## Robustness and Diagnostic Checks
+
+**Backdating.** Pretend the intervention occurred earlier and check whether estimated effects appear before the true intervention date. Absent pre-"treatment" effects provide credibility; effects appearing only at the actual intervention date provide further support.
+
+**Leave-one-out.** Re-estimate the synthetic control after dropping one donor unit at a time. If results change substantially when a particular unit is removed, the counterfactual is sensitive to that unit's presence in the donor pool.
+
+**Predictor sensitivity.** Vary the set of predictors and check whether the estimated effect is stable across specifications.
+
+## Synthetic Difference-in-Differences
+
+Arkhangelsky, Athey, Hirshberg, Imbens and Wagner (2021) propose the **Synthetic Difference-in-Differences (SDID)** estimator, which combines elements of DiD and synthetic control methods.
+
+Traditional DiD and SCM target different settings. DiD is applied when many units are treated and relies on additive unit-specific and time-specific fixed effects to account for selection. SCM is applied when only one or a few units are treated and compensates for the absence of parallel trends by reweighting the donor pool to match pre-treatment outcome paths. SDID is designed to be competitive in both settings.
+
+### Setting
+
+Consider a balanced sample with $N$ units and $T$ periods. Let $Y_{it}$ be the outcome and $D_{it} \in \{0, 1\}$ the binary treatment indicator. The first $N_{co}$ units are controls ($D_{it} = 0$) and the last $N_{tr} = N - N_{co}$ are treated. All treated units are exposed from period $T_{pre} + 1$ onwards (non-staggered adoption).
+
+### SDID Estimator
+
+The SDID estimator is based on a weighted two-way fixed effects regression:
+
+$$
+\left(\hat{\tau}^{sdid}, \hat{\mu}, \hat{\alpha}, \hat{\beta}\right) = \arg\min_{\tau, \mu, \alpha, \beta} \left\{ \sum_{i=1}^N \sum_{t=1}^T (Y_{it} - \mu - \alpha_i - \beta_t - D_{it} \tau)^2 \hat{\omega}_i^{sdid} \hat{\lambda}_t^{sdid} \right\}
+$$
+
+where $\hat{\omega}_i^{sdid}$ are **unit weights** that align pre-exposure trends between treated and control units, and $\hat{\lambda}_t^{sdid}$ are **time weights** that balance pre-exposure time periods with post-exposure periods.
+
+**Unit weights** are obtained by solving:
+
+$$
+(\hat{\omega}_0, \hat{\omega}^{sdid}) = \arg\min_{\omega_0 \in \mathbb{R},\, \omega \in \Omega} \ell_{unit}(\omega_0, \omega) \tag{4}
+$$
+
+where
+
+$$
+\ell_{unit}(\omega_0, \omega) = \sum_{t=1}^{T_{pre}} \left(\omega_0 + \sum_{i=1}^{N_{co}} \omega_i Y_{it} - \frac{1}{N_{tr}} \sum_{i=N_{co}+1}^N Y_{it}\right)^2 + \zeta^2 T_{pre} \|\omega\|_2^2
+$$
+
+and $\Omega = \left\{\omega \in \mathbb{R}^N_+ : \sum_{i=1}^{N_{co}} \omega_i = 1,\; \omega_i = N_{tr}^{-1} \text{ for all } i = N_{co}+1, \ldots, N\right\}$.
+
+**Time weights** are obtained by solving:
+
+$$
+(\hat{\lambda}_0, \hat{\lambda}^{sdid}) = \arg\min_{\lambda_0 \in \mathbb{R},\, \lambda \in \Lambda} \ell_{time}(\lambda_0, \lambda) \tag{5}
+$$
+
+where
+
+$$
+\ell_{time}(\lambda_0, \lambda) = \sum_{i=1}^{N_{co}} \left(\lambda_0 + \sum_{t=1}^{T_{pre}} \lambda_t Y_{it} - \frac{1}{T_{post}} \sum_{t=T_{pre}+1}^T Y_{it}\right)^2
+$$
+
+and $\Lambda = \left\{\lambda \in \mathbb{R}^T_+ : \sum_{t=1}^{T_{pre}} \lambda_t = 1,\; \lambda_t = T_{post}^{-1} \text{ for all } t = T_{pre}+1, \ldots, T\right\}$.
+
+The unit weights are closely related to the standard SC weights, with two differences. First, the intercept $\omega_0$ means the weights only need to make trends parallel rather than match pre-intervention levels exactly. Second, the regularization penalty $\zeta^2 T_{pre} \|\omega\|^2_2$ increases the dispersion of the weights and ensures their uniqueness. Setting $\omega_0 = 0$ and $\zeta = 0$ in Equation (4) recovers the standard SC weighting problem.
+
+### Comparison of Estimators
+
+Each of the three estimators can be written as a weighted average difference in adjusted outcomes $\hat{\delta}_i$ with weights $\hat{\omega}_i$:
+
+$$
+\hat{\tau} = \hat{\delta}_{tr} - \sum_{i=1}^{N_{co}} \hat{\omega}_i \hat{\delta}_i \qquad \text{where} \qquad \hat{\delta}_{tr} = \frac{1}{N_{tr}} \sum_{i=N_{co}+1}^N \hat{\delta}_i
+$$
+
+The adjusted outcomes differ across estimators:
+
+| Estimator | $\hat{\delta}_i$ |
+|---|---|
+| SC | $\frac{1}{T_{post}} \sum_{t=T_{pre}+1}^T Y_{it}$ |
+| DiD | $\frac{1}{T_{post}} \sum_{t=T_{pre}+1}^T Y_{it} - \frac{1}{T_{pre}} \sum_{t=1}^{T_{pre}} Y_{it}$ |
+| SDID | $\frac{1}{T_{post}} \sum_{t=T_{pre}+1}^T Y_{it} - \sum_{t=1}^{T_{pre}} \hat{\lambda}_t^{sdid} Y_{it}$ |
+
+SC uses only post-treatment information. DiD subtracts a simple equal-weighted pre-treatment average. SDID subtracts a time-weighted pre-treatment average, where the weights $\hat{\lambda}_t^{sdid}$ up-weight pre-treatment periods that are most predictive of post-treatment outcomes.
+
+### Properties
+
+SDID combines the attractive features of both methods: like SC, it reweights to match pre-exposure trends; like DiD, it is invariant to additive unit-level shifts and allows for valid large-panel inference. The SDID weights are sparse but less so than pure SC weights, because the intercept $\omega_0$ and regularization allow greater flexibility. No single unit receives outsized influence, which keeps the variance of the estimator low.
+
+Simulations in Arkhangelsky et al. (2021) show that SDID performs well relative to DiD and SC benchmarks in both bias and RMSE, and is particularly successful when treatment assignment is not random.
+
+### Inference
+
+Two inference procedures are available for SDID.
+
+**Clustered bootstrap.** Construct a bootstrap sample $\mathbf{Y}^{(b)}, \mathbf{D}^{(b)}$ by sampling $N$ rows from $\mathbf{Y}, \mathbf{D}$ with replacement (resample if the draw has no treated or control units). Compute the SDID estimator $\hat{\tau}^{(b)}$ on each bootstrap sample and repeat $B$ times. The variance estimator is:
+
+$$
+\hat{V}^b_\tau = \frac{1}{B} \sum_{b=1}^B \left(\hat{\tau}^{(b)} - \frac{1}{B}\sum_{b=1}^B \hat{\tau}^{(b)}\right)^2
+$$
+
+**Placebo variance estimation.** Sample $N_{tr}$ units from the $N_{co}$ control units without replacement to "receive the placebo." Construct a placebo treatment matrix $\mathbf{D}^{(b)}_{co}$ for the controls and compute the SDID estimator $\hat{\tau}^{(b)}$ on the control data. Repeat $B$ times and estimate the variance as the sample variance of the placebo estimates. This procedure is valid even when $N_{tr}$ is small, but relies on homoskedasticity.
+
+SDID can be extended to staggered adoption by applying the estimator separately for each adoption date and taking a weighted average. It delivers a single ATT estimate rather than the full profile of dynamic treatment effects.
+
+# Applied
+
+```{stata}
+#| eval: false
+
+* --- synthetic control: synth ---
+* ssc install synth, replace
+* requires xtset before running
+
+xtset country year
+
+* trunit: unit ID of the treated unit
+* trperiod: first treatment period
+* xperiod: pre-intervention periods over which predictors are averaged
+* mspeperiod: periods used to choose V by minimizing pre-period MSPE
+* resultsperiod: output periods
+
+synth gdp gdp(1980) gdp(1985) gdp(1988) trade inflation industry schooling investment, ///
+    trunit(7) trperiod(1990) xperiod(1960(1)1989) ///
+    mspeperiod(1960(1)1989) resultsperiod(1960(1)2003) ///
+    keep(synthresults, replace)
+
+* --- plot: treated vs synthetic ---
+use synthresults, clear
+twoway (line _Y_treated _time) (line _Y_synthetic _time, lpattern(dash)), ///
+    xline(1990, lpattern(dash)) ///
+    legend(label(1 "West Germany") label(2 "Synthetic West Germany")) ///
+    ytitle("Per Capita GDP") xtitle("Year")
+
+* --- plot: gap (treated minus synthetic) ---
+gen gap = _Y_treated - _Y_synthetic
+twoway (line gap _time), yline(0) xline(1990, lpattern(dash)) ///
+    ytitle("Gap in Per Capita GDP") xtitle("Year")
+
+* --- permutation inference: synth_runner ---
+* ssc install synth_runner, replace
+* automates running synth for each donor unit as a placebo
+
+synth_runner gdp gdp(1980) gdp(1985) gdp(1988) trade inflation industry schooling investment, ///
+    trunit(7) trperiod(1990) gen_vars
+
+* plot treated gap vs placebo gaps
+effect_graphs, trlinename("West Germany") tc_name("All Controls")
+
+* filter out placebo units with poor pre-intervention fit
+* pval based on ratio of post-RMSPE to pre-RMSPE
+pval_graphs 2
+
+* --- RMSPE ratio manually ---
+* after synth_runner, _pre_rmspe and _post_rmspe are generated per unit
+* ratio = _post_rmspe / _pre_rmspe
+* units with _pre_rmspe >> treated unit's _pre_rmspe are dropped for inference
+
+* --- leave-one-out robustness ---
+* re-run synth dropping one donor unit at a time
+* check whether estimated gap is stable to the exclusion of each unit
+
+* example: drop Austria (unit 1) and re-run
+synth gdp gdp(1980) gdp(1985) gdp(1988) trade inflation industry schooling investment, ///
+    trunit(7) trperiod(1990) xperiod(1960(1)1989) ///
+    mspeperiod(1960(1)1989) resultsperiod(1960(1)2003) ///
+    counit(2 3 4 5 6 8 9 10 11 12 13 14 15 16)
+
+* --- predictor sensitivity ---
+* re-run with different predictor sets and compare estimated gaps
+
+* --- synthetic difference-in-differences: sdid ---
+* ssc install sdid, replace
+* Y: outcome variable; S: unit ID; T: time variable; D: treatment indicator (0/1)
+
+* bootstrap inference (valid with large N)
+sdid gdp country year treated, vce(bootstrap) reps(200) seed(42) graph
+
+* placebo inference (valid even with small N_tr, assumes homoskedasticity)
+sdid gdp country year treated, vce(placebo) reps(200) seed(42)
+
+* display unit weights and time weights
+sdid gdp country year treated, vce(placebo) reps(200) seed(42) ///
+    graph g1_opt(ytitle("Per Capita GDP") xtitle("Year")) ///
+    g2_opt(ytitle("Gap") xtitle("Year"))
+```

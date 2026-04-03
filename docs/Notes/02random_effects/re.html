@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
 }
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+}
+pre.numberSource { margin-left: 3em; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -4322,8 +4357,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/geospatial/projects/project01/project01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project 01</span></a>
+  <a href="https://mtfehl.github.io/geospatial/projects/earthquake/pj01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project: Earthquakes and Remittances</span></a>
   </div>
 </li>
       </ul>
@@ -4396,7 +4431,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/finc_metrics/projects/Project01/project01.html" class="sidebar-item-text sidebar-link">
+  <a href="https://mtfehl.github.io/finc_metrics/projects/Project Geospatial/Project Geospatial/geospatial.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Project 01</span></a>
   </div>
 </li>
@@ -4598,8 +4633,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/econometrics2/Projects/Project01/pj01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project 01</span></a>
+  <a href="https://mtfehl.github.io/econometrics2/Projects/earthquake/pj01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project: Earthquakes and Remittances</span></a>
   </div>
 </li>
       </ul>
@@ -4623,14 +4658,14 @@ window.Quarto = {
   <li><a href="#motivation-re-is-blue" id="toc-motivation-re-is-blue" class="nav-link" data-scroll-target="#motivation-re-is-blue">Motivation: RE is BLUE</a></li>
   <li><a href="#assumptions" id="toc-assumptions" class="nav-link" data-scroll-target="#assumptions">Assumptions</a>
   <ul class="collapse">
-  <li><a href="#linearity" id="toc-linearity" class="nav-link" data-scroll-target="#linearity">Linearity</a></li>
-  <li><a href="#random-individual-effects" id="toc-random-individual-effects" class="nav-link" data-scroll-target="#random-individual-effects">Random Individual Effects</a></li>
-  <li><a href="#strictly-exogenous-regressors" id="toc-strictly-exogenous-regressors" class="nav-link" data-scroll-target="#strictly-exogenous-regressors">Strictly Exogenous Regressors</a></li>
-  <li><a href="#homoskedasticity" id="toc-homoskedasticity" class="nav-link" data-scroll-target="#homoskedasticity">Homoskedasticity</a></li>
-  <li><a href="#linearly-independent-regressors" id="toc-linearly-independent-regressors" class="nav-link" data-scroll-target="#linearly-independent-regressors">Linearly Independent Regressors</a></li>
+  <li><a href="#linearity" id="toc-linearity" class="nav-link" data-scroll-target="#linearity">1. Linearity</a></li>
+  <li><a href="#random-individual-effects" id="toc-random-individual-effects" class="nav-link" data-scroll-target="#random-individual-effects">2. Random Individual Effects</a></li>
+  <li><a href="#strictly-exogenous-regressors" id="toc-strictly-exogenous-regressors" class="nav-link" data-scroll-target="#strictly-exogenous-regressors">3. Strictly Exogenous Regressors</a></li>
+  <li><a href="#homoskedasticity" id="toc-homoskedasticity" class="nav-link" data-scroll-target="#homoskedasticity">4. Homoskedasticity</a></li>
+  <li><a href="#linearly-independent-regressors" id="toc-linearly-independent-regressors" class="nav-link" data-scroll-target="#linearly-independent-regressors">5. Linearly Independent Regressors</a></li>
   <li><a href="#implications" id="toc-implications" class="nav-link" data-scroll-target="#implications">Implications</a></li>
   </ul></li>
-  <li><a href="#properties-of-pols-regressor" id="toc-properties-of-pols-regressor" class="nav-link" data-scroll-target="#properties-of-pols-regressor">Properties of POLS Regressor</a>
+  <li><a href="#properties-of-re-regressor" id="toc-properties-of-re-regressor" class="nav-link" data-scroll-target="#properties-of-re-regressor">Properties of RE Regressor</a>
   <ul class="collapse">
   <li><a href="#unbiasedness" id="toc-unbiasedness" class="nav-link" data-scroll-target="#unbiasedness">Unbiasedness</a></li>
   <li><a href="#consistency" id="toc-consistency" class="nav-link" data-scroll-target="#consistency">Consistency</a></li>
@@ -4641,8 +4676,22 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#extension-clustering-on-higher-levels" id="toc-extension-clustering-on-higher-levels" class="nav-link" data-scroll-target="#extension-clustering-on-higher-levels">Extension: Clustering on Higher Levels</a></li>
   </ul></li>
+  <li><a href="#weakness-of-re-estimator" id="toc-weakness-of-re-estimator" class="nav-link" data-scroll-target="#weakness-of-re-estimator">Weakness of RE Estimator</a></li>
   </ul></li>
   <li><a href="#applied" id="toc-applied" class="nav-link" data-scroll-target="#applied">Applied</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a>
+  <ul>
+  <li><a href="#appendix-1" id="toc-appendix-1" class="nav-link" data-scroll-target="#appendix-1">1 RE Model Satisfies OLS Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#random-individual-effects-1" id="toc-random-individual-effects-1" class="nav-link" data-scroll-target="#random-individual-effects-1">1. Random Individual Effects</a></li>
+  <li><a href="#strictly-exogenous-regressors-1" id="toc-strictly-exogenous-regressors-1" class="nav-link" data-scroll-target="#strictly-exogenous-regressors-1">2. Strictly Exogenous Regressors</a></li>
+  <li><a href="#homoskedasticity-1" id="toc-homoskedasticity-1" class="nav-link" data-scroll-target="#homoskedasticity-1">3. Homoskedasticity</a></li>
+  <li><a href="#linearly-independent-regressors-1" id="toc-linearly-independent-regressors-1" class="nav-link" data-scroll-target="#linearly-independent-regressors-1">4. Linearly Independent Regressors</a></li>
+  </ul></li>
+  <li><a href="#appendix-2" id="toc-appendix-2" class="nav-link" data-scroll-target="#appendix-2">2 Derivation of RE Estimator</a></li>
+  <li><a href="#appendix-3" id="toc-appendix-3" class="nav-link" data-scroll-target="#appendix-3">3 Proof of RE Estimator is BLUE</a></li>
+  <li><a href="#appendix-4" id="toc-appendix-4" class="nav-link" data-scroll-target="#appendix-4">4 Quasi-Demeaning Equivalence</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -4685,56 +4734,459 @@ window.Quarto = {
 <h1>Theory</h1>
 <section id="motivation-re-is-blue" class="level2">
 <h2 class="anchored" data-anchor-id="motivation-re-is-blue">Motivation: RE is BLUE</h2>
+<p>As we saw with the pooled OLS estimator, it yields a consistent and unbiased estimator but is not efficient, due to the serial correlation in the composite error induced by the unobserved effect. Thus, there exists an estimator that is efficient under similar conditions, known as the <strong>Random Effects</strong> estimator; this is the equivalent to the generalized least squares (GLS) estimator from finite sample OLS.</p>
 </section>
 <section id="assumptions" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions">Assumptions</h2>
+<p>Our assumptions here follow almost exactly the same from pooled OLS, with one slight change in assumption 5.</p>
 <section id="linearity" class="level3">
-<h3 class="anchored" data-anchor-id="linearity">Linearity</h3>
+<h3 class="anchored" data-anchor-id="linearity">1. Linearity</h3>
+<p>Same as before</p>
+<p><span class="math display">\[
+y_{it} = x_{it}&#39;\beta + f_i + \mu_{it}
+\]</span></p>
 </section>
 <section id="random-individual-effects" class="level3">
-<h3 class="anchored" data-anchor-id="random-individual-effects">Random Individual Effects</h3>
+<h3 class="anchored" data-anchor-id="random-individual-effects">2. Random Individual Effects</h3>
+<p>Same as before</p>
+<p><span class="math display">\[
+\mathbb{E}[f_i \mid x_{i1}, x_{i2}, \cdots, x_{iT}] \equiv \mathbb{E}[f_i \mid X_i] = 0
+\]</span></p>
 </section>
 <section id="strictly-exogenous-regressors" class="level3">
-<h3 class="anchored" data-anchor-id="strictly-exogenous-regressors">Strictly Exogenous Regressors</h3>
+<h3 class="anchored" data-anchor-id="strictly-exogenous-regressors">3. Strictly Exogenous Regressors</h3>
+<p>Same as before</p>
+<p><span class="math display">\[
+\mathbb{E}[\mu_{it} \mid x_{i1}, x_{i2}, \cdots, x_{iT}, f_i] \equiv \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0
+\]</span></p>
 </section>
 <section id="homoskedasticity" class="level3">
-<h3 class="anchored" data-anchor-id="homoskedasticity">Homoskedasticity</h3>
+<h3 class="anchored" data-anchor-id="homoskedasticity">4. Homoskedasticity</h3>
+<p>Same as before</p>
+<p><span class="math display">\[
+\begin{cases}
+  1. \mathbb{V}\text{ar}(f_i \mid X_i) = \sigma_{f}^2 &amp;\text{Constant Variance in the Unobserved Error} \\
+  2. \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 &amp; \text{Constant Variance in the Idiosyncratic Error} \\
+  3. \mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0 \quad \forall_{t \neq s} &amp; \text{No Serial Correlation}
+\end{cases}
+\]</span></p>
 </section>
 <section id="linearly-independent-regressors" class="level3">
-<h3 class="anchored" data-anchor-id="linearly-independent-regressors">Linearly Independent Regressors</h3>
+<h3 class="anchored" data-anchor-id="linearly-independent-regressors">5. Linearly Independent Regressors</h3>
+<p><strong>SLIGHT MODIFICATION</strong></p>
+<p><span class="math display">\[
+\frac{1}{N} \sum_{i=1}^N X_i&#39; V^{-1} X_i  \xrightarrow{p} \underbrace{\mathbb{E}(X_i&#39;V^{-1}X_i)}_{M_{XVX}: \text{ (K x K)}} \text{ has rank K}
+\]</span></p>
 </section>
 <section id="implications" class="level3">
 <h3 class="anchored" data-anchor-id="implications">Implications</h3>
+<p>Under the same assumptions as pooled OLS, the only difference in how we derive the estimator. To find the efficient estimator under these conditions, suppose that <span class="math inline">\(B&#39;B = V^{-1}\)</span>, where <span class="math inline">\(B\)</span> is some matrix. We can then define our model as:</p>
+<p><span class="math display">\[
+By_i = BX_i&#39;\beta + Bv_{i}
+\]</span></p>
+<p>This model satisfies all of our assumptions: to see this, check <a href="#appendix-1">Appendix (1)</a> for a thorough handling.</p>
 </section>
 </section>
-<section id="properties-of-pols-regressor" class="level2">
-<h2 class="anchored" data-anchor-id="properties-of-pols-regressor">Properties of POLS Regressor</h2>
+<section id="properties-of-re-regressor" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-re-regressor">Properties of RE Regressor</h2>
+<p>Similar to pooled OLS, when applying the OLS estimator to our regressor we find it has the form:</p>
+<p><span class="math display">\[
+\begin{aligned}
+  &amp; \hat{\beta}_{RE} = \left( X&#39;V^{-1}X \right)^{-1}X&#39;V^{-1}y  &amp;&amp;\text{RE estimator}\\
+  &amp; \hat{\beta}_{RE} - \beta = \left( X&#39;V^{-1}X \right)^{-1}X&#39;V^{-1}v &amp;&amp; \text{sampling error}
+\end{aligned}
+\]</span></p>
+<p>To see the full derivation of the RE estimator and the sampling error, see <a href="#appendix-2">Appendix (2)</a></p>
 <section id="unbiasedness" class="level3">
 <h3 class="anchored" data-anchor-id="unbiasedness">Unbiasedness</h3>
+<p>To see that the RE estimator is an unbiased estimator, we want to show that <span class="math inline">\(\mathbb{E}[\hat{\beta}_{RE}] = \beta \Leftrightarrow \mathbb{E}[\hat{\beta}_{RE} - \beta] = 0\)</span></p>
+<p>Thus, we simply need to take expectations of the sampling error:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb{E}[\hat{\beta}_{RE} - \beta] &amp;= \mathbb{E}\left[ X&#39;V^{-1}X \right]^{-1}  \mathbb{E}[X&#39;V^{-1}v] \\
+&amp;=  \mathbb{E}\left[ \mathbb{E}[X&#39;V^{-1}X \mid X]\right]^{-1}  \mathbb{E}[\mathbb{E}[X&#39;V^{-1}v \mid X]] &amp;&amp; \text{via LIE}\\
+&amp;= \mathbb{E}\left[ X&#39;V^{-1}X \right]^{-1}  \mathbb{E}[X&#39;V^{-1}\mathbb{E}[v\mid X]] &amp;&amp; \text{via LCE} \\
+&amp;= \mathbb{E}[v \mid X] = \mathbb{E}[f + u \mid X] &amp;&amp; \text{via def} \\
+&amp;= \mathbb{E}[f \mid X] + \mathbb{E}[u \mid X] = 0 &amp;&amp; \text{via assumption} \\
+&amp;= \mathbb{E}\left[ X&#39;V^{-1}X \right]^{-1}  \mathbb{E}[X&#39;V^{-1}\cdot 0] = 0 \qquad \blacksquare
+\end{aligned}
+\]</span></p>
 </section>
 <section id="consistency" class="level3">
 <h3 class="anchored" data-anchor-id="consistency">Consistency</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{RE} - \beta &amp;= \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1} \sum_{i=1}^N X_i&#39;V^{-1}v_i \\
+&amp;= \underbrace{\left(\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}X_i \right)}_{(1)}^{-1} \underbrace{\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}v_i}_{(2)} \\
+(1):&amp;  \text{ via the WLLN, this converges in probability:} \\
+&amp; \left(\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}X_i \right) \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i&#39;V^{-1}X_i \right] \\
+&amp; \text{via the CMT, this convergence implies that:} \\
+&amp; \left(\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1} \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i&#39;V^{-1}X_i \right]^{-1} \\
+(2):&amp; \text{ via the WLLN, this converges in probability:} \\
+&amp; \left(\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}v_i \right) \xrightarrow{p} \mathbb{E}\left[\sum_{i=1}^N X_i&#39;V^{-1}v_i \right] \\
+&amp;\text{ which we know equals zero due to unbiasedness:} \\
+&amp; \mathbb{E}\left[\sum_{i=1}^N X_i&#39;V^{-1}v_i \right] = 0 \\
+&amp; \text{therefore, via Slutsky&#39;s Theorem,} \\
+&amp; \mathbb{E}\left[\sum_{i=1}^N X_i&#39;V^{-1}X_i \right]^{-1} \cdot 0 = 0 \\
+&amp; \hat{\beta}_{RE} - \beta \xrightarrow{p} 0 &amp;&amp; \blacksquare
+\end{aligned}
+\]</span></p>
 </section>
 <section id="asymptotic-normality" class="level3">
 <h3 class="anchored" data-anchor-id="asymptotic-normality">Asymptotic Normality</h3>
+<p>To derive the asymptotic normality of the RE estimator, we simply rescale the sampling error by <span class="math inline">\(\sqrt{N}\)</span>, s.t.:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sqrt{N}\left(\hat{\beta}_\text{RE} - \beta \right)&amp; = \underbrace{\left(\frac{1}{N} \sum_{i=1}^N X_i&#39; V^{-1} X_i \right)^{-1}}_{(1)} \underbrace{\frac{1}{\sqrt{N}} \sum_{i=1}^N X_i&#39; V^{-1} v_i}_{(2)} \\
+  &amp; (1) \xrightarrow{p} \mathbb{E}[X&#39; V^{-1} X]^{-1} \text{ via LLN and CMT} \\
+  &amp; (2) \xrightarrow{d} \mathcal{N}\left(0, \mathbb{V}\text{ar}(X&#39; V^{-1}v) \right) \text{ via CLT} \\
+  &amp; \text{thus, via Slutsky&#39;s theorem, } \\
+  \sqrt{N}\left(\hat{\beta}_\text{RE} - \beta \right)&amp; \xrightarrow{d} \mathcal{N}\left(0, \mathbb{E}[X&#39;V^{-1}X]^{-1}\mathbb{E}(X&#39;V^{-1}vv&#39;V^{-1}X)\mathbb{E}[X&#39;V^{-1}X]^{-1} \right)
+\end{aligned}
+\]</span></p>
 </section>
 </section>
 <section id="estimating-avar" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-avar">Estimating AVAR</h2>
+<p>Note that <span class="math inline">\(\mathbb{E}[vv&#39; \mid X] = V\)</span>; thus, using the Linearity of Iterated Expectations, we can rewrite <span class="math inline">\(\text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE})\)</span> as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{RE}) &amp;= \mathbb{E}[X&#39;V^{-1}X]^{-1}\mathbb{E}[X&#39;V^{-1}\mathbb{E}[vv&#39; \mid X]V^{-1}X]\mathbb{E}[X&#39;V^{-1}X]^{-1} \\
+&amp;= \mathbb{E}[X&#39;V^{-1}X]^{-1}\mathbb{E}[X&#39;V^{-1} V V^{-1}X] \mathbb{E}[X&#39;V^{-1}X]^{-1} \\
+&amp;= \mathbb{E}[X&#39;V^{-1}X]^{-1}\mathbb{E}[X&#39;V^{-1}X] \mathbb{E}[X&#39;V^{-1}X]^{-1} \\
+&amp;= \mathbb{E}[X&#39;V^{-1}X]^{-1}
+\end{aligned}
+\]</span></p>
+<p>Thus, the RE estimator is the <u>best linear and unbiased estimator</u> (BLUE) under our given model and assumptions. For a formal proof, see <a href="#appendix-3">Appendix (3)</a></p>
+<p><strong>Importantly</strong>: <span class="math inline">\(V^{-1}\)</span> is unknown in reality; we need to compute an estimate of the matrix <span class="math inline">\(\hat{V}\)</span> in order to construct <span class="math inline">\(\text{A}\mathbb{V}\text{ar}(\hat{\beta}_\text{RE})\)</span>. In other words, we need to find:</p>
+<p><span class="math display">\[
+\hat{V_i} = \mathbb{E}[ \hat{v}_i \hat{v}_i&#39; \mid X ]
+\]</span></p>
+<p>In order to get an estimate of the variance, we thereby need to get estimates of the residuals from our model using an <strong>unbiased</strong> and <strong>consistent</strong> estimator. Fortunately, we already found that <span class="math inline">\(\hat{\beta}_{POLS}\)</span> has these properties and thereby is a valid choice of an estimator! Hence, we can find <span class="math inline">\(v_iv_i&#39; = (y_i - X_i&#39; \beta)(y_i - X_i&#39; \beta)&#39;\)</span>.</p>
+<p>However, we need to compute <em>two</em> separate estimates for the <span class="math inline">\(\hat{V}_i\)</span> matrix:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[\widehat{v}_{it}^2 \mid X] = \widehat{\sigma_f^2 + \sigma_{\mu}^2}\)</span>: diagonal elements (variance)</li>
+<li><span class="math inline">\(\mathbb{E}[\widehat{v_{it}v_{is}} \mid X] = \widehat{\sigma}_f^2, \forall_{ t \neq s}\)</span>: off-diagonal elements (co-variance)</li>
+</ol>
+<p>To compute these estimates, we need to use our estimated residuals to construct the variance &amp; co-variance elements composing each matrix, <span class="math inline">\(\forall_{i \in N}\)</span>:</p>
+<p><span class="math inline">\(\widehat{\sigma_f^2 + \sigma_{\mu}^2} = \frac{1}{NT-K} \sum_{i=1}^N \sum_{t=1}^T \widehat{v}_{it}^2\)</span></p>
+<p><span class="math inline">\(\widehat{\sigma}_f^2 = \frac{1}{\frac{NT(T-1)}{2}-K} \sum_{i=1}^N \sum_{t=1}^{T-1} \sum_{s=t+1}^T \widehat{v_{it}v_{is}}\)</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note the denominator term for our covariance terms; this simply comes from the fact that for each individual variance-covariance matrix, we are computing <span class="math inline">\(\frac{T^2 -T}{2}\)</span> elements, since our matrix has dimensions <span class="math inline">\((T \times T)\)</span>. To compute the off-diagonal elements of a symmetric matrix, we need to calculate <span class="math inline">\(T^2\)</span> elements, subtracted by the <span class="math inline">\(T\)</span> diagonal elements, and then divide by 2 as we only need to estimate <span class="math inline">\(U \equiv L\)</span>. We then iterate through this process for all <span class="math inline">\(N\)</span> individuals, and subtract by the number of <span class="math inline">\(K\)</span> regressors in our model.</p>
+</div>
+</div>
+<p>Note that the estimated <span class="math inline">\(\hat{V}_i\)</span> variance-covariance matrix is for an individual <span class="math inline">\(i\)</span> for all panels <span class="math inline">\(t= 1, 2, \dots , T\)</span> and is thereby <span class="math inline">\((T \times T)\)</span>; the entire <span class="math inline">\(\hat{V}\)</span> matrix consists of all <span class="math inline">\(\hat{V}_i\)</span> matrices across all <span class="math inline">\(i= 1, 2, \dots, N\)</span> individuals, giving it dimensions <span class="math inline">\((NT \times NT)\)</span>. It is given by the form:</p>
+<p><span class="math display">\[
+\underset{(NT \times NT)}{\hat{V}} =
+\begin{bmatrix}
+  \begin{bmatrix}
+    \widehat{\sigma_f^2 + \sigma_{\mu}^2} &amp; \widehat{\sigma_f^2} &amp; \cdots &amp;  \widehat{\sigma_f^2} \\
+    \widehat{\sigma_f^2} &amp; \widehat{\sigma_f^2 + \sigma_{\mu}^2} &amp; \cdots &amp; \widehat{\sigma_f^2} \\
+    \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+    \widehat{\sigma_f^2} &amp; \widehat{\sigma_f^2} &amp; \cdots &amp; \widehat{\sigma_f^2 + \sigma_{\mu}^2}
+  \end{bmatrix}_{i=1} &amp; 0 &amp; \\
+  0 &amp; \begin{bmatrix}
+    \widehat{\sigma_f^2 + \sigma_{\mu}^2} &amp; \widehat{\sigma_f^2} &amp; \cdots &amp;  \widehat{\sigma_f^2} \\
+    \widehat{\sigma_f^2} &amp; \widehat{\sigma_f^2 + \sigma_{\mu}^2} &amp; \cdots &amp; \widehat{\sigma_f^2} \\
+    \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+    \widehat{\sigma_f^2} &amp; \widehat{\sigma_f^2} &amp; \cdots &amp; \widehat{\sigma_f^2 + \sigma_{\mu}^2}
+  \end{bmatrix}_{i=2} \\  &amp;  &amp; \ddots
+\end{bmatrix}
+\]</span></p>
+<p>Thus, to find <span class="math inline">\(\hat{\sigma}_{\mu}\)</span>, we simply take the difference between the diagonal (variance) elements <span class="math inline">\(\widehat{\sigma_f^2 + \sigma_{\mu}^2}\)</span> and the off-diagonal (covariance) elements <span class="math inline">\(\widehat{\sigma_f^2}\)</span>:</p>
+<p><span class="math display">\[
+\widehat{\sigma}_{\mu}^2 = \widehat{\sigma_f^2 + \sigma_{\mu}^2} - \widehat{\sigma}_f^2
+\]</span></p>
+<p>In other words, we can simply retrieve the idiosyncratic variance terms by off-diagonal from the diagonal. Since the matrix is symmetric across all <span class="math inline">\(\hat{V}_i\)</span> matrices, we simply only need to calculate <span class="math inline">\(\widehat{\sigma_f^2 + \sigma_{\mu}^2}\)</span> and <span class="math inline">\(\widehat{\sigma_f^2}\)</span> to fully determine the entire <span class="math inline">\((NT \times NT)\)</span> matrix <span class="math inline">\(\hat{V}\)</span>. Furthermore, this equicorrelation structure implies that <span class="math inline">\(V^{-1}\)</span> has a known closed-form, allowing us to replace full GLS inversion with the computationally equivalent quasi-demeaning transformation (see here: <a href="appendix 4">Appendix (4)</a>)</p>
+<p>Finally, we plug in these <span class="math inline">\(\hat{V}\)</span> estimates back into the RE estimator:</p>
+<p><span class="math display">\[
+\hat{\beta}_{RE} = \left(\sum X_i&#39; \hat{V}{}^{-1} X_i \right)^{-1} \left(\sum X_i&#39;\hat{V}{}^{-1} y_i  \right)
+\]</span></p>
+<p>We simply use the analogy principle to get the asymptotic variance matrix:</p>
+<p><span class="math display">\[
+\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{RE}) =
+\frac{1}{N} \left( \frac{1}{N} \sum_{i=1}^N  X_i&#39; \hat{V}{}^{-1} X_i \right)^{-1} \xrightarrow{p} \mathbb{E}[X_i&#39; \hat{V}{}^{-1} X_i]^{-1}
+= \text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE})
+\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Following Woolridge’s notation, this equivalently can be expressed as:</p>
+<p><span class="math inline">\(\hat{\beta}_{RE} \sim \mathcal{N}(\beta, \frac{1}{N}\mathbb{E}[X_i&#39; \hat{V}{}^{-1} X_i]^{-1} )\)</span></p>
+</div>
+</div>
 </section>
 <section id="relaxing-homoskedasticity-assumption" class="level2">
 <h2 class="anchored" data-anchor-id="relaxing-homoskedasticity-assumption">Relaxing Homoskedasticity Assumption</h2>
+<p>If we relax the assumption of homoskedasticity of the idiosyncratic error terms, we cannot reduce down the variance any further and thereby estimate the following “sandwich” form of the variance:</p>
+<p><span class="math display">\[
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE}) =
+\mathbb{E}\left[X_i&#39;V^{-1}X_i\right]^{-1}\mathbb{E}\left[ X_i&#39;V^{-1}v_iv_i&#39;V^{-1}X_i\right] \mathbb{E}\left[ X_i&#39;V^{-1}X_i\right]^{-1}
+\]</span></p>
+<p>To get estimates of the asymptotic variance, we follow a 2-stage process:</p>
+<ol type="1">
+<li><p>Apply Pooled OLS and collect <span class="math inline">\(\widehat{v_{it}}\)</span>, then use <span class="math inline">\(\widehat{v_{it}}\)</span> to construct <span class="math inline">\(\widehat{\sigma_{f}^2}\)</span> and <span class="math inline">\(\widehat{\sigma_{f}^2 + \sigma_{\mu}^2}\)</span>, giving us the invertible matrix <span class="math inline">\(\hat{V}\)</span>.</p></li>
+<li><p>Apply RE estimator and collect <span class="math inline">\(\widehat{\widehat{v_{it}}}\)</span>; plug in <span class="math inline">\(\widehat{\widehat{v_{it}}}\)</span> and <span class="math inline">\(\hat{V}{}^{-1}\)</span> into the asymptotic variance formula <span class="math inline">\(\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{RE})\)</span>.</p></li>
+</ol>
+<p>More formally:</p>
+<p><span class="math display">\[
+\begin{aligned}
+  &amp; 1. \quad \widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_\text{POLS})^\text{CLUSTER(id)} =    \left(\sum X_i&#39;X_i\right)^{-1}\left(\sum X_i&#39;\hat{v}_i\hat{v}_i&#39;X_i\right) \left(\sum X_i&#39;X_i\right)^{-1} \\
+  &amp; 2. \quad  \widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_\text{RE})^\text{CLUSTER(id)} =    \left(\sum X_i&#39;\hat{V}{}^{-1}X_i\right)^{-1}\left(\sum X_i&#39;\hat{V}{}^{-1}\hat{\hat{v}}_i\hat{\hat{v}}_i&#39;\hat{V}{}^{-1}X_i\right) \left(\sum X_i&#39;\hat{V}{}^{-1}X_i\right)^{-1}
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note the notation for our two stage-estimation process: <strong>CLUSTER(id)</strong></p>
+<p>This stands for ‘clustering on the individual level,’ allowing for arbitrary serial correlation within a given <span class="math inline">\(\begin{bmatrix} V \end{bmatrix}_{i}\)</span>, whilst maintaining independence across <span class="math inline">\(i = 1, 2, \dots, N\)</span>. In other words, we can treat a single individual’s timeline as a single “mega-observation,” allowing an individual <span class="math inline">\(i\)</span> to be correlated with itself across periods in the panel.</p>
+</div>
+</div>
 <section id="extension-clustering-on-higher-levels" class="level3">
 <h3 class="anchored" data-anchor-id="extension-clustering-on-higher-levels">Extension: Clustering on Higher Levels</h3>
-<p>In practice, nobody uses the random effects estimator; the assumption of random individual effects is too strong of an assumption. Typically, we expect for there to exist some correlation between the exogenous regressors and the unobserved effect(s). In other words, random effects treats the unobserved effect as a random variable.</p>
-<p>This motivates the introduction of a new estimator, namely the <strong>Fixed Effects</strong> estimator that relaxes this assumption, by allowing for non-zero correlation between <span class="math inline">\(f_i\)</span> and <span class="math inline">\(X_i\)</span></p>
+<p>What if we cluster on a higher level? Rather than the individual level, say we cluster on households, cities, countries, etc. Our asymptotic variance can simply be expressed as:</p>
+<p><span class="math display">\[\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{\text{RE}})^\text{CLUSTER(c)} =\left(\sum_c X_c&#39;\hat{V}{}^{-1}X_c \right)^{-1} \left(\sum_c X_c&#39;\hat{V}{}^{-1} \hat{\hat{v}}_c \hat{\hat{v}}_c&#39; \hat{V}{}^{-1}X_c \right) \left(\sum_c X_c&#39;\hat{V}{}^{-1}X_c \right)^{-1}\]</span></p>
+<p>To better understand, imagine simply grouping together multiple different <span class="math inline">\(\begin{bmatrix} V \end{bmatrix}_{i}\)</span> into a single ‘cluster’ based on some shared factor. For example, we would likely expect individuals within the same household to be correlated with one another; thus, we say that individuals <span class="math inline">\(\begin{bmatrix} V \end{bmatrix}_{1}\)</span> and <span class="math inline">\(\begin{bmatrix} V \end{bmatrix}_{2}\)</span> are both in <span class="math inline">\(c_1\)</span>, such that this matrix <span class="math inline">\(c_1\)</span> “supersedes” the original <span class="math inline">\(\begin{bmatrix} V \end{bmatrix}_{1, } \begin{bmatrix} V \end{bmatrix}_{2}\)</span> matrices. This allows for arbitrary serial correlation between individuals in the cluster.</p>
+<p><span class="math display">\[
+V =
+\begin{bmatrix}
+  \begin{bmatrix}
+  \begin{bmatrix} V \end{bmatrix}_{1} \\
+  &amp; \begin{bmatrix} V \end{bmatrix}_{2} \end{bmatrix}_{c_1} &amp; &amp; \\
+  &amp; &amp; \begin{bmatrix} \begin{bmatrix} V \end{bmatrix}_{3} \end{bmatrix}_{c_2} &amp; &amp; \\
+  &amp; &amp; &amp; \begin{bmatrix} \begin{bmatrix} V \end{bmatrix}_{4} \\
+  &amp; &amp; &amp; &amp; \begin{bmatrix} V \end{bmatrix}_{5} \end{bmatrix}_{c_3} \\
+  &amp; &amp; &amp; &amp; &amp; \ddots
+\end{bmatrix}
+\]</span></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that we still need a sufficient number of clusters for asymptotic properties to hold. At least <span class="math inline">\(\geq\)</span> 30, however, usually it is expected/found that ~50 is the standard. Any lower and we will need clustering bootstrap methods to construct robust standard errors.</p>
+<p>Furthermore, we can do ‘multi-dimensional’ clustering; e.g., on <em>industry</em>, then <em>households</em>, etc. Of course we need even more data points for such a case.</p>
+<p>Clustering is standard practice. Stata does it automatically for us.</p>
+</div>
+</div>
 </section>
+</section>
+<section id="weakness-of-re-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="weakness-of-re-estimator">Weakness of RE Estimator</h2>
+<p>In practice, nobody uses the random effects estimator; the assumption of random individual effects is too strong of an assumption. Typically, we expect for there to exist some correlation between the exogenous regressors and the unobserved effect(s). In other words, random effects treats the unobserved effect as a random variable.</p>
+<p>This motivates the introduction of a new estimator, namely the <strong>Fixed Effects</strong> estimator that relaxes this assumption, by allowing for non-zero correlation between <span class="math inline">\(f_i\)</span> and <span class="math inline">\(X_i\)</span>.</p>
 </section>
 </section>
 <section id="applied" class="level1">
 <h1>Applied</h1>
+<div id="3d8a29bf" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>#| eval: false</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>* --- declare panel structure ---</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>xtset id <span class="fu">year</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>* --- random <span class="kw">effects</span> GLS ---</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>* FGLS: <span class="kw">estimates</span> sigma_f and sigma_u from POLS residuals,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>* then applies the quasi-demeaning transformation and runs OLS</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x1 <span class="kw">x2</span> x3, re</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>* --- RE with <span class="kw">cluster</span>-<span class="kw">robust</span> standard errors ---</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>* standard RE SEs assume homoskedasticity; <span class="kw">cluster</span> correction is <span class="kw">more</span> reliable <span class="kw">in</span> practice</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x1 <span class="kw">x2</span> x3, re <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>* --- Hausman <span class="kw">test</span>: H0 = random <span class="kw">effects</span> is consistent (no FE needed) ---</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>* must estimate both without clustering (<span class="kw">hausman</span> requires classical standard errors)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x1 <span class="kw">x2</span> x3, <span class="kw">fe</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> fe_model</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x1 <span class="kw">x2</span> x3, re</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> re_model</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>* sigmamore uses the same <span class="kw">variance</span> estimate from the efficient estimator (RE)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="kw">hausman</span> fe_model re_model, sigmamore</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>* --- <span class="kw">display</span> <span class="kw">variance</span> components ---</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>* sigma_u = <span class="fu">std</span>. <span class="kw">dev</span>. <span class="kw">of</span> individual effect f_i</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>* sigma_e = <span class="fu">std</span>. <span class="kw">dev</span>. <span class="kw">of</span> idiosyncratic <span class="kw">error</span> u_it</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>* rho     = fraction <span class="kw">of</span> <span class="kw">variance</span> due to f_i</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x1 <span class="kw">x2</span> x3, re</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="kw">xtsum</span> <span class="fu">y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="appendix" class="level1">
+<h1>Appendix</h1>
+<section id="appendix-1" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-1">1 RE Model Satisfies OLS Assumptions</h2>
+<p>To see that our transformed RE regression model satisfies our assumptions, let us check assumption-by-assumption. The check will only be for assumptions 2-5, as we explicitly defined the model to simply be a linear transformation of the original linear model (thus the linearity assumption is trivially satisfied).</p>
+<section id="random-individual-effects-1" class="level3">
+<h3 class="anchored" data-anchor-id="random-individual-effects-1">1. Random Individual Effects</h3>
+<p><span class="math display">\[
+\mathbb{E}[Bf_i \mid x_{i1}, x_{i2}, \cdots, x_{iT}] = B\mathbb{E}[f_i \mid X_i] = 0 \quad \text{via LCE}
+\]</span></p>
+<p>We know that <span class="math inline">\(B = V^{-\frac{1}{2}}\)</span> and that <span class="math inline">\(V\)</span> is a function of X, since <span class="math inline">\(V = \mathbb{E}[v_iv_i&#39; | x_{it}]\)</span> and we can rewrite <span class="math inline">\(v_i = y_i - X_i&#39;\beta\)</span>. Thus, we can remove it from the expectation via the linearity of conditional expectations.</p>
+</section>
+<section id="strictly-exogenous-regressors-1" class="level3">
+<h3 class="anchored" data-anchor-id="strictly-exogenous-regressors-1">2. Strictly Exogenous Regressors</h3>
+<p><span class="math display">\[
+\mathbb{E}[B\mu_{it} \mid x_{i1}, x_{i2}, \cdots, x_{iT}, f_i] = B\mathbb{E}[\mu_{it} \mid X_i, f_i] = 0 \quad \text{via LCE}
+\]</span></p>
+<p>Again, via the LCE we can remove the B matrix from the expectation and find that the assumption of strictly exogenous regressors holds.</p>
+</section>
+<section id="homoskedasticity-1" class="level3">
+<h3 class="anchored" data-anchor-id="homoskedasticity-1">3. Homoskedasticity</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  &amp; 1. \quad \mathbb{V}\text{ar}(Bf_i \mid X_i) =
+  B \mathbb{V}\text{ar}(f_i \mid X_i) B&#39; =
+  V^{-1}\sigma_{f}^2 &amp;\text{Constant Variance in the Unobserved Error} \\
+  &amp; 2. \quad \mathbb{V}\text{ar}(\mu_{it} \mid X_i, f_i) = \sigma_{\mu}^2 &amp; \text{Constant Variance in the Idiosyncratic Error} \\
+  &amp; 3.\quad \mathbb{C}\text{ov}(\mu_{it}, \mu_{is}) = 0 \quad \forall_{t \neq s} &amp; \text{No Serial Correlation}
+\end{aligned}
+\]</span></p>
+</section>
+<section id="linearly-independent-regressors-1" class="level3">
+<h3 class="anchored" data-anchor-id="linearly-independent-regressors-1">4. Linearly Independent Regressors</h3>
+<p>We need to show that the rank condition holds for the transformed regressors <span class="math inline">\(X_i^* = BX_i\)</span>:</p>
+<p><span class="math display">\[
+\frac{1}{N} \sum_{i=1}^N X_i^{*\prime} X_i^* = \frac{1}{N} \sum_{i=1}^N (BX_i)&#39;(BX_i) = \frac{1}{N} \sum_{i=1}^N X_i&#39;B&#39;BX_i = \frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}X_i
+\]</span></p>
+<p>By the WLLN, this converges in probability:</p>
+<p><span class="math display">\[
+\frac{1}{N} \sum_{i=1}^N X_i&#39;V^{-1}X_i \xrightarrow{p} \mathbb{E}[X_i&#39;V^{-1}X_i] = M_{XVX}
+\]</span></p>
+<p>which has rank <span class="math inline">\(K\)</span> by Assumption 5. <span class="math inline">\(\qquad \blacksquare\)</span></p>
+</section>
+</section>
+<section id="appendix-2" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-2">2 Derivation of RE Estimator</h2>
+<p>Recall our transformed model: <span class="math inline">\(By_i = BX_i\beta + Bv_i\)</span>, where <span class="math inline">\(B&#39;B = V^{-1}\)</span>. Since we showed in Appendix (1) that this model satisfies our OLS assumptions, we can apply OLS directly to the transformed data. Define <span class="math inline">\(y_i^* \equiv By_i\)</span>, <span class="math inline">\(X_i^* \equiv BX_i\)</span>, and <span class="math inline">\(v_i^* \equiv Bv_i\)</span>. The OLS estimator on the transformed model is:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{RE} &amp;= \left(\sum_{i=1}^N X_i^{*\prime} X_i^* \right)^{-1} \left(\sum_{i=1}^N X_i^{*\prime} y_i^* \right) \\
+&amp;= \left(\sum_{i=1}^N (BX_i)&#39;(BX_i) \right)^{-1} \left(\sum_{i=1}^N (BX_i)&#39;(By_i) \right) \\
+&amp;= \left(\sum_{i=1}^N X_i&#39;B&#39;BX_i \right)^{-1} \left(\sum_{i=1}^N X_i&#39;B&#39;By_i \right) \\
+&amp;= \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i&#39;V^{-1}y_i \right) \qquad \text{via } B&#39;B = V^{-1}
+\end{aligned}
+\]</span></p>
+<p>To derive the sampling error, substitute <span class="math inline">\(y_i = X_i\beta + v_i\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{RE} &amp;= \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i&#39;V^{-1}(X_i\beta + v_i) \right) \\
+&amp;= \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1} \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i\beta + \sum_{i=1}^N X_i&#39;V^{-1}v_i \right) \\
+&amp;= \underbrace{\left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1}\left(\sum_{i=1}^N X_i&#39;V^{-1}X_i\right)}_{= I_K}\beta + \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i&#39;V^{-1}v_i \\
+&amp;= \beta + \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i&#39;V^{-1}v_i
+\end{aligned}
+\]</span></p>
+<p>Thus:</p>
+<p><span class="math display">\[
+\hat{\beta}_{RE} - \beta = \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i \right)^{-1}\sum_{i=1}^N X_i&#39;V^{-1}v_i \qquad \blacksquare
+\]</span></p>
+</section>
+<section id="appendix-3" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-3">3 Proof of RE Estimator is BLUE</h2>
+<p>We want to show that for any linear unbiased estimator <span class="math inline">\(\tilde{\beta}\)</span>, the difference <span class="math inline">\(\mathbb{V}\text{ar}(\tilde{\beta}) - \mathbb{V}\text{ar}(\hat{\beta}_{RE})\)</span> is positive semi-definite.</p>
+<p>Since we showed in <a href="#appendix-1">Appendix (1)</a> that the transformed model <span class="math inline">\(By_i = BX_i\beta + Bv_i\)</span> satisfies the classical OLS assumptions, we can invoke the Gauss-Markov theorem on the transformed model directly.</p>
+<p>By construction, <span class="math inline">\(B&#39;B = V^{-1}\)</span>, so:</p>
+<p><span class="math display">\[
+\mathbb{V}\text{ar}(Bv_i \mid X_i) = B\mathbb{V}\text{ar}(v_i \mid X_i)B&#39; = BVB&#39;
+\]</span></p>
+<p>Since <span class="math inline">\(B = V^{-1/2}\)</span>, we have <span class="math inline">\(BVB&#39; = V^{-1/2}VV^{-1/2} = I_T\)</span>. Thus the transformed errors are homoskedastic and serially uncorrelated.</p>
+<p>Define <span class="math inline">\(y_i^* = By_i\)</span>, <span class="math inline">\(X_i^* = BX_i\)</span>, <span class="math inline">\(v_i^* = Bv_i\)</span>. Since <span class="math inline">\(\mathbb{E}[v_i^* \mid X_i^*] = 0\)</span> and <span class="math inline">\(\mathbb{V}\text{ar}(v_i^* \mid X_i^*) = I_T\)</span>, the Gauss-Markov theorem tells us that OLS on the transformed data is BLUE:</p>
+<p><span class="math display">\[
+\hat{\beta}_{OLS}^* = \left(\sum_{i=1}^N X_i^{*\prime}X_i^*\right)^{-1}\sum_{i=1}^N X_i^{*\prime}y_i^*
+\]</span></p>
+<p>has the smallest variance among all linear unbiased estimators in the transformed model.</p>
+<p>As shown in <a href="#appendix-2">Appendix (2)</a>:</p>
+<p><span class="math display">\[
+\hat{\beta}_{OLS}^* = \left(\sum_{i=1}^N X_i&#39;V^{-1}X_i\right)^{-1}\sum_{i=1}^N X_i&#39;V^{-1}y_i = \hat{\beta}_{RE}
+\]</span></p>
+<p>Let <span class="math inline">\(\tilde{\beta} = \sum_{i=1}^N A_i y_i\)</span> be any linear unbiased estimator. Since <span class="math inline">\(B\)</span> is invertible, we can write <span class="math inline">\(y_i = B^{-1}y_i^*\)</span>, so:</p>
+<p><span class="math display">\[
+\tilde{\beta} = \sum_{i=1}^N A_i B^{-1} y_i^* = \sum_{i=1}^N \tilde{A}_i y_i^*
+\]</span></p>
+<p>where <span class="math inline">\(\tilde{A}_i \equiv A_iB^{-1}\)</span>. This is a linear estimator in the transformed model. If <span class="math inline">\(\tilde{\beta}\)</span> is unbiased for <span class="math inline">\(\beta\)</span> in the original model, it is also unbiased in the transformed model.</p>
+<p>By Gauss-Markov, no linear unbiased estimator in the transformed model can have a smaller variance than <span class="math inline">\(\hat{\beta}_{OLS}^*\)</span>. Since every linear unbiased estimator in the original model corresponds to one in the transformed model (Step 4), and <span class="math inline">\(\hat{\beta}_{OLS}^* = \hat{\beta}_{RE}\)</span> (Step 3):</p>
+<p><span class="math display">\[
+\mathbb{V}\text{ar}(\tilde{\beta} \mid X) - \mathbb{V}\text{ar}(\hat{\beta}_{RE} \mid X) \geq 0 \quad \text{(positive semi-definite)}
+\]</span></p>
+<p>for all linear unbiased <span class="math inline">\(\tilde{\beta}\)</span>. Therefore <span class="math inline">\(\hat{\beta}_{RE}\)</span> is BLUE. <span class="math inline">\(\qquad \blacksquare\)</span></p>
+</section>
+<section id="appendix-4" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-4">4 Quasi-Demeaning Equivalence</h2>
+<p>We show that the RE-GLS estimator <span class="math inline">\(\hat{\beta}_{GLS} = \left(\sum_i X_i&#39; V_i^{-1} X_i\right)^{-1}\left(\sum_i X_i&#39; V_i^{-1} y_i\right)\)</span> is algebraically equivalent to pooled OLS on quasi-demeaned data <span class="math inline">\(\tilde{z}_{it} = z_{it} - \hat{\theta} \bar{z}_i\)</span>.</p>
+<p>Define the two <span class="math inline">\((T \times T)\)</span> projection matrices:</p>
+<ul>
+<li><span class="math inline">\(P\)</span>: the <strong>between (averaging) matrix</strong>, which maps <span class="math inline">\(z_i\)</span> to its time-mean <span class="math inline">\(\bar{z}_i\)</span>, repeated <span class="math inline">\(T\)</span> times.</li>
+<li><span class="math inline">\(M \equiv I_T - P\)</span>: the <strong>within (annihilator) matrix</strong>, which maps <span class="math inline">\(z_i\)</span> to its deviations from the time-mean <span class="math inline">\((z_{it} - \bar{z}_i)\)</span>.</li>
+</ul>
+<p>These are orthogonal idempotent: <span class="math inline">\(M^2 = M\)</span>, <span class="math inline">\(P^2 = P\)</span>, <span class="math inline">\(MP = 0\)</span>, and <span class="math inline">\(M + P = I_T\)</span>.</p>
+<p>Under our assumptions, <span class="math inline">\(V_i = \sigma_\mu^2 I_T + T\sigma_f^2 P\)</span>. Substituting <span class="math inline">\(I_T = M + P\)</span>:</p>
+<p><span class="math display">\[
+V_i = \sigma_\mu^2(M + P) + T\sigma_f^2 P = \sigma_\mu^2 M + (\sigma_\mu^2 + T\sigma_f^2)P
+\]</span></p>
+<p>Since <span class="math inline">\(M\)</span> and <span class="math inline">\(P\)</span> are orthogonal projectors that span <span class="math inline">\(I_T\)</span>, the inverse is:</p>
+<p><span class="math display">\[
+V_i^{-1} = \frac{1}{\sigma_\mu^2}M + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}P
+\]</span></p>
+<p>To verify: <span class="math inline">\(V_i V_i^{-1} = \left[\sigma_\mu^2 M + (\sigma_\mu^2 + T\sigma_f^2)P\right]\left[\frac{1}{\sigma_\mu^2}M + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}P\right] = MM + PP = M + P = I_T\)</span>, where cross-terms vanish by <span class="math inline">\(MP = 0\)</span>.</p>
+<p>For any vector <span class="math inline">\(z_i = (z_{i1}, \dots, z_{iT})&#39;\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+V_i^{-1}z_i &amp;= \frac{1}{\sigma_\mu^2}Mz_i + \frac{1}{\sigma_\mu^2 + T\sigma_f^2}Pz_i \\
+&amp;= \frac{1}{\sigma_\mu^2}\left[Mz_i + \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}Pz_i\right] \\
+&amp;= \frac{1}{\sigma_\mu^2}\left[(z_{it} - \bar{z}_i) + \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}\bar{z}_i\right] \\
+&amp;= \frac{1}{\sigma_\mu^2}\left[z_{it} - \left(1 - \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2}\right)\bar{z}_i\right]
+\end{aligned}
+\]</span></p>
+<p>Let:</p>
+<p><span class="math display">\[
+\theta \equiv 1 - \frac{\sigma_\mu^2}{\sigma_\mu^2 + T\sigma_f^2} = \frac{T\sigma_f^2}{\sigma_\mu^2 + T\sigma_f^2} \in [0, 1]
+\]</span></p>
+<p>Then Step 3 gives <span class="math inline">\(V_i^{-1}z_i = \frac{1}{\sigma_\mu^2}(z_{it} - \theta\bar{z}_i) \equiv \frac{1}{\sigma_\mu^2}\tilde{z}_{it}\)</span>, where <span class="math inline">\(\tilde{z}_{it}\)</span> is the quasi-demeaned observation.</p>
+<p>Note the boundary behavior: as <span class="math inline">\(\sigma_f^2 \to \infty\)</span>, <span class="math inline">\(\theta \to 1\)</span> and RE collapses to the FE within estimator; as <span class="math inline">\(\sigma_f^2 \to 0\)</span>, <span class="math inline">\(\theta \to 0\)</span> and RE collapses to pooled OLS.</p>
+<p>Applying Step 4 to both <span class="math inline">\(X_i\)</span> and <span class="math inline">\(y_i\)</span>:</p>
+<p><span class="math display">\[
+X_i&#39;V_i^{-1}y_i = \frac{1}{\sigma_\mu^2}\tilde{X}_i&#39;\tilde{y}_i, \qquad X_i&#39;V_i^{-1}X_i = \frac{1}{\sigma_\mu^2}\tilde{X}_i&#39;\tilde{X}_i
+\]</span></p>
+<p>Substituting into the GLS formula:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{GLS} &amp;= \left(\sum_{i=1}^N \frac{1}{\sigma_\mu^2}\tilde{X}_i&#39;\tilde{X}_i\right)^{-1}\left(\sum_{i=1}^N \frac{1}{\sigma_\mu^2}\tilde{X}_i&#39;\tilde{y}_i\right) \\
+&amp;= \left(\sum_{i=1}^N \tilde{X}_i&#39;\tilde{X}_i\right)^{-1}\left(\sum_{i=1}^N \tilde{X}_i&#39;\tilde{y}_i\right) \qquad \blacksquare
+\end{aligned}
+\]</span></p>
+<p>The <span class="math inline">\(\frac{1}{\sigma_\mu^2}\)</span> scalar appears in both terms and cancels, so the RE estimator reduces to pooled OLS on the quasi-demeaned data.</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

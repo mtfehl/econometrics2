@@ -1,23 +1,255 @@
 ---
 title: "Heckit Estimator"
 author: "Michael Fehl"
+description: " "
 date: 02-05-2026
 class-notes: true
+image: "/images/heckman.png"
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory
 
-## Motivation
+## Motivation: Incompletely Observed Outcomes
 
-## 
+Standard OLS assumes a representative sample: all observations are drawn from the same population. Two closely related situations violate this, each requiring a different remedy.
+
+1. The dependent variable is **incompletely observed**: some values of $y$ are missing or replaced by a boundary value. This is **censoring**.
+2. The dependent variable is only observed for a **selected sample**: entire observations are dropped based on the outcome. This is **truncation**.
+
+OLS applied to censored or truncated data yields inconsistent estimates because the conditional mean is no longer linear in $\mathbf{x}$.
+
+## Censoring and Truncation
+
+Let $y^*$ be the latent (true) value of the dependent variable. The observed $y$ is a transformation $y = g(y^*)$. The key distinction is:
+
+**Censoring (from below at $L$):** We observe $y^*$ when $y^* > L$ but replace it with $L$ when $y^* \leq L$. The regressor data is kept for all observations.
+
+$$
+y = \begin{cases} y^* & \text{if } y^* > L \\ L & \text{if } y^* \leq L \end{cases}
+$$
+
+Example: earnings data where everyone below a threshold is reported as earning exactly the threshold amount (top-coding from above is the symmetric case).
+
+**Truncation (from below at $L$):** We only observe the data when $y^* > L$. Observations at or below the boundary are lost entirely.
+
+$$
+y = y^* \quad \text{if } y^* > L \quad \text{(only these are in the sample)}
+$$
+
+Example: sampling only employed workers. Truncation entails greater information loss than censoring since the regressors $\mathbf{x}$ are also lost for out-of-sample observations.
+
+### Censored MLE
+
+Let $f^*(y \mid \mathbf{x})$ and $F^*(y \mid \mathbf{x})$ be the pdf and cdf of the latent $y^*$. Define the censoring indicator $d_i = \mathbf{1}[y_i > L]$. Then the conditional density of the observed $y$ is:
+
+$$
+f(y \mid \mathbf{x}) = f^*(y \mid \mathbf{x})^d \cdot F^*(L \mid \mathbf{x})^{1-d}
+$$
+
+The **censored MLE** maximizes:
+
+$$
+\ell(\theta) = \sum_{i=1}^N \left[d_i \ln f^*(y_i \mid \mathbf{x}_i, \theta) + (1-d_i) \ln F^*(L_i \mid \mathbf{x}_i, \theta)\right]
+$$
+
+where $\theta$ collects the parameters of the distribution of $y^*$. The censored MLE is consistent and asymptotically normal provided $f^*(y^* \mid \mathbf{x})$ is correctly specified.
+
+### Truncated MLE
+
+For truncation from below, the observed $y$ has conditional density:
+
+$$
+f(y \mid \mathbf{x}) = \frac{f^*(y \mid \mathbf{x})}{\Pr[y > L \mid \mathbf{x}]} = \frac{f^*(y \mid \mathbf{x})}{1 - F^*(L \mid \mathbf{x})}
+$$
+
+The **truncated MLE** maximizes:
+
+$$
+\ell(\theta) = \sum_{i=1}^N \left[\ln f^*(y_i \mid \mathbf{x}_i, \theta) - \ln\!\left(1 - F^*(L_i \mid \mathbf{x}_i, \theta)\right)\right]
+$$
+
+## The Tobit Model
+
+The **Tobit model** (Tobin, 1958) is the most common censored regression model. It assumes that the latent variable is linear in $\mathbf{x}$ with normally distributed errors, and censoring occurs from below at zero:
+
+$$
+y_i^* = \mathbf{x}_i'\beta + \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+$$
+
+$$
+y_i = \begin{cases} y_i^* & \text{if } y_i^* > 0 \\ 0 & \text{if } y_i^* \leq 0 \end{cases}
+$$
+
+So $y_i^* \sim \mathcal{N}(\mathbf{x}_i'\beta, \sigma^2)$. Let $w_i = \mathbf{x}_i'\beta/\sigma$ for shorthand. The Tobit MLE is inconsistent if $\varepsilon_i$ is either heteroskedastic or non-normal.
+
+### Maximum Likelihood Estimation
+
+Using the general censored MLE with $f^* = \mathcal{N}(\mathbf{x}_i'\beta, \sigma^2)$, the observed density indicator $d_i = \mathbf{1}[y_i > 0]$, and $F^*(0 \mid \mathbf{x}_i) = 1 - \Phi(w_i)$:
+
+$$
+\ell(\beta, \sigma^2) = \sum_{i=1}^N \left\{d_i\left[-\tfrac{1}{2}\ln 2\pi - \tfrac{1}{2}\ln\sigma^2 - \frac{(y_i - \mathbf{x}_i'\beta)^2}{2\sigma^2}\right] + (1-d_i)\ln\!\left[1 - \Phi\!\left(\frac{\mathbf{x}_i'\beta}{\sigma}\right)\right]\right\}
+$$
+
+The Tobit MLE $\hat\theta = (\hat\beta', \hat\sigma^2)'$ maximizes this.
+
+### First Order Conditions
+
+Differentiating with respect to $\beta$ and $\sigma^2$:
+
+$$
+\frac{\partial\ell}{\partial\beta} = \sum_{i=1}^N \frac{1}{\sigma^2}\left(d_i(y_i - \mathbf{x}_i'\beta) - (1-d_i)\frac{\sigma\phi_i}{1-\Phi_i}\right)\mathbf{x}_i = 0
+$$
+
+$$
+\frac{\partial\ell}{\partial\sigma^2} = \sum_{i=1}^N \left\{d_i\!\left(-\frac{1}{2\sigma^2} + \frac{(y_i - \mathbf{x}_i'\beta)^2}{2\sigma^4}\right) + (1-d_i)\frac{\phi_i\,\mathbf{x}_i'\beta}{(1-\Phi_i)\,2\sigma^3}\right\} = 0
+$$
+
+where $\phi_i = \phi(w_i)$ and $\Phi_i = \Phi(w_i)$.
+
+### Marginal Effects
+
+The key insight is that the marginal effect of a regressor depends on which conditional mean we care about. Let $w = \mathbf{x}'\beta/\sigma$ and define the **inverse Mills ratio** $\lambda(z) = \phi(z)/\Phi(z)$ (derived below).
+
+| Quantity | Mean | $\partial/\partial\mathbf{x}$ |
+|---|---|---|
+| Latent variable | $E[y^* \mid \mathbf{x}] = \mathbf{x}'\beta$ | $\beta$ |
+| Truncated mean | $E[y \mid y > 0, \mathbf{x}]$ | $\left\{1 - w\lambda(w) - \lambda(w)^2\right\}\beta$ |
+| Censored mean | $E[y \mid \mathbf{x}]$ | $\Phi(w)\,\beta$ |
+
+The factor $\Phi(w)$ in the censored marginal effect is the probability that the observation is uncensored; at zero censoring ($w \to \infty$), $\Phi(w) \to 1$ and the Tobit coefficient recovers the OLS coefficient. The censored marginal effect is the one reported in standard applied work.
+
+## Sample Selection Models
+
+### The Bivariate Sample Selection Model
+
+The simple Tobit model assumes the selection mechanism (who is observed) and the outcome equation share the same latent variable. The **bivariate sample selection model** (also called the Type 2 or generalized Tobit) separates them into two distinct equations:
+
+**Participation equation** (determines whether $y_2$ is observed):
+
+$$
+y_1 = \begin{cases} 1 & \text{if } y_1^* > 0 \\ 0 & \text{if } y_1^* \leq 0 \end{cases}, \qquad y_1^* = \mathbf{x}_1'\beta_1 + \varepsilon_1
+$$
+
+**Outcome equation** (observed only when $y_1 = 1$):
+
+$$
+y_2 = \begin{cases} y_2^* & \text{if } y_1^* > 0 \\ - & \text{if } y_1^* \leq 0 \end{cases}, \qquad y_2^* = \mathbf{x}_2'\beta_2 + \varepsilon_2
+$$
+
+Example: $y_1^*$ determines whether a person works at all (participation); $y_2^*$ determines how many hours they work conditional on working. Different factors may drive each decision (e.g., fixed costs of commuting affect the participation margin but not hours conditional on working).
+
+### Joint Normal Errors
+
+Estimation requires an assumption on the joint distribution of $(\varepsilon_1, \varepsilon_2)$. The standard assumption is **joint normality** with homoskedastic errors:
+
+$$
+\begin{bmatrix}\varepsilon_1 \\ \varepsilon_2\end{bmatrix} \sim \mathcal{N}\!\left(\begin{bmatrix}0\\0\end{bmatrix},\, \begin{bmatrix}1 & \sigma_{12} \\ \sigma_{12} & \sigma_2^2\end{bmatrix}\right)
+$$
+
+The normalization $\sigma_1^2 = 1$ is imposed since only the sign of $y_1^*$ is observed; rescaling $y_1^*$ by any $a > 0$ does not change the observed $y_1$, so the variance is not identified.
+
+### Conditional Means
+
+#### Inverse Mills Ratio
+
+Using the truncated normal distribution, for any $\varepsilon_1 \sim \mathcal{N}(0,1)$:
+
+$$
+\mathbb{E}[\varepsilon_1 \mid \varepsilon_1 > -c] = \frac{\phi(c)}{\Phi(c)} \equiv \lambda(c)
+$$
+
+The function $\lambda(z) = \phi(z)/\Phi(z)$ is the **inverse Mills ratio**. It is always positive and decreasing in $z$.
+
+#### Truncated Conditional Mean
+
+The mean of $y_2$ for the observed (selected) subsample is:
+
+$$
+\mathbb{E}[y_2 \mid \mathbf{x}, y_1^* > 0] = \mathbf{x}_2'\beta_2 + \sigma_{12}\lambda(\mathbf{x}_1'\beta_1)
+$$
+
+This follows from writing $\varepsilon_2 = \sigma_{12}\varepsilon_1 + \xi$ where $\xi$ is independent of $\varepsilon_1$, so $\mathbb{E}[\varepsilon_2 \mid \varepsilon_1 > -\mathbf{x}_1'\beta_1] = \sigma_{12}\lambda(\mathbf{x}_1'\beta_1)$.
+
+The key implication: OLS on only the observed $y_2$ is inconsistent unless $\sigma_{12} = 0$ (the errors are uncorrelated), because the inverse Mills ratio acts as an omitted variable correlated with $\mathbf{x}_2$.
+
+#### Censored Mean
+
+If $y_2 = 0$ when $y_1^* \leq 0$, the unconditional mean is:
+
+$$
+\mathbb{E}[y_2 \mid \mathbf{x}] = \Phi(\mathbf{x}_1'\beta_1)\,\mathbf{x}_2'\beta_2 + \sigma_{12}\phi(\mathbf{x}_1'\beta_1)
+$$
+
+## The Heckman Two-Step Estimator
+
+The full MLE for the bivariate sample selection model is efficient but computationally demanding. Heckman (1979) proposed a simpler two-step approach, known as the **Heckit estimator**.
+
+**Step 1:** Estimate a Probit model for selection on the full sample (all $N$ observations, including $y_1 = 0$). Since $\Pr(y_1 = 1 \mid \mathbf{x}_1) = \Phi(\mathbf{x}_1'\beta_1)$, this yields consistent estimates $\hat\beta_1$. Compute the estimated inverse Mills ratio for each individual:
+
+$$
+\hat\lambda_i = \lambda(\mathbf{x}_{1i}'\hat\beta_1) = \frac{\phi(\mathbf{x}_{1i}'\hat\beta_1)}{\Phi(\mathbf{x}_{1i}'\hat\beta_1)}
+$$
+
+**Step 2:** Using only the selected subsample ($y_{1i} = 1$), run OLS of $y_{2i}$ on $\mathbf{x}_{2i}$ and $\hat\lambda_i$:
+
+$$
+y_{2i} = \mathbf{x}_{2i}'\beta_2 + \sigma_{12}\hat\lambda_i + v_i
+$$
+
+The coefficient on $\hat\lambda_i$ estimates $\sigma_{12}$. A $t$-test of this coefficient is a test for sample selection ($H_0: \sigma_{12} = 0$).
+
+**Note:** The standard errors from Step 2 OLS are incorrect. They must be adjusted to account for both heteroskedasticity and the fact that $\hat\lambda_i$ was estimated in Step 1 (sampling variability of $\hat\beta_1$ carries through). Stata's `heckman, twostep` handles this automatically.
+
+The Heckit estimator is less efficient than MLE under joint normality but is simpler to implement and more robust: it only requires $\mathbb{E}[\varepsilon_2 \mid \varepsilon_1] = \delta\varepsilon_1$ rather than full joint normality.
+
+## Identification
+
+The bivariate sample selection model is in principle identified without any restrictions on the regressors, purely through the functional form of $\lambda(\cdot)$. However, the inverse Mills ratio $\lambda(\mathbf{x}_1'\beta_1)$ is approximately linear over a wide range of its argument. If $\mathbf{x}_1 = \mathbf{x}_2$, this creates severe multicollinearity between $\hat\lambda_i$ and $\mathbf{x}_{2i}$ in Step 2.
+
+In practice, reliable identification requires an **exclusion restriction**: at least one variable in $\mathbf{x}_1$ (the participation equation) that is excluded from $\mathbf{x}_2$ (the outcome equation). This instrument must affect selection but have no direct effect on $y_2^*$ conditional on participation.
 
 # Applied
 
+```{stata}
+#| eval: false
 
-``{stata}
-heckman depvar [indepvars], select(depvar s = varlist s) [twostep]
+* --- Tobit (censored from below at 0 by default) ---
+tobit depvar indepvars, ll(0)
 
-``
+* --- Tobit censored from above ---
+tobit depvar indepvars, ul(100000)
+
+* --- two-sided censoring ---
+tobit depvar indepvars, ll(0) ul(100000)
+
+* --- alternatively (more general) ---
+intreg depvar_lower depvar_upper indepvars
+
+* --- marginal effects: censored mean (default) ---
+margins, dydx(*)
+
+* --- marginal effects: truncated mean ---
+margins, dydx(*) predict(e(0,.))
+
+* --- marginal effects: latent variable ---
+margins, dydx(*) predict(xb)
+
+* --- Heckman two-step (Heckit) ---
+* depvar   = outcome variable (y2)
+* indepvars = regressors in outcome equation (x2)
+* select() = selection equation: lhs is 0/1 indicator (y1),
+*            rhs contains selection regressors (x1, must include exclusion restriction)
+heckman depvar indepvars, select(y1 = x1 exclusion_var) twostep
+
+* --- Heckman MLE (more efficient under joint normality) ---
+heckman depvar indepvars, select(y1 = x1 exclusion_var)
+
+* --- test for selection (H0: sigma12 = 0) ---
+* reported automatically in heckman output as "rho" test
+```

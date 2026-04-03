@@ -5,79 +5,107 @@
     <lastmod>2026-01-26T23:09:28.371Z</lastmod>
   </url>
   <url>
+    <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS04/ps04.html</loc>
+    <lastmod>2026-04-03T01:30:06.861Z</lastmod>
+  </url>
+  <url>
     <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS02/ps02.html</loc>
-    <lastmod>2026-02-11T16:54:52.196Z</lastmod>
+    <lastmod>2026-04-03T01:30:29.741Z</lastmod>
   </url>
   <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/14causal/causal_intro.html</loc>
-    <lastmod>2026-02-12T14:44:05.045Z</lastmod>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/19scms/scts.html</loc>
+    <lastmod>2026-04-03T02:26:12.465Z</lastmod>
   </url>
   <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/12censored_truncated/tobit.html</loc>
-    <lastmod>2026-02-11T17:07:53.444Z</lastmod>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/17selection_matching/selection_matching.html</loc>
+    <lastmod>2026-04-03T02:26:21.734Z</lastmod>
   </url>
   <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/10nested_logit/nested.html</loc>
-    <lastmod>2026-02-12T14:33:33.266Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/08binary_choice/logit_probit.html</loc>
-    <lastmod>2026-03-21T18:46:08.487Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/06arellano/abond.html</loc>
-    <lastmod>2026-02-11T17:06:24.747Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/05gmm/gmm.html</loc>
-    <lastmod>2026-02-11T17:03:01.322Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/03fixed_effects/fe.html</loc>
-    <lastmod>2026-03-20T17:49:30.593Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/01pooled_ols/pols.html</loc>
-    <lastmod>2026-03-20T21:43:05.373Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/index.html</loc>
-    <lastmod>2026-02-12T14:51:19.070Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/02random_effects/re.html</loc>
-    <lastmod>2026-03-20T17:46:51.396Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/04first_diff/fd.html</loc>
-    <lastmod>2026-03-20T17:49:09.093Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/06anderson/ahsiao.html</loc>
-    <lastmod>2026-02-11T17:02:52.198Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/07mle/mle.html</loc>
-    <lastmod>2026-02-11T17:03:44.816Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/09multinomial/multinomial.html</loc>
-    <lastmod>2026-02-13T12:14:49.115Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mtfehl.github.io/econometrics2/Notes/11ordered_response/ordered_response.html</loc>
-    <lastmod>2026-02-11T17:04:42.483Z</lastmod>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/15rcts/rcts.html</loc>
+    <lastmod>2026-04-03T02:26:25.058Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Notes/13heckman/heckman.html</loc>
-    <lastmod>2026-02-12T14:14:41.868Z</lastmod>
+    <lastmod>2026-04-03T02:47:29.230Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/11ordered_response/ordered_response.html</loc>
+    <lastmod>2026-04-03T00:21:17.790Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/09multinomial/multinomial.html</loc>
+    <lastmod>2026-04-03T00:20:46.951Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/07mle/mle.html</loc>
+    <lastmod>2026-04-03T02:27:11.658Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/06anderson/ahsiao.html</loc>
+    <lastmod>2026-04-03T02:25:38.958Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/04first_diff/fd.html</loc>
+    <lastmod>2026-04-03T02:25:31.431Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/02random_effects/re.html</loc>
+    <lastmod>2026-04-03T02:26:52.951Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/index.html</loc>
+    <lastmod>2026-04-03T02:36:12.077Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/01pooled_ols/pols.html</loc>
+    <lastmod>2026-04-03T02:26:00.046Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/03fixed_effects/fe.html</loc>
+    <lastmod>2026-04-03T02:26:57.831Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/05gmm/gmm.html</loc>
+    <lastmod>2026-04-03T02:25:36.209Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/06arellano/abond.html</loc>
+    <lastmod>2026-04-03T02:25:42.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/08binary_choice/logit_probit.html</loc>
+    <lastmod>2026-04-03T02:26:03.538Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/10nested_logit/nested.html</loc>
+    <lastmod>2026-04-03T00:21:28.172Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/12censored_truncated/tobit.html</loc>
+    <lastmod>2026-04-03T00:21:06.959Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/14causal/causal_intro.html</loc>
+    <lastmod>2026-04-03T02:26:28.281Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/16rdds/rdds.html</loc>
+    <lastmod>2026-04-03T02:47:00.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Notes/18dids/dids.html</loc>
+    <lastmod>2026-04-03T02:31:13.691Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS01/ps01.html</loc>
-    <lastmod>2026-02-11T17:01:09.488Z</lastmod>
+    <lastmod>2026-04-03T01:30:45.173Z</lastmod>
   </url>
   <url>
     <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS03/ps03.html</loc>
-    <lastmod>2026-02-11T17:00:48.018Z</lastmod>
+    <lastmod>2026-04-03T01:30:02.168Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mtfehl.github.io/econometrics2/Problem_Sets/PS05/ps05.html</loc>
+    <lastmod>2026-04-03T01:29:31.418Z</lastmod>
   </url>
 </urlset>

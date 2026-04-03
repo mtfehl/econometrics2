@@ -3,9 +3,386 @@ title: "Problem Set 01"
 author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones"
 date: 01-17-2026
 description: "Linear Models: Pooled OLS, Random Effects, Fixed Effects, & First Diffs"
+image: "/images/ps01.png"
 problem-set: true
 format:
   html:
     self-contained: true
+    
+execute:
+  eval: false
 ---
 
+# 1. The Random Effects Model
+
+Consider the model with a single regressor $x_{it}$:
+
+$$
+y_{it} = \beta_0 + \beta_1 x_{it} + \alpha_i + u_{it}
+$$
+
+where $\alpha_i$ represents an unobserved effect fixed over time and $u_{it}$ is a homoskedastic error term which is independent over time $t$ and individuals $i$. There are $N$ randomly sampled individuals, each observed for $T = 4$ time periods. Assume that $E(u_{it} \mid X_i, \alpha_i) = 0$ for all $i$ and that $E(u_{it}u_{is} \mid X_i, \alpha_i) = 0$ for any $t$ and $s : t \neq s$, where $X_i$ represents the $T \times 2$ data matrix for individual $i$.
+
+## (a) RE Assumptions, Estimator Derivation, and Consistency
+
+To estimate a random effects model we need the following assumptions:
+
+* **RE1:** $E[\alpha_i \mid X_i] = 0$
+* **RE2:** $E[u_{it} \mid X_i, \alpha_i] = 0$
+* **RE3:** Homoskedasticity and no serial correlation:
+    * $\text{Var}(u_{it} \mid X_i, \alpha_i) = \sigma_u^2$
+    * $\text{Var}(\alpha_i \mid X_i) = \sigma_\alpha^2$
+    * $\text{Cov}(u_{is}, u_{it} \mid X_i, \alpha_i) = 0$ for $s \neq t$
+* **RE4:** $\text{plim}_{N \to \infty} \frac{1}{N}\sum_{i=1}^N X_i'V^{-1}X_i = E[X_i'V^{-1}X_i]$ has rank $K$
+
+Let the composite error be $v_i = \alpha_i + u_i$ and define the variance-covariance matrix of the error as $V = E[v_iv_i' \mid X_i]$. Consider the matrix $B$ such that $B'B = V^{-1}$ and transform the initial model:
+
+$$
+\begin{aligned}
+y &= X\beta + v \\
+By &= BX\beta + Bv \\
+y^* &= X^*\beta + v^*
+\end{aligned}
+$$
+
+where $y^* = By$, $X^* = BX$, and $v^* = Bv$. Applying OLS to the transformed model by minimizing the SSR:
+
+$$
+\text{SSR} = (y^* - X^*\beta)'(y^* - X^*\beta) = y^{*'}y^* - 2\beta'X^{*'}y^* + \beta'X^{*'}X^*\beta
+$$
+
+Taking the FOC with respect to $\beta$:
+
+$$
+\begin{aligned}
+\frac{\partial \text{SSR}}{\partial \beta} &= -2X^{*'}y^* + 2X^{*'}X^*\beta = 0 \\
+(BX)'(BX)\beta &= (BX)'(By) \\
+X'B'BX\beta &= X'B'By
+\end{aligned}
+$$
+
+Substituting $B'B = V^{-1}$, we obtain the **Random Effects estimator**:
+
+$$
+\hat{\beta}_{RE} = (X'V^{-1}X)^{-1}X'V^{-1}y
+$$
+
+To prove consistency, substitute $y = X\beta + v$:
+
+$$
+\begin{aligned}
+\hat{\beta}_{RE} &= \beta + (X'V^{-1}X)^{-1}X'V^{-1}v \\
+&= \beta + \left(\frac{1}{N}\sum_{i=1}^N X_i'V^{-1}X_i\right)^{-1}\left(\frac{1}{N}\sum_{i=1}^N X_i'V^{-1}v_i\right)
+\end{aligned}
+$$
+
+Note that:
+
+* $\left(\frac{1}{N}\sum_i X_i'V^{-1}X_i\right)^{-1} \xrightarrow{p} E[X_i'V^{-1}X_i]^{-1}$ by LLN and CMT
+* $\frac{1}{N}\sum_i X_i'V^{-1}v_i \xrightarrow{p} E[X_i'V^{-1}v_i]$ by LLN
+
+By LIE:
+
+$$
+E[X_i'V^{-1}v_i] = E\left[E[X_i'V^{-1}v_i \mid X_i]\right] = E\left[X_i'V^{-1}\underbrace{E[v_i \mid X_i]}_{=0}\right] = 0
+$$
+
+Thus, by Slutsky:
+
+$$
+\hat{\beta}_{RE} \xrightarrow{p} \beta + E[X_i'V^{-1}X_i]^{-1} \cdot 0 = \beta \qquad \blacksquare
+$$
+
+## (b) Asymptotic Variance-Covariance Matrix
+
+Multiplying the sampling error by $\sqrt{N}$:
+
+$$
+\sqrt{N}(\hat{\beta}_{RE} - \beta) = \underbrace{\left(\frac{1}{N}\sum_i X_i'V^{-1}X_i\right)^{-1}}_{(1)} \underbrace{\left(\frac{1}{\sqrt{N}}\sum_i X_i'V^{-1}v_i\right)}_{(2)}
+$$
+
+* $(1) \xrightarrow{p} E[X_i'V^{-1}X_i]^{-1}$ by LLN and CMT
+* $(2) \xrightarrow{d} \mathcal{N}(0, \mathbb{V}\text{ar}(X_i'V^{-1}v_i))$ by CLT
+
+The variance term is:
+
+$$
+\begin{aligned}
+\mathbb{V}\text{ar}(X_i'V^{-1}v_i) &= E[X_i'V^{-1}v_iv_i'V^{-1}X_i] \\
+&= E\left[X_i'V^{-1}\underbrace{E[v_iv_i' \mid X_i]}_{=V}V^{-1}X_i\right] \quad \text{by LIE} \\
+&= E[X_i'V^{-1}VV^{-1}X_i] \\
+&= E[X_i'V^{-1}X_i]
+\end{aligned}
+$$
+
+Therefore, by Slutsky:
+
+$$
+\sqrt{N}(\hat{\beta}_{RE} - \beta) \xrightarrow{d} \mathcal{N}\left(0, E[X_i'V^{-1}X_i]^{-1}\underbrace{E[X_i'V^{-1}X_i]}_{}\,E[X_i'V^{-1}X_i]^{-1}\right) = \mathcal{N}\left(0, E[X_i'V^{-1}X_i]^{-1}\right)
+$$
+
+Thus, the asymptotic variance of $\hat{\beta}_{RE}$ is:
+
+$$
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}_{RE}) = \frac{1}{N}E[X_i'V^{-1}X_i]^{-1}
+$$
+
+## (c) Implementation
+
+Since $\hat{\beta}_{RE}$ depends on $V = E[v_iv_i' \mid X_i]$, which depends on the residuals $v_i$, we need a consistent estimate $\hat{V}$ to make the estimator feasible. We use Pooled OLS to get first-stage residuals, since it is consistent and does not depend on $V$.
+
+**Step 1.** Estimate by Pooled OLS:
+
+$$
+\hat{\beta}_{POLS} = \left(\sum_{i=1}^N X_i'X_i\right)^{-1}\left(\sum_{i=1}^N X_i'y_i\right)
+$$
+
+and compute residuals $\hat{v}_{it} = y_{it} - x_{it}'\hat{\beta}_{POLS}$.
+
+**Step 2.** Estimate the variance of $v_{it}$:
+
+$$
+\widehat{\sigma_u^2 + \sigma_\alpha^2} = \frac{1}{NT - K}\sum_{i=1}^N\sum_{t=1}^T \hat{v}_{it}^2
+$$
+
+**Step 3.** Estimate the covariance between $v_{it}$ and $v_{is}$ for $t \neq s$:
+
+$$
+\hat{\sigma}_\alpha^2 = \frac{1}{NT(T-1)/2 - K}\sum_{i=1}^N\sum_{t=1}^{T-1}\sum_{s=t+1}^T \hat{v}_{it}\hat{v}_{is}
+$$
+
+**Step 4.** Recover $\hat{\sigma}_u^2 = \widehat{\sigma_u^2 + \sigma_\alpha^2} - \hat{\sigma}_\alpha^2$ and construct:
+
+$$
+\hat{V}_i = \hat{\sigma}_u^2 I_T + \hat{\sigma}_\alpha^2 \ell_T\ell_T'
+$$
+
+**Step 5.** Compute the feasible GLS estimator:
+
+$$
+\hat{\beta}_{RE} = \left(\sum_{i=1}^N X_i'\hat{V}_i^{-1}X_i\right)^{-1}\left(\sum_{i=1}^N X_i'\hat{V}_i^{-1}y_i\right)
+$$
+
+---
+
+# 2. Variance Estimation in Fixed Effects {#question-2}
+
+**Claim:** In the fixed effects model, the correct formula for a consistent estimate of $\sigma_u^2$ is
+
+$$
+\hat{\sigma}_u^2 = \frac{1}{N(T-1)}\sum_{i=1}^N\sum_{t=1}^T \tilde{u}_{it}^2
+$$
+
+and we need to divide by $N(T-1)$ rather than $NT$.
+
+**Proof.**
+
+Recall that in the FE model, $\tilde{u}_i = M_0 u_i$, where $M_0 = I_T - P_0$ is the $(T \times T)$ within-group annihilator matrix:
+
+$$
+M_0 = \begin{bmatrix}
+1 - \frac{1}{T} & -\frac{1}{T} & \cdots & -\frac{1}{T} \\
+-\frac{1}{T} & 1 - \frac{1}{T} & \cdots & -\frac{1}{T} \\
+\vdots & & \ddots & \vdots \\
+-\frac{1}{T} & \cdots & & 1 - \frac{1}{T}
+\end{bmatrix}
+$$
+
+$M_0$ is symmetric ($M_0' = M_0$) and idempotent ($M_0M_0 = M_0$). Using idempotency, the trace of $M_0$ equals its rank:
+
+$$
+\text{tr}(M_0) = \sum_{t=1}^T \left(1 - \frac{1}{T}\right) = T - 1
+$$
+
+Taking conditional expectations of the total SSR summed over all individuals:
+
+$$
+\sum_{i=1}^N \mathbb{E}[\tilde{u}_i'\tilde{u}_i \mid X] = \sum_{i=1}^N \mathbb{E}[(M_0 u_i)'(M_0 u_i) \mid X] = \sum_{i=1}^N \mathbb{E}[u_i'M_0 u_i \mid X]
+$$
+
+Since $u_i'M_0u_i$ is a scalar, $\text{tr}(u_i'M_0u_i) = u_i'M_0u_i$. Using the trace cycling property $\text{tr}(ABC) = \text{tr}(BAC)$:
+
+$$
+= \sum_{i=1}^N \mathbb{E}[\text{tr}(M_0 u_i u_i') \mid X]
+$$
+
+By linearity of trace and expectations, and since $M_0$ does not depend on $X$:
+
+$$
+= \sum_{i=1}^N \text{tr}\left(M_0 \mathbb{E}[u_i u_i' \mid X]\right)
+$$
+
+Applying homoskedasticity and no serial correlation, $\mathbb{E}[u_iu_i' \mid X] = \sigma_u^2 I_T$:
+
+$$
+= \sum_{i=1}^N \text{tr}(M_0 \sigma_u^2 I_T) = \sum_{i=1}^N \sigma_u^2 \cdot \text{tr}(M_0) = \sigma_u^2 \cdot N(T-1)
+$$
+
+By the analogy principle, replacing the population expectation with the sample sum:
+
+$$
+\sum_{i=1}^N\sum_{t=1}^T \hat{\tilde{u}}_{it}^2 \approx \hat{\sigma}_u^2 \cdot N(T-1)
+$$
+
+Dividing both sides by $N(T-1)$:
+
+$$
+\hat{\sigma}_u^2 = \frac{1}{N(T-1)}\sum_{i=1}^N\sum_{t=1}^T \hat{\tilde{u}}_{it}^2 \qquad \blacksquare
+$$
+
+The key insight is that the within transformation $M_0$ has rank $T - 1$ rather than $T$: one degree of freedom per individual is consumed by subtracting the individual time mean. So the effective number of observations contributing to identification of $\sigma_u^2$ is $N(T-1)$, not $NT$.
+
+---
+
+# 3. Fixed Effects vs. First Difference {#question-3}
+
+Consider the estimation equation $y_{it} = \alpha + x_{it}\beta + f_i + u_{it}$ for $i = 1, \ldots, N$ and $t = 1, 2$ ($T = 2$), where $u_{it}$ is serially uncorrelated and homoskedastic. We show that FE and FD produce identical coefficient estimates and variances.
+
+## Coefficient Equivalence
+
+After applying the within and first-difference transformations, we have:
+
+$$
+\text{FE: } \tilde{y}_{it} = \tilde{x}_{it}\beta + \tilde{u}_{it} \qquad \text{FD: } \Delta y_{it} = \Delta x_{it}\beta + \Delta u_{it}
+$$
+
+When $T = 2$, the demeaned FE variables for each individual are:
+
+$$
+\tilde{x}_{i1} = x_{i1} - \frac{x_{i1}+x_{i2}}{2} = -\frac{\Delta x_{i2}}{2}, \qquad \tilde{x}_{i2} = x_{i2} - \frac{x_{i1}+x_{i2}}{2} = \frac{\Delta x_{i2}}{2}
+$$
+
+and similarly for $\tilde{y}$ and $\tilde{u}$. The OLS estimators are:
+
+$$
+\hat{\beta}_{FE} = \frac{\sum_i\sum_t \tilde{x}_{it}\tilde{y}_{it}}{\sum_i\sum_t \tilde{x}_{it}^2}, \qquad \hat{\beta}_{FD} = \frac{\sum_i \Delta x_{i2}\Delta y_{i2}}{\sum_i \Delta x_{i2}^2}
+$$
+
+Substituting the FE variables in terms of FD quantities:
+
+$$
+\hat{\beta}_{FE} = \frac{\sum_i\left[\left(-\frac{\Delta x_{i2}}{2}\right)\left(-\frac{\Delta y_{i2}}{2}\right) + \left(\frac{\Delta x_{i2}}{2}\right)\left(\frac{\Delta y_{i2}}{2}\right)\right]}{\sum_i\left[\left(-\frac{\Delta x_{i2}}{2}\right)^2 + \left(\frac{\Delta x_{i2}}{2}\right)^2\right]} = \frac{\frac{1}{2}\sum_i \Delta x_{i2}\Delta y_{i2}}{\frac{1}{2}\sum_i \Delta x_{i2}^2} = \hat{\beta}_{FD} \qquad \blacksquare
+$$
+
+## Variance Equivalence
+
+The variance of each estimator takes the form $\mathbb{V}\text{ar}(\hat{\beta}) = \sigma_u^2 / S_{xx}$. The variance of the errors for both models is estimated by:
+
+$$
+\text{FE: } \hat{\sigma}_{\tilde{u}}^2 = \frac{1}{N(T-1)-K}\sum_{i=1}^N\sum_{t=1}^T \hat{\tilde{u}}_{it}^2 \qquad \text{FD: } \hat{\sigma}_e^2 = \frac{1}{N(T-1)-K}\sum_{i=1}^N\sum_{t=2}^T \Delta\hat{u}_{it}^2
+$$
+
+Note the degrees of freedom are equal for both. Expanding the FE numerator for $T = 2$:
+
+$$
+\sum_i\sum_{t=1}^2 \hat{\tilde{u}}_{it}^2 = \sum_i\left[\left(-\frac{\Delta\hat{u}_{i2}}{2}\right)^2 + \left(\frac{\Delta\hat{u}_{i2}}{2}\right)^2\right] = \frac{1}{2}\sum_i\Delta\hat{u}_{i2}^2
+$$
+
+so $\hat{\sigma}_{\tilde{u}}^2 = \frac{1}{2}\hat{\sigma}_e^2$. For the denominators:
+
+$$
+S_{xx, \text{FE}} = \sum_i\sum_{t=1}^2 \tilde{x}_{it}^2 = \sum_i\frac{\Delta x_{i2}^2}{2} = \frac{1}{2}S_{xx, \text{FD}}
+$$
+
+Thus:
+
+$$
+\mathbb{V}\text{ar}(\hat{\beta}_{FE}) = \frac{\hat{\sigma}_{\tilde{u}}^2}{S_{xx, \text{FE}}} = \frac{\frac{1}{2}\hat{\sigma}_e^2}{\frac{1}{2}S_{xx, \text{FD}}} = \frac{\hat{\sigma}_e^2}{S_{xx, \text{FD}}} = \mathbb{V}\text{ar}(\hat{\beta}_{FD}) \qquad \blacksquare
+$$
+
+---
+
+# 4. Empirical Application: Children and Life Satisfaction
+
+Using the SOEP practice dataset `soep_lebensz_en.dta`, we investigate how having children affects life satisfaction. The binary variable `has_kids` indicates whether a person has any children at time $t$.
+
+## (a) Pooled OLS vs. Fixed Effects
+
+The Pooled OLS estimate shows a statistically significant negative effect of having children on life satisfaction: the coefficient on `has_kids` is $-0.131$ ($p < 0.001$). This suggests that, on average, individuals with children report lower life satisfaction than those without.
+
+In the Fixed Effects specification, the coefficient on `has_kids` becomes small and statistically insignificant ($0.017$, $p = 0.648$). Once unobserved individual effects are accounted for, changes in parental status are not associated with statistically significant changes in life satisfaction.
+
+The substantial difference between the two estimates suggests that $f_i$ is correlated with `has_kids`. The negative POLS estimate likely reflects self-selection into parenthood based on time-invariant characteristics (preferences, personality traits, or baseline well-being) that are negatively correlated with life satisfaction and positively correlated with having children. As a result, POLS is biased and FE is the more appropriate estimator.
+
+## (b) Gender and Children Interaction
+
+The coefficient on `sex` disappears in the FE regression because sex is time-invariant at the individual level. The within transformation subtracts each individual's time mean, so $\tilde{z}_i = z_i - z_i = 0$ for any time-constant covariate; the coefficient $\gamma$ on $\mathbf{z}_i$ is not identified.
+
+Since `has_kids` is time-varying, its interaction with `sex` is also time-varying and therefore identified.
+
+Re-running FE with the interaction term:
+
+* Coefficient on `has_kids`: $0.048$ ($p = 0.386$) — the effect of children for men ($\text{sex} = 0$).
+* Coefficient on `has_kids` $\times$ `sex`: $-0.060$ ($p = 0.436$) — the differential effect for women relative to men.
+* Implied effect for women: $0.048 - 0.060 = -0.012$.
+
+Neither effect is statistically significant, and the differential between men and women is also not significant at conventional levels.
+
+## (c) Random Effects
+
+The RE model is able to include time-invariant variables (such as `sex`) since it transforms the model via a decomposition of the variance-covariance matrix rather than demeaning.
+
+In the RE model, the estimated coefficient on `has_kids` is $-0.041$ ($p = 0.233$), compared to $+0.048$ ($p = 0.386$) under FE. Although neither is statistically significant, the difference in sign and magnitude suggests the two estimators are capturing different sources of variation. This discrepancy is consistent with a violation of RE1: $\mathbb{E}[\alpha_i \mid X_{it}] = 0$ likely does not hold, i.e., the unobserved individual effect $\alpha_i$ is correlated with the regressors.
+
+## (d) Hausman Test
+
+The Hausman test comparing FE and RE yields $\chi^2(8) = 136.60$ ($p < 0.001$). We reject $H_0$ at all conventional significance levels.
+
+$H_0$ is that the difference in coefficients between FE and RE is not systematic — i.e., that RE1 holds and both estimators are consistent. Rejection implies that $\mathbb{E}[\alpha_i \mid X_i] \neq 0$: the unobserved effects are correlated with the regressors. The RE estimator is therefore inconsistent here, and FE is preferred.
+
+---
+
+# Stata Code
+
+```{stata}
+#| eval: false
+
+* --- set working dir ---
+cd "`c(pwd)'"
+
+* --- load data ---
+use "soep_lebensz_en.dta", clear
+
+* --- check variables ---
+describe id year sex education no_kids health_org satisf_org health_std satisf_std
+summarize no_kids satisf_std education
+
+* --- Declare Panel ---
+xtset id year
+label list sex
+* 0 are males, 1 females
+
+* --- Construct has_kids ---
+generate byte has_kids = (no_kids > 0)
+label var has_kids "has any children in household (indicator)"
+
+* --- Baseline: Pooled OLS (cluster SEs at id level) ---
+regress satisf_std has_kids sex education health_org i.year, vce(cluster id)
+estimates store pooled
+
+* --- Fixed Effects ---
+xtreg satisf_std sex has_kids education health_org i.year, fe vce(cluster id)
+estimates store fe
+
+* --- Interaction: has_kids * sex ---
+generate byte has_kids_sex = has_kids * sex
+
+xtreg satisf_std sex has_kids has_kids_sex education health_org i.year, fe vce(cluster id)
+estimates store fe_int
+
+* --- Random Effects ---
+xtreg satisf_std sex has_kids_sex has_kids education health_org i.year, re vce(cluster id)
+estimates store re
+
+* --- Hausman test (FE vs RE) ---
+* Hausman does not work with clustered SE, so re-estimate models without clustering and test
+* 1) Fit FE and RE without cluster vcov
+xtreg satisf_std has_kids has_kids_sex education health_org i.year, fe
+estimates store fe_nocluster
+
+xtreg satisf_std has_kids has_kids_sex education health_org i.year, re
+estimates store re_nocluster
+
+* 2) Hausman
+hausman fe_nocluster re_nocluster, sigmamore
+```

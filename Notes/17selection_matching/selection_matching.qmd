@@ -1,0 +1,363 @@
+---
+title: "Selection on Observables and Matching"
+author: "Michael Fehl"
+date: 02-26-2026
+description: " "
+class-notes: true
+image: "/images/matching.png"
+format:
+  html:
+    embed-resources: true
+
+execute:
+  eval: false
+---
+
+# Theory
+
+## Introduction
+
+We want to estimate the causal effect of a treatment in situations where randomization is impossible and there are no convincing natural experiments. The methods introduced here rely on the identifying assumption of **selection on observables**, also referred to as **unconfoundedness** or **conditional independence**. The assumption says that conditional on observable variables that influence selection into treatment, treatment status is "as good as" randomized.
+
+## Multiple Regression and Bad Controls
+
+A common approach in empirical work is to control for confounders in an OLS regression:
+
+$$
+Y_i = \beta_D D_i + \beta_1 W_{1i} + \beta_2 W_{2i} + U_i \tag{1}
+$$
+
+The identifying assumption is that conditional on $W_{1i}$ and $W_{2i}$, $U_i$ is mean-independent of $D_i$:
+
+$$
+\mathbb{E}(U_i \mid D_i, W_{1i}, W_{2i}) = \mathbb{E}(U_i \mid W_{1i}, W_{2i}) = \gamma_1 W_{1i} + \gamma_2 W_{2i}
+$$
+
+Under this conditional independence assumption:
+
+$$
+\text{plim}\; \hat{\beta}_D = \beta_D \qquad \text{plim}\; \hat{\beta}_1 = \beta_1 + \gamma_1 \qquad \text{plim}\; \hat{\beta}_2 = \beta_2 + \gamma_2
+$$
+
+### Bad Controls
+
+It is important to include as controls only variables that were **not themselves affected by the treatment**. A variable $W_i$ that is a post-treatment outcome (or an outcome of the treatment) constitutes a **bad control** (Angrist and Pischke, 2009).
+
+Including a bad control in the OLS regression leads to biased estimates. For a binary bad control $W_i$, the OLS estimator for $\beta_D$ converges to a weighted average of within-stratum treatment effects, but the comparison within each stratum is between treated units who obtained the outcome and untreated units who also obtained the outcome -- a fundamentally different population. If individuals without treatment who end up with $W_i = 1$ are more able or motivated than those with treatment who end up with $W_i = 1$, this comparison is downward biased. The simple regression of $Y_i$ on $D_i$, or of $W_i$ on $D_i$, would be fine.
+
+## Adjusting for Unobservables
+
+Unobserved confounders are a first-order concern in any observational study. Oster (2019) provides a method to estimate and adjust for bias from unobservables under additional assumptions about the relative degree of selection on observables vs. unobservables.
+
+Consider the model:
+
+$$
+Y_i = \beta X_i + \gamma' w_i^o + W_{2i}
+$$
+
+where $X_i$ denotes treatment status, $w_i^o = (w_{1i}^o, \ldots, w_{Ji}^o)$ is a vector of observed control variables, and $W_{2i}$ captures unobserved factors. Define $W_{1i} = \gamma' w_i^o$ as an index of observed factors and note that $W_{1i}$ and $W_{2i}$ are independent by the CEF decomposition property.
+
+**Equal relative contributions assumption:** The coefficient vector in a regression of $X_i$ on $w_i^o$ is proportional to the coefficient vector in a regression of $Y_i$ on $X_i$ and $w_i^o$. Formally, $\frac{\gamma_k}{\gamma_j} = \frac{\mu_k}{\mu_j}$ for all $k, j$.
+
+Define the **proportional selection relationship**:
+
+$$
+\delta \frac{\sigma_{1X}}{\sigma_1^2} = \frac{\sigma_{2X}}{\sigma_2^2}
+$$
+
+where $\sigma_{kX} = \text{Cov}(W_k, X)$ and $\sigma_k^2 = \text{Var}(W_k)$. The ratio $\frac{\sigma_{1X}/\sigma_1^2}{\sigma_{2X}/\sigma_2^2}$ can be interpreted as the relative effects of observables vs. unobservables on treatment. The degree of relative selection $\delta$ is unknown; the useful benchmark case is equal selection $\delta = 1$.
+
+Denote $\hat{\beta}^S$ (short/simple regression R-squared: $R^S$), $\hat{\beta}^L$ (long/multiple regression R-squared: $R^L$), and $R_{max}$ as the R-squared from a hypothetical regression of $Y_i$ on $X_i$, $W_{1i}$, and $W_{2i}$. Oster shows that under $\delta = 1$ and the equal relative contributions assumption:
+
+$$
+\hat{\beta}^L - (\hat{\beta}^S - \hat{\beta}^L)\frac{R_{max} - R^L}{R^L - R^S} \xrightarrow{p} \beta
+$$
+
+This provides a consistent estimate of the treatment effect by adjusting the controlled estimate $\hat{\beta}^L$ by a factor that depends on coefficient and R-squared movements. If $R^L$ is close to $R_{max}$, the adjustment is small (controls account for almost all variation in $Y$; little room for bias from unobservables). If $R^L$ increases only modestly relative to $R^S$ but $\hat{\beta}^S - \hat{\beta}^L$ is non-negligible, the remaining bias from unobservables is large and the adjustment is consequential.
+
+Under proportional selection (relaxing equal selection) the bias-adjusted estimator becomes:
+
+$$
+\hat{\beta}^L - \delta(\hat{\beta}^S - \hat{\beta}^L)\frac{R_{max} - R^L}{R^L - R^S} \xrightarrow{p} \beta
+$$
+
+## Exact Matching
+
+A more flexible approach that drops the linearity assumption is **exact matching**. Using potential outcomes notation, the identifying assumption is:
+
+$$
+Y_{1i}, Y_{0i} \perp D_i \mid X_i
+$$
+
+where $X_i$ denotes a cell with common pre-treatment characteristics. For example, $X_i = 1$ could denote males ($W_{1i} = 0$) without college education ($W_{2i} = 0$), $X_i = 2$ denotes males with college education, etc.
+
+Under conditional independence:
+
+$$
+\mathbb{E}(U_i \mid D_i, X_i) = \mathbb{E}(U_i \mid X_i) \qquad \text{and} \qquad \mathbb{E}(\beta_i \mid D_i, X_i) = \mathbb{E}(\beta_i \mid X_i)
+$$
+
+The difference in average outcomes within cell $x$ identifies the **conditional average treatment effect (CATE)**:
+
+$$
+\beta_x \equiv \mathbb{E}(\beta_i \mid X_i = x) = \mathbb{E}[Y_i \mid D_i = 1, X_i = x] - \mathbb{E}[Y_i \mid D_i = 0, X_i = x]
+$$
+
+The ATE and ATT are obtained as weighted averages of the CATE:
+
+$$
+\mathbb{E}(\beta_i) = \mathbb{E}[\mathbb{E}(\beta_i \mid X_i)] = \sum_x \beta_x P(X_i = x)
+$$
+
+$$
+\mathbb{E}(\beta_i \mid D_i = 1) = \sum_x \beta_x P(X_i = x \mid D_i = 1)
+$$
+
+The estimation strategy for exact matching is:
+
+1. Stratify the data into cells defined by each particular value of $X_i$.
+2. Within each cell, compute the difference in average outcomes between treated and comparison units.
+3. Average these differences with respect to the distribution of $X_i$.
+
+## Exact Matching vs. Regression
+
+The only difference between a fully saturated-in-$X$ regression and exact matching is the **weighting scheme** used to average treatment effects across cells. The matching estimand for the ATT weights by $P(X_i = x \mid D_i = 1)$ (the distribution of $X_i$ among the treated), while the regression estimand weights by $P(D_i = 1 \mid X_i = x)(1 - P(D_i = 1 \mid X_i = x))P(X_i = x)$ -- more weight to cells where the proportion of treated and untreated is similar.
+
+Specifically, the ATT matching estimand is:
+
+$$
+\mathbb{E}(\beta_x \mid D_i = 1) = \sum_x \beta_x \frac{P(D_i = 1 \mid X_i = x)P(X_i = x)}{\sum_x P(D_i = 1, X_i = x)}
+$$
+
+The regression estimand (plim of the coefficient on $D_i$ in a fully saturated-in-$X$ regression) is:
+
+$$
+\hat{\beta}_{\tilde{D}} \xrightarrow{p} \frac{\text{Cov}(\tilde{D}_i, Y_i)}{\text{Var}(\tilde{D}_i)} = \frac{\sum_x \beta_x [P(D_i = 1 \mid X_i = x)(1 - P(D_i = 1 \mid X_i = x))]P(X_i = x)}{\sum_x [P(D_i = 1 \mid X_i = x)(1 - P(D_i = 1 \mid X_i = x))]P(X_i = x)}
+$$
+
+where $\tilde{D}_i = D_i - \mathbb{E}(D_i \mid X_i)$. Key implications:
+
+- Both estimands equal $\sum_x \beta_x P(X_i = x)$ when $P(D_i = 1 \mid X_i = x) = p$ is constant, i.e. treatment is independent of $X_i$, so plim $\hat{\beta}_{\tilde{D}} = \mathbb{E}[Y_i \mid D_i = 1] - \mathbb{E}[Y_i \mid D_i = 0]$.
+- Cells where $P(D_i = 1 \mid X_i = x) = 0$ or $P(D_i = 0 \mid X_i = x) = 0$ do not contribute to either estimand.
+- Regression gives more weight to cells where the proportion of treated and untreated is similar.
+- The matching estimand for the ATT gives more weight to cells where the proportion of treated is high.
+- With heterogeneous $\beta_x$, the OLS estimand is a variance-weighted average of the $\beta_x$.
+
+## Identification Based on the Propensity Score
+
+Exact matching and fully saturated regression are infeasible when $X_i$ is multivalued or continuous (the "curse of dimensionality"). Rosenbaum and Rubin (1983) propose an equivalent and feasible estimation strategy based on the **propensity score**:
+
+$$
+p(W_i) \equiv P(D_i = 1 \mid W_i) = \mathbb{E}(D_i \mid W_i)
+$$
+
+**Propensity score theorem:** If the CIA holds conditional on $W_i$, i.e. $\mathbb{E}(U_i \mid D_i, W_i) = \mathbb{E}(U_i \mid W_i)$, then treatment is also unconfounded given the propensity score: $\mathbb{E}(U_i \mid D_i, p(W_i)) = \mathbb{E}(U_i \mid p(W_i))$.
+
+**Proof:** We need to show $P(D_i = 1 \mid U_i, p(W_i)) = p(W_i)$.
+
+$$
+\begin{aligned}
+P(D_i = 1 \mid U_i, p(W_i)) &= \mathbb{E}[D_i \mid U_i, p(W_i)] \\
+&= \mathbb{E}[\mathbb{E}(D_i \mid U_i, p(W_i), W_i) \mid U_i, p(W_i)] \\
+&= \mathbb{E}[\mathbb{E}(D_i \mid W_i) \mid U_i, p(W_i)] \\
+&= \mathbb{E}[p(W_i) \mid U_i, p(W_i)] = p(W_i)
+\end{aligned}
+$$
+
+This reduces the dimensionality problem: instead of conditioning on the full vector $W_i$, we only need to condition on the scalar $p(W_i)$. The ATE and ATT can be obtained as $p(W_i)$-weighted averages of the conditional treatment effect $\delta_{p(W)}$:
+
+$$
+\mathbb{E}(\beta_i) = \mathbb{E}[\delta_{p(W)}] = \sum_{p(W)} \delta_{p(W)} P(p(W_i) = p)
+$$
+
+$$
+\mathbb{E}(\beta_i \mid D_i = 1) = \mathbb{E}[\delta_{p(W)} \mid D_i = 1] = \sum_{p(W)} \delta_{p(W)} P(p(W_i) = p \mid D_i = 1)
+$$
+
+## Estimation Based on the Propensity Score
+
+In practice the recommended procedure follows these steps:
+
+### Step 1: Propensity Score Estimation
+
+Using OLS to estimate $p(W_i)$ typically yields predicted probabilities outside $[0,1]$. The standard approach is a **logit model**:
+
+$$
+p(W_i) = \frac{e^{h(W_i)}}{1 + e^{h(W_i)}} = \frac{1}{e^{-h(W_i)} + 1}
+$$
+
+where $h(W_i) = \alpha_0 + \alpha_1 W_{1i} + \ldots + \alpha_k W_{ki}$ can include linear and higher order terms. The log-likelihood is:
+
+$$
+L(\alpha_0, \ldots, \alpha_k; D_1, \ldots, D_n, W_1, \ldots, W_n) = \sum_i D_i \ln p(W_i \mid \alpha) + \sum_i (1-D_i) \ln(1 - p(W_i \mid \alpha))
+$$
+
+Note that the MLE coefficients cannot be easily interpreted directly; the logit function has to be evaluated separately for different values of $W_{1i}$, holding $W_2$ through $W_k$ constant at their mean values.
+
+### Step 2: Check Overlap and Common Support
+
+The ATT and ATE are only defined in the **region of common support**: the range of propensity scores where both treated and control units exist. This step involves checking the overlap of propensity score distributions between treatment and control groups. Units outside the common support must be excluded.
+
+### Step 3: Choose Matching Algorithm
+
+In practice it is rare to find two units with exactly the same propensity score. The three main algorithms are:
+
+**Nearest Neighbor Matching (with replacement):**
+
+For each treated unit $i \in T$, find the nearest comparison unit $j$:
+
+$$
+C(i) = \min_j \| \hat{p}_i - \hat{p}_j \|
+$$
+
+Use the nearest comparison unit again if it has already been matched (replacement). Drop unmatched comparison units. Delivers $N^T$ pairs where comparison units may appear more than once.
+
+**Radius Matching:**
+
+For each treated unit, find all comparison units whose propensity score differs by less than a tolerance $r$:
+
+$$
+C(i) = \{j \mid \| \hat{p}_i - \hat{p}_j \| < r\}
+$$
+
+**Kernel Matching:**
+
+Every treated unit is matched with a weighted average of all comparison units $N_i^C$ within a bandwidth $h$, with weights inversely related to the distance between the scores:
+
+$$
+\hat{\tau}_K^{ATT} = \frac{1}{N^T} \sum_{i \in T} \left(Y_i^T - \frac{\sum_{j \in C(i)} Y_j^C \, G\!\left(\frac{\hat{p}_i - \hat{p}_j}{h_n}\right)}{\sum_{j \in C(i)} G\!\left(\frac{\hat{p}_i - \hat{p}_j}{h_n}\right)}\right)
+$$
+
+where $G(\cdot)$ is a kernel function and $h_n$ is a bandwidth parameter.
+
+### Step 4: Assess Matching Quality
+
+Observations with the same propensity score should have the same distribution of observable covariates independently of treatment status. To test for balance, stratify the sample over small propensity score intervals and test for each covariate whether the means for treated and controls are statistically different in each interval. If balance fails, improve the specification (more interactions or higher order terms) and restart.
+
+### Step 5: Estimate Effects
+
+The nearest neighbor and radius matching estimators for the ATT are:
+
+$$
+\hat{\tau}_{NN,R}^{ATT} = \frac{1}{N^T} \sum_{i \in T} \left[Y_i^T - \sum_{j \in C(i)} w_{ij} Y_j^C\right]
+$$
+
+where $w_{ij} = 1/N_i^C$ if $j \in C(i)$ and $w_{ij} = 0$ otherwise. Standard errors of matching estimators are typically computed using the bootstrap (note: the standard bootstrap variance is not valid for nearest neighbor matching on a continuous covariate; see Abadie and Imbens (2008) for a valid alternative).
+
+### Step 6: Sensitivity Analysis
+
+In support of the CIA assumption, perform the following diagnostics:
+
+1. Estimate the effect of the treatment on unaffected outcomes, particularly the lagged outcome (placebo-type analysis).
+2. Estimate the effect of a pseudo-treatment on an outcome.
+3. Assess sensitivity of estimates to different choices of controls $W_i$.
+
+## Propensity Score Weighting
+
+The propensity score can also be used directly as a weight to estimate causal parameters. The idea is to down-weight treated observations with high p-scores and up-weight those with low p-scores, making the weighted treated sample more similar to the comparison group.
+
+For the **ATE**, the weights are:
+
+$$
+w_{1i} = \frac{p}{p(W_i)} \qquad w_{0i} = \frac{1-p}{1-p(W_i)}
+$$
+
+where $p$ is the sample proportion treated. Under the CIA and plim $\hat{p}(W_i) = p(W_i)$:
+
+$$
+\mathbb{E}[Y_i w_{1i} \mid D_i = 1] - \mathbb{E}[Y_i w_{0i} \mid D_i = 0] = \mathbb{E}(\beta_i)
+$$
+
+For the **ATT**, the weights are:
+
+$$
+w_{1i} = 1 \qquad w_{0i} = \frac{\hat{p}(W_i)}{1 - \hat{p}(W_i)} \cdot \frac{1-p}{p}
+$$
+
+Under the CIA:
+
+$$
+\mathbb{E}[Y_i w_{1i} \mid D_i = 1] - \mathbb{E}[Y_i w_{0i} \mid D_i = 0] = \mathbb{E}(\beta_i \mid D_i = 1)
+$$
+
+## Matching in Practice
+
+Compared to other policy evaluation methods, approaches relying on **selection on observables** are often viewed with great skepticism. The fundamental issue is that economic models are often all about self-selection, which is assumed away in these approaches. Before implementing a matching approach, the key question is:
+
+*"Why, if these units are so similar, did one get treated and another not?"*
+
+A good use of matching needs to make a rhetorical case for why it is plausible, not just a statistical case. It is more plausible that, conditional on observables, the reason one unit gets treated and another does not is random when:
+
+1. A separate decision-maker with limited information decides on treatment (administrators make the relevant decisions).
+2. Capacity limits and small frictions/noise affect who gets treated.
+3. The decision-maker cares about a different outcome than the evaluator, or unobserved costs affect take-up but not outcomes.
+4. Randomization substrata exist.
+
+The validity of the conditional independence assumption needs to be carefully argued for on a case-by-case basis.
+
+# Applied
+
+```{stata}
+#| eval: false
+
+* --- multiple regression under CIA ---
+reg y D W1 W2, vce(robust)
+
+* --- bad controls: do NOT include post-treatment variables ---
+* wrong: W is itself affected by D
+* reg y D W, vce(robust)
+
+* --- Oster (2019) bias-adjusted estimator ---
+* ssc install psacalc
+* short regression
+reg y D
+* long regression
+reg y D W1 W2
+* bias-adjusted estimate (rmax = hypothesized maximum R-squared)
+psacalc beta D, rmax(0.9)
+
+* --- propensity score estimation ---
+logit D W1 W2 W3
+predict pscore, pr
+
+* --- check common support ---
+twoway (kdensity pscore if D==0) (kdensity pscore if D==1), ///
+    legend(label(1 "Control") label(2 "Treated")) ///
+    title("Propensity Score Distribution")
+
+* trim observations outside common support
+sum pscore if D==0
+gen in_support = (pscore >= r(min) & pscore <= r(max))
+
+* --- propensity score matching ---
+* ssc install psmatch2
+* nearest neighbor matching (with replacement), caliper
+psmatch2 D W1 W2 W3, outcome(y) neighbor(1) caliper(0.01) common
+
+* radius matching
+psmatch2 D W1 W2 W3, outcome(y) radius caliper(0.05) common
+
+* kernel matching
+psmatch2 D W1 W2 W3, outcome(y) kernel kerneltype(epan) bwidth(0.06) common
+
+* --- teffects: built-in matching in Stata ---
+* nearest neighbor matching on propensity score (ATE)
+teffects psmatch (y) (D W1 W2 W3), ate nneighbor(1)
+* ATT
+teffects psmatch (y) (D W1 W2 W3), atet nneighbor(1)
+
+* covariate matching (exact on X)
+teffects nnmatch (y W1 W2) (D), ate
+
+* --- balance check after matching ---
+pstest W1 W2 W3, both
+
+* --- propensity score weighting (IPW) ---
+* ATE weights
+gen w_ate = D/pscore + (1-D)/(1-pscore)
+reg y D [pweight=w_ate], vce(robust)
+
+* ATT weights
+gen w_att = D + (1-D)*pscore/(1-pscore)
+reg y D [pweight=w_att], vce(robust)
+```

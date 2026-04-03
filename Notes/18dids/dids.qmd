@@ -1,0 +1,335 @@
+---
+title: "Difference in Differences"
+author: "Michael Fehl"
+date: 03-01-2026
+class-notes: true
+description: " "
+image: "/images/DiD.png"
+format:
+  html:
+    embed-resources: true
+
+execute:
+  eval: false
+---
+
+# Theory
+
+## Introduction
+
+With data from a randomized experiment, comparing mean outcomes in treatment and control groups gives an unbiased estimate of the causal effect. In observational settings, matching methods try to find comparable units conditional on observed covariates, but the conditional independence assumption is hard to defend when economic models are all about self-selection. A third route is **difference-in-differences (DiD)**, which exploits panel data on units observed before and after treatment. The key idea is that even if treated and control units differ systematically in unobserved ways, those differences may be constant over time. If so, they cancel out when we compare the change in outcomes across groups.
+
+## Identification in Simple DiD Designs
+
+Consider the following panel data regression model:
+
+$$
+Y_{it} = \beta_{it} D_{it} + \mu_i + \delta_t + U_{it}
+$$
+
+where $\delta_t$ are time effects common across units, $\mu_i$ are time-invariant confounders (so $\mu_i$ and $D_{it}$ are not independent), and $U_{it}$ are causes of the outcome unrelated to selection into treatment, $\mathbb{E}(U_{it} \mid D_{it}) = \mathbb{E}(U_{it})$. The causal mapping gives potential outcomes:
+
+$$
+Y_{0it} = \mu_i + \delta_t + U_{it} \qquad Y_{1it} = \beta_{it} + \mu_i + \delta_t + U_{it}
+$$
+
+so individual treatment effects are $\beta_{it} = Y_{1it} - Y_{0it}$.
+
+To simplify, assume there are only two periods. Period $t = 0$ is the pre-treatment period ($D_{i0} = 0$ for all $i$) and period $t = 1$ is the post-treatment period ($D_{i1} = 1$ for some units). The regression model becomes:
+
+$$
+Y_{it} = \beta_i D_{it} + \mu_i + \gamma t + U_{it}
+$$
+
+Computing expectations by treatment status and period:
+
+$$
+\begin{aligned}
+\mathbb{E}(Y_{i1} \mid D_{i1} = 1) &= \mathbb{E}(\beta_i \mid D_{i1} = 1) + \mathbb{E}(\mu_i \mid D_{i1} = 1) + \gamma + \mathbb{E}(U_{i1} \mid D_{i1} = 1) \\
+\mathbb{E}(Y_{i0} \mid D_{i1} = 1) &= \mathbb{E}(\mu_i \mid D_{i1} = 1) + \mathbb{E}(U_{i0} \mid D_{i1} = 1)
+\end{aligned}
+$$
+
+Taking the difference within the treatment group and subtracting the analogous difference for the control group:
+
+$$
+\begin{aligned}
+&\mathbb{E}(\Delta Y_{i1} \mid D_{i1} = 1) - \mathbb{E}(\Delta Y_{i1} \mid D_{i1} = 0) \\
+&= \mathbb{E}(\beta_i \mid D_{i1} = 1) + \mathbb{E}(\Delta U_{i1} \mid D_{i1} = 1) - \mathbb{E}(\Delta U_{i1} \mid D_{i1} = 0)
+\end{aligned}
+$$
+
+The DiD estimator identifies the **average treatment effect on the treated (ATT)** under the **common trends assumption**:
+
+$$
+\mathbb{E}(\Delta U_{i1} \mid D_{i1} = 1) = \mathbb{E}(\Delta U_{i1} \mid D_{i1} = 0)
+$$
+
+which is equivalent to saying that, in the absence of treatment, the average outcomes for treated and untreated units would have evolved the same way over time:
+
+$$
+\mathbb{E}(\Delta Y_{0i1} \mid D_{i1} = 1) = \mathbb{E}(\Delta Y_{0i1} \mid D_{i1} = 0)
+$$
+
+This assumption is fundamentally untestable -- it is a claim about a counterfactual. With more than two periods, however, one can check whether trends were parallel in pre-treatment periods as a diagnostic.
+
+Also note that common trends is not invariant to monotone transformations of the outcome. If it holds for wages measured in levels, it will not generally hold for wages in logs.
+
+## Estimation
+
+With unit-level panel data, the ATT is estimated from the **first-differenced OLS regression**:
+
+$$
+\Delta Y_{i1} = \gamma + \beta_i D_{i1} + \Delta U_{i1}
+$$
+
+The OLS estimator converges to:
+
+$$
+\text{plim}\; \hat{\beta}_D = \frac{\text{Cov}(\Delta Y_{i1}, D_{i1})}{\text{Var}(D_{i1})} = \mathbb{E}(\Delta Y_{i1} \mid D_{i1} = 1) - \mathbb{E}(\Delta Y_{i1} \mid D_{i1} = 0) = \mathbb{E}(\beta_i \mid D_{i1} = 1)
+$$
+
+With only repeated cross-sectional data (where units in one period may differ from those in another), the ATT is recovered from the **pooled OLS regression**:
+
+$$
+Y_{it} = \beta_0 + \beta_1 D_{i1} + \beta_2 t + \beta_i(D_{i1} \times t) + U_{it}
+$$
+
+where $t$ is a post-period dummy. One can show that under common trends, plim $\hat{\beta}_i = \mathbb{E}(\beta_i \mid D_{i1} = 1)$ by expanding and collecting expectations in each cell of the 2x2 DiD table.
+
+## The Static Two-way Fixed Effects Specification
+
+The simple two-period model generalizes to the multi-period, staggered timing case using the **static two-way fixed effects (TWFE)** specification:
+
+$$
+Y_{it} = \mu_i + \gamma_t + \beta_D D_{it} + U_{it}
+$$
+
+where $\gamma_t$ is a time fixed effect for each period and $\mu_i$ is a time-invariant unit fixed effect.
+
+The identifying assumption is **strict exogeneity**: conditional on individual and time effects, unobserved factors are mean-independent of $D_{it}$ in all periods:
+
+$$
+\mathbb{E}(U_{it} \mid D_{i1}, \ldots, D_{iT}, \mu_i, t) = \mu_i + \gamma_t \quad \text{for } t = 0, \ldots, T
+$$
+
+Under strict exogeneity and **homogeneous treatment effects** $\beta_i = \beta_D$, the proof that OLS on the TWFE specification is consistent uses the Frisch-Waugh-Lovell theorem (demeaning within units and then within time periods) and the strict exogeneity condition:
+
+$$
+\text{plim}\; \hat{\beta}_D = \frac{\mathbb{E}[\text{Cov}(D_{it} - \bar{D}_i, Y_{it} - \bar{Y}_i \mid \lambda_t)]}{\mathbb{E}[\text{Var}(D_{it} - \bar{D}_i \mid \lambda_t)]} = \beta_D
+$$
+
+When $t = 0, 1$ and $D_{i0} = 0$ for all $i$, the TWFE and DiD estimands are identical:
+
+$$
+\frac{\mathbb{E}[\text{Cov}(D_{it} - \bar{D}_i, Y_{it} - \bar{Y}_i \mid \lambda_t)]}{\mathbb{E}[\text{Var}(D_{it} - \bar{D}_i \mid \lambda_t)]} = \mathbb{E}(\Delta Y_{it} \mid D_{it} = 1) - \mathbb{E}(\Delta Y_{it} \mid D_{it} = 0) = \beta_D
+$$
+
+## Problems with the Static TWFE Specification
+
+The static TWFE specification yields a sensible estimand under homogeneous effects. But recent work by de Chaisemartin and D'Haultfoeuille (2020), Goodman-Bacon (2021), and Borusyak, Jaravel and Spiess (2022) has shown that the static specification no longer yields interpretable estimands when treatment effects are heterogeneous either across units or over time.
+
+**Goodman-Bacon (2021)** shows that the OLS estimate $\hat{\beta}_D$ from a TWFE regression is a variance-weighted average of all possible 2x2 DiD estimators. For illustration, suppose there are three groups: never-treated ($y^U$), early-treated ($y^k$), and late-treated ($y^l$). There are four distinct 2x2 DiD comparisons that the TWFE OLS estimator combines into a single $\hat{\beta}_D$:
+
+1. Early-treated vs. never-treated (pre/post the early date $k$)
+2. Late-treated vs. never-treated (pre/post the late date $l$)
+3. Early-treated as treated, late-treated as control (before $l$)
+4. Late-treated as treated, early-treated as control (after $k$)
+
+The weight on each 2x2 DiD is a positive function of the size of the subsample and the variance of the treatment variable within the subsample. Variance is higher when the two groups are closer in size and when treatment occurs near the middle of the time window. Changing the number or spacing of time periods changes the weights and thus the obtained estimate, even if all the underlying 2x2 DiDs stay constant.
+
+The core problem is comparisons 3 and 4, which use already-treated units as controls. These introduce **forbidden comparisons**: changes in the treatment effect on already-treated units get subtracted out, which can produce negative 2x2 DiD estimates even when all true treatment effects are positive.
+
+When effects are constant, $\hat{\beta}_D$ identifies the ATT. When effects vary across units but not over time, $\hat{\beta}_D$ identifies a **variance-weighted average treatment effect on the treated (VWATT)**, which differs from both the sample ATT (weighted by group share) and the average effect in the treated period (weighted by time spent treated). When effects also vary over time, the TWFE estimand can have the wrong sign.
+
+## The Dynamic Two-way Fixed Effects Specification
+
+A popular way to assess TWFE estimates is to estimate separate impact estimates for pre- and post-treatment periods using the **dynamic TWFE specification**:
+
+$$
+Y_{it} = \mu_i + \gamma_t + \sum_{k,\, k \neq -1} \beta_k \mathbf{1}[t - E_i = k] + U_{it}
+$$
+
+where $E_i$ is the period in which unit $i$ first receives treatment and $k = t - E_i$ is time relative to treatment. Units are categorized into adoption cohorts based on initial treatment timing. Relative times typically exclude $k = -1$ as the base category and pool observations at the extremes.
+
+In an event study, treatment is expected to affect outcomes only after it occurs, not before. Finding pre-treatment $\hat{\beta}_k \approx 0$ is reassuring; significant pre-treatment effects suggest other factors are driving outcomes.
+
+The dynamic specification yields sensible estimates only when there is heterogeneity in time since treatment but not across cohorts (Borusyak and Jaravel, 2018; Sun and Abraham, 2021). If all units have treatment effect $\tau_s$ in the $s$-th period after treatment, then $\hat{\beta}_s = \tau_s$. But with heterogeneous effects across adoption cohorts, the coefficients from the dynamic TWFE specification are once again difficult to interpret and include the same forbidden comparisons as the static case.
+
+## Heterogeneity-Robust Estimators
+
+### Callaway and Sant'Anna (2021)
+
+Callaway and Sant'Anna (2021) propose an approach that uses never-treated or not-yet-treated units as controls and avoids forbidden comparisons. Their approach relies on two assumptions:
+
+**Assumption 1** (Parallel trends for staggered settings): For all $t \neq t'$ and $g \neq g'$,
+
+$$
+\mathbb{E}[Y_{it}(\infty) - Y_{it'}(\infty) \mid G_i = g] = \mathbb{E}[Y_{it}(\infty) - Y_{it'}(\infty) \mid G_i = g']
+$$
+
+where $G_i$ is the earliest period at which unit $i$ received treatment, $g$ is the first treatment date, and $Y_{it}(\infty)$ are "never-treated" potential outcomes. In the counterfactual where treatment had not occurred, all adoption cohorts would have evolved in parallel.
+
+**Assumption 2** (Staggered no anticipation): $Y_{it}(g) = Y_{it}(\infty)$ for all $t < g$.
+
+The building block is the **group-time average treatment effect on the treated**:
+
+$$
+ATT(g, t) = \mathbb{E}[Y_{it}(g) - Y_{it}(\infty) \mid G_i = g]
+$$
+
+which gives the average treatment effect at time $t$ for the cohort first treated at time $g$. Under Assumption 1, one can identify:
+
+$$
+ATT(g, t) = \mathbb{E}[Y_{it} - Y_{i,g-1} \mid G_i = g] - \mathbb{E}[Y_{it} - Y_{i,g-1} \mid G_i = g']
+$$
+
+for any comparison group $g' > t$. Since this holds for any $g' \in \mathcal{G}$ with $g' > t$, one can average over comparison groups:
+
+$$
+ATT(g, t) = \mathbb{E}[Y_{it} - Y_{i,g-1} \mid G_i = g] - \mathbb{E}[Y_{it} - Y_{i,g-1} \mid G_i = \mathcal{G}]
+$$
+
+The sample estimator replaces expectations with sample analogs:
+
+$$
+\widehat{ATT}(g, t) = \frac{1}{N_g} \sum_{i:\, G_i = g} [Y_{it} - Y_{i,g-1}] - \frac{1}{N_{\mathcal{G}}} \sum_{i:\, G_i \in \mathcal{G}} [Y_{it} - Y_{i,g-1}]
+$$
+
+Two natural choices for the comparison group $\mathcal{G}$:
+
+1. Never-treated units ($\mathcal{G} = \{\infty\}$)
+2. Not-yet-treated units ($\mathcal{G} = \{g' : g' > t\}$)
+
+With many periods or cohorts, reporting all $\widehat{ATT}(g, t)$ is cumbersome and individual estimates may be imprecise. The method extends to weighted averages. The event-study parameter giving the average effect $\ell$ periods after adoption across cohorts is:
+
+$$
+ATT_\ell^w = \sum_g w_g\, ATT(g, g + \ell)
+$$
+
+where $w_g$ can weight cohorts equally or by their relative frequency in the treated population. Inference is via bootstrap.
+
+Advantages over standard TWFE: (1) the approach provides sensible estimands under arbitrary treatment effect heterogeneity, and (2) it is transparent about which units serve as the control group.
+
+### Borusyak, Jaravel and Spiess (2022)
+
+Borusyak, Jaravel and Spiess (2022) propose an **imputation estimator** based on the TWFE model:
+
+1. Fit the TWFE regression $Y_{it}(\infty) = \mu_i + \gamma_t + U_{it}$ using only not-yet-treated observations.
+2. Impute the never-treated potential outcome for each treated unit as the predicted value $\hat{Y}_{it}(\infty)$.
+3. Estimate the individual treatment effect as $Y_{it} - \hat{Y}_{it}(\infty)$ and aggregate to form $ATT(g, t)$.
+
+This differs from the Callaway-Sant'Anna estimator in that it uses the average pre-treatment outcome across all periods before $g$ rather than just the outcome in period $g - 1$.
+
+## Extensions
+
+The staggered DiD literature is rapidly evolving. Some notable extensions:
+
+- **Non-absorbing treatments**: when treatment can turn on and off, one can impose a "no carryover" assumption where potential outcomes depend only on current treatment status (de Chaisemartin and D'Haultfoeuille, 2020; Imai and Kim, 2021), or relax it to allow potential outcomes to depend on the full treatment path (de Chaisemartin and D'Haultfoeuille, 2024).
+- **Multivalued or continuous treatments**: Callaway et al. (2024) and de Chaisemartin and D'Haultfoeuille (2024).
+
+## Testing for Pre-trends
+
+The parallel trends assumption is untestable by construction. But with multiple pre-treatment periods, one can check whether trends were the same pre-treatment using the dynamic TWFE specification. If pre-treatment leads are all insignificant, an **event-study plot** supports the research design. In the staggered setting, the Callaway-Sant'Anna approach provides an analogous pre-trends check.
+
+Several important limitations apply:
+
+**1. Parallel pre-trends do not imply parallel post-trends.** The test only checks the identifying assumption in the pre-period. Even if pre-trends are parallel, post-treatment trends may diverge for reasons unrelated to treatment.
+
+**2. Low power.** The test may fail to reject even when parallel trends is violated (Bilinski and Hatfield, 2018; Dette and Schumann, 2020). Pre-treatment periods are few and estimates are noisy, so even substantial violations may not be detectable. Note that in the staggered setting, dynamic TWFE specifications may reject even when parallel pre-trends hold, since they are biased under heterogeneous treatment effects.
+
+**3. Pre-testing induces selection bias** (Roth, 2022). When parallel trends is violated, draws of data in which we happen not to find a significant pre-trend form a selected sample. In that selected sample, we tend to underestimate the treatment-control gap at $t = 0$, which makes the post-period DiD look particularly large conditional on passing the pre-test. This is pre-test bias.
+
+Formally: suppose in the population there is a linear difference in trend with slope 3. In draws where the pre-trend coefficient happens to be insignificant, the pre-period DiD is around 1.4 rather than 3, while the post-period DiD inflates to around 3.8 rather than 3. Analyzing only the draws that pass the pre-test thus produces inflated post-period estimates.
+
+What to do: diagnostics of the power and distortions from pre-testing (Roth, 2022, "Pre-Test with Caution") and formal sensitivity analyses that bound inference under smooth violations of parallel trends (Rambachan and Roth, 2023, "A More Credible Approach").
+
+## Checklist for DiD Designs
+
+**1. Is everyone treated at the same time?**
+
+- If YES: static or dynamic standard TWFE are fine.
+- If NO: use TWFE only if confident about treatment effect homogeneity.
+- If not confident: use a heterogeneity-robust estimator for staggered treatment timing.
+
+**2. Are you sure about the validity of parallel trends?**
+
+- If YES: explain why (e.g., quasi-random treatment timing).
+- If NO: consider a method that conditions on covariates.
+- If NO: show an event-study plot with diagnostics of the power of the pre-test plus formal sensitivity analyses.
+
+**3. Do you have many clusters sampled from a super-population?**
+
+- If YES: use cluster-robust methods.
+- If few treated clusters: consider alternative inference methods.
+
+# Applied
+
+```{stata}
+#| eval: false
+
+* --- basic 2x2 DiD: pooled OLS ---
+* D: treatment group dummy, t: post-period dummy
+* coefficient on the interaction D*t is the DiD estimate
+gen Dt = D * t
+reg y D t Dt, vce(robust)
+
+* --- first-differenced OLS (unit-level panel) ---
+xtset id year
+reg D.y D if t == 1, vce(robust)
+
+* --- static TWFE ---
+* ssc install reghdfe
+reghdfe y D, absorb(id year) vce(cluster id)
+
+* --- Goodman-Bacon decomposition ---
+* ssc install bacondecomp
+* requires xtset; D must be the treatment indicator
+bacondecomp y D, ddetail
+
+* produces a scatter plot of 2x2 DiD weights vs estimates
+* useful for diagnosing which comparisons drive the TWFE estimate
+
+* --- dynamic TWFE: event study ---
+* E_i: variable with first treatment period (. or 0 for never-treated)
+gen k = year - E_i if !missing(E_i)
+
+* bin the endpoints (e.g. k <= -5 pooled, k >= 6 pooled)
+gen k_bin = k
+replace k_bin = -5 if k < -5 & !missing(k)
+replace k_bin =  6 if k >  6 & !missing(k)
+
+* estimate with k = -1 as base category
+reghdfe y ib(-1).k_bin, absorb(id year) vce(cluster id)
+
+* plot coefficients (ssc install coefplot)
+coefplot, drop(_cons) vertical yline(0) xline(5.5, lpattern(dash))
+
+* --- Sun and Abraham (2021): interaction-weighted estimator ---
+* ssc install eventstudyinteract
+* cohort: first treatment period; rel_time: relative time dummies
+eventstudyinteract y rel_time_*, cohort(E_i) control_cohort(never_treated) ///
+    absorb(id year) vce(cluster id)
+
+* --- Callaway and Sant'Anna (2021) ---
+* ssc install csdid
+* gvar: variable with first treatment period (0 for never-treated)
+csdid y, ivar(id) time(year) gvar(gvar) notyet
+
+* aggregate to event-study parameter
+estat event
+
+* aggregate to overall ATT
+estat simple
+
+* --- Borusyak, Jaravel and Spiess (2022): imputation estimator ---
+* ssc install did_imputation
+* horizons(0/5): post-treatment periods to estimate
+* pretrends(3): number of pre-treatment placebo coefficients
+did_imputation y id year E_i, horizons(0/5) pretrends(3)
+
+* --- sensitivity analysis: honestDiD ---
+* ssc install honestdid
+* run after csdid or did_imputation
+* constructs confidence intervals robust to smooth violations of parallel trends
+```

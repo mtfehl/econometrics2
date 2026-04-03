@@ -83,7 +83,8 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-image','listing-title','listing-reading-time','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
+      page: 18,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
     };
 
@@ -542,8 +543,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/geospatial/projects/project01/project01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project 01</span></a>
+  <a href="https://mtfehl.github.io/geospatial/projects/earthquake/pj01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project: Earthquakes and Remittances</span></a>
   </div>
 </li>
       </ul>
@@ -616,7 +617,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/finc_metrics/projects/Project01/project01.html" class="sidebar-item-text sidebar-link">
+  <a href="https://mtfehl.github.io/finc_metrics/projects/Project Geospatial/Project Geospatial/geospatial.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Project 01</span></a>
   </div>
 </li>
@@ -818,8 +819,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-17" class="collapse list-unstyled sidebar-section depth3 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="https://mtfehl.github.io/econometrics2/Projects/Project01/pj01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project 01</span></a>
+  <a href="https://mtfehl.github.io/econometrics2/Projects/earthquake/pj01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project: Earthquakes and Remittances</span></a>
   </div>
 </li>
       </ul>
@@ -973,62 +974,43 @@ window.Quarto = {
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart LR
+<pre class="mermaid mermaid-js">flowchart TD
     N1(Causal Inference) --&gt; N2(Randomized Control Trials)
-    
-    
-    
-    %% PS4([Problem Set 4])
-    %% PS5([Problem Set 5])
+    N1 --&gt; N3(Regression Discontinuity Designs)
+    N1 --&gt; N4(Matching/Selection on Observables)
+    N1 --&gt; N5(Difference in Differences)
+    N1 --&gt; N6(Synthetic Control Methods)
+  
+    PS4([Problem Set 4])
+    PS5([Problem Set 5])
 
     %% Invisible link to nudge P near C/D without drawing a line
-    %% N4 ~~~ PS4
-    %% N9 ~~~ PS5
+    N2 ~~~ PS4
+    N4 ~~~ PS5
 
     click N1 "Notes/14causal/causal_intro.html" "Go to Causal Inference Notes"
     click N2 "Notes/15rcts/rcts.html" "Go to RCTs Notes"
-    %%click N3 "Notes/16 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N4 "Notes/17 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N5 "Notes/18 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N6 "Notes/19 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N7 "Notes/20 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N8 "Notes/21 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N9 "Notes/22 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N10 "Notes/23 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N11 "Notes/24 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N12 "Notes/25 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N13 "Notes/26 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N14 "Notes/27 RCTs/RCTs .html" "Go to RCTs Notes"
-    
-    %% click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
-    %% click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
+    click N3 "Notes/16rdds/rdds.html" "Go to RDDs Notes"
+    click N4 "Notes/17selection_matching/selection_matching.html" "Go to Selection/Matching Notes"
+    click N5 "Notes/18dids/dids.html" "Go to RCTs Notes"
+    click N6 "Notes/19scms/scts.html" "Go to RCTs Notes"
 
+    click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
+    click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
 
     %% Classes
-    class N1,N2 nav-node
-    %% class PS4,PS5 project-node
+    class N1,N2,N3,N4,N5,N6 nav-node
+    class PS4,PS5 project-node
 
     %% STYLE THE LINES
     linkStyle 0 stroke:#1e5636,stroke-width:2px;
     
-   %% green color palette: #1e5636, #578c49, #99be8f
-   %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
-   %% linkStyle 1 stroke:#9381FF,stroke-width:2px;
-   %% linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 5 stroke:#9381FF,stroke-width:2px;
-   %% linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 8 stroke:#A20021,stroke-width:2px;
-   %% linkStyle 9 stroke:#CC183C,stroke-width:2px;
-   %% linkStyle 10 stroke:#F52F57,stroke-width:2px;
-   %% linkStyle 11 stroke:#F52F57,stroke-width:2px;
-   %% linkStyle 12 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 13 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 14 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 15 stroke:#CC183C,stroke-width:2px;
-   %% linkStyle 16 stroke:#F52F57,stroke-width:2px;
+     %% green color palette: #1e5636, #578c49, #99be8f
+     %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
+    linkStyle 1 stroke:#578c49,stroke-width:2px;
+    linkStyle 2 stroke:#99be8f,stroke-width:2px;
+    linkStyle 3 stroke:#8f8350,stroke-width:2px;
+    linkStyle 4 stroke:#b6a576,stroke-width:2px;
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -1041,131 +1023,140 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="class-notes">Class Notes</h2>
 <div id="listing-class-notes" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-date-sort="1767740400000" data-listing-file-modified-sort="1774042985373" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2703">
+<div class="g-col-1" data-index="0" data-listing-date-sort="1767740400000" data-listing-file-modified-sort="1775183160046" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2792">
 <a href="./Notes/01pooled_ols/pols.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/pols.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Pooled OLS
 </h5>
 <div class="listing-reading-time card-text text-muted">14 min</div>
 <div class="card-text listing-description delink">
-<span class="math display">\[
-\underset{(NT \times 1)}{\vec{y}} = \begin{bmatrix} \vec{y}_1 \\ \vec{y}_2 \\ \vdots \\ \vec{y}_N \end{bmatrix}_{N} = \begin{bmatrix} y_{11} \\ \vdots \\ y_{1T} \\…</span>
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-date-sort="1767913200000" data-listing-file-modified-sort="1774028811396" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="112">
+<div class="g-col-1" data-index="1" data-listing-date-sort="1767913200000" data-listing-file-modified-sort="1775183212951" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2933">
 <a href="./Notes/02random_effects/re.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/random_effects.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Random Effects
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">15 min</div>
 <div class="card-text listing-description delink">
-In practice, nobody uses the random effects estimator; the assumption of random individual effects is too strong of an assumption. Typically, we expect for there to exist…
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1768086000000" data-listing-file-modified-sort="1774028970593" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="64">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1768086000000" data-listing-file-modified-sort="1775183217831" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1422">
 <a href="./Notes/03fixed_effects/fe.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/fixed_effects.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Fixed Effects
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">8 min</div>
 <div class="card-text listing-description delink">
-relaxing assumption, including time-invariant (endogenous) regressors …?
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-date-sort="1768172400000" data-listing-file-modified-sort="1774028949093" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="41">
+<div class="g-col-1" data-index="3" data-listing-date-sort="1768172400000" data-listing-file-modified-sort="1775183131431" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1785">
 <a href="./Notes/04first_diff/fd.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/first_diff.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 First Differences
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">9 min</div>
 <div class="card-text listing-description delink">
-same
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-date-sort="1768258800000" data-listing-file-modified-sort="1770829381322" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="4" data-listing-date-sort="1768258800000" data-listing-file-modified-sort="1775183136209" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="880">
 <a href="./Notes/05gmm/gmm.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/gmm.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Generalized Method of Moments Estimators
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">5 min</div>
 <div class="card-text listing-description delink">
-
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-date-sort="1768345200000" data-listing-file-modified-sort="1770829372198" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="5" data-listing-date-sort="1768345200000" data-listing-file-modified-sort="1775183138958" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="805">
 <a href="./Notes/06anderson/ahsiao.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/ahsiao.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Anderson-Hsiao Estimator
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">5 min</div>
 <div class="card-text listing-description delink">
-
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="6" data-listing-date-sort="1768431600000" data-listing-file-modified-sort="1770829584747" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="6" data-listing-date-sort="1768431600000" data-listing-file-modified-sort="1775183142637" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="998">
 <a href="./Notes/06arellano/abond.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/abond.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Arellano Bond
+Arellano-Bond
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">5 min</div>
 <div class="card-text listing-description delink">
-
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="7" data-listing-date-sort="1768863600000" data-listing-file-modified-sort="1770829424816" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="7" data-listing-date-sort="1768863600000" data-listing-file-modified-sort="1775183231658" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1277">
 <a href="./Notes/07mle/mle.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/mle.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Maximum Likelihood Estimators
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">7 min</div>
 <div class="card-text listing-description delink">
-
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="8" data-listing-date-sort="1768950000000" data-listing-file-modified-sort="1774118768487" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="912">
+<div class="g-col-1" data-index="8" data-listing-date-sort="1768950000000" data-listing-file-modified-sort="1775183163538" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="967">
 <a href="./Notes/08binary_choice/logit_probit.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/binary.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Binary Choice Models
@@ -1177,7 +1168,7 @@ Binary Choice Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="9" data-listing-date-sort="1769468400000" data-listing-file-modified-sort="1770984889115" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2210">
+<div class="g-col-1" data-index="9" data-listing-date-sort="1769468400000" data-listing-file-modified-sort="1775175646951" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2210">
 <a href="./Notes/09multinomial/multinomial.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1194,7 +1185,7 @@ Multinomial Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="10" data-listing-date-sort="1769554800000" data-listing-file-modified-sort="1770906813266" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1329">
+<div class="g-col-1" data-index="10" data-listing-date-sort="1769554800000" data-listing-file-modified-sort="1775175688172" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1329">
 <a href="./Notes/10nested_logit/nested.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1211,7 +1202,7 @@ Nested Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="11" data-listing-date-sort="1769986800000" data-listing-file-modified-sort="1770829482483" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="777">
+<div class="g-col-1" data-index="11" data-listing-date-sort="1769986800000" data-listing-file-modified-sort="1775175677790" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="777">
 <a href="./Notes/11ordered_response/ordered_response.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1228,7 +1219,7 @@ Ordered Response Models
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="12" data-listing-date-sort="1770159600000" data-listing-file-modified-sort="1770829673444" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1242">
+<div class="g-col-1" data-index="12" data-listing-date-sort="1770159600000" data-listing-file-modified-sort="1775175666959" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1242">
 <a href="./Notes/12censored_truncated/tobit.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -1245,70 +1236,194 @@ Tobit Model
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="13" data-listing-date-sort="1770246000000" data-listing-file-modified-sort="1770905681868" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="12">
+<div class="g-col-1" data-index="13" data-listing-date-sort="1770246000000" data-listing-file-modified-sort="1775184449230" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1445">
 <a href="./Notes/13heckman/heckman.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/heckman.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Heckit Estimator
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">8 min</div>
 <div class="card-text listing-description delink">
-``{stata} heckman depvar [indepvars], select(depvar s = varlist s) [twostep]
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="14" data-listing-date-sort="1771455600000" data-listing-file-modified-sort="1775183185058" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2612">
+<a href="./Notes/15rcts/rcts.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/rcts.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Randomized Control Trials
+</h5>
+<div class="listing-reading-time card-text text-muted">14 min</div>
+<div class="card-text listing-description delink">
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="15" data-listing-date-sort="1771628400000" data-listing-file-modified-sort="1775184420456" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1949">
+<a href="./Notes/16rdds/rdds.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/rdd.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Regression Discontinuity Designs
+</h5>
+<div class="listing-reading-time card-text text-muted">10 min</div>
+<div class="card-text listing-description delink">
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="16" data-listing-date-sort="1772060400000" data-listing-file-modified-sort="1775183181734" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2331">
+<a href="./Notes/17selection_matching/selection_matching.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/matching.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Selection on Observables and Matching
+</h5>
+<div class="listing-reading-time card-text text-muted">12 min</div>
+<div class="card-text listing-description delink">
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="17" data-listing-date-sort="1772319600000" data-listing-file-modified-sort="1775183473691" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2512">
+<a href="./Notes/18dids/dids.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/DiD.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Difference in Differences
+</h5>
+<div class="listing-reading-time card-text text-muted">13 min</div>
+<div class="card-text listing-description delink">
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="18" data-listing-date-sort="1772838000000" data-listing-file-modified-sort="1775183172465" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3018">
+<a href="./Notes/19scms/scts.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" data-src="./images/SCM.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Synthetic Control Methods
+</h5>
+<div class="listing-reading-time card-text text-muted">16 min</div>
+<div class="card-text listing-description delink">
 </div>
 </div>
 </div></a>
 </div>
 </div>
 <div class="listing-no-matching d-none">No matching items</div>
+<nav id="class-notes-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
 </div>
 </section>
 <section id="problem-sets" class="level2">
 <h2 class="anchored" data-anchor-id="problem-sets">Problem Sets</h2>
 <div id="listing-problem-sets" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1770828892196" data-listing-reading-time-sort="6" data-listing-word-count-sort="1160">
+<div class="g-col-1" data-index="0" data-listing-date-sort="1768604400000" data-listing-file-modified-sort="1775179845173" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1721">
+<a href="./Problem_Sets/PS01/ps01.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/ps01.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Problem Set 01
+</h5>
+<div class="listing-reading-time card-text text-muted">9 min</div>
+<div class="card-text listing-description delink">
+<p>Linear Models: Pooled OLS, Random Effects, Fixed Effects, &amp; First Diffs</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="1" data-listing-date-sort="1769986800000" data-listing-file-modified-sort="1775179829741" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2400">
 <a href="./Problem_Sets/PS02/ps02.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/ps02.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Problem Set 02
 </h5>
-<div class="listing-reading-time card-text text-muted">6 min</div>
+<div class="listing-reading-time card-text text-muted">12 min</div>
 <div class="card-text listing-description delink">
 <p>Linear Models: Fixed Effects, First-Diffs, &amp; Arellano-Bond</p>
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-date-sort="1770764400000" data-listing-file-modified-sort="1770829248018" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1770764400000" data-listing-file-modified-sort="1775179802168" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2069">
 <a href="./Problem_Sets/PS03/ps03.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/ps03.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 Problem Set 03
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">11 min</div>
 <div class="card-text listing-description delink">
 <p>MLE: Binary choice, mLogit, oProbit, &amp; Tobit</p>
 </div>
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1768604400000" data-listing-file-modified-sort="1770829269488" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
-<a href="./Problem_Sets/PS01/ps01.html" class="quarto-grid-link">
+<div class="g-col-1" data-index="3" data-listing-date-sort="1771974000000" data-listing-file-modified-sort="1775179806861" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1806">
+<a href="./Problem_Sets/PS04/ps04.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./images/ps04.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Problem Set 01
+Problem Set 04
 </h5>
-<div class="listing-reading-time card-text text-muted">1 min</div>
+<div class="listing-reading-time card-text text-muted">10 min</div>
 <div class="card-text listing-description delink">
-<p>Linear Models: Pooled OLS, Random Effects, Fixed Effects, &amp; First Diffs</p>
+<p>Randomized Controlled Trials</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="4" data-listing-date-sort="1772492400000" data-listing-file-modified-sort="1775179771418" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2668">
+<a href="./Problem_Sets/PS05/ps05.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="./images/ps05.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Problem Set 05
+</h5>
+<div class="listing-reading-time card-text text-muted">14 min</div>
+<div class="card-text listing-description delink">
+<p>Causal Inference: IV with Imperfect Compliance &amp; Propensity Score Matching</p>
 </div>
 </div>
 </div></a>

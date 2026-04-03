@@ -17,6 +17,12 @@ listing:
       - Notes/11ordered_response
       - Notes/12censored_truncated
       - Notes/13heckman
+      - Notes/14causal_intro
+      - Notes/15rcts
+      - Notes/16rdds
+      - Notes/17selection_matching
+      - Notes/18dids
+      - Notes/19scms
     include:
       class-notes: true
     type: grid
@@ -30,11 +36,13 @@ listing:
       - Problem_Sets/PS01
       - Problem_Sets/PS02
       - Problem_Sets/PS03
+      - Problem_Sets/PS04
+      - Problem_Sets/PS05
     include:
       problem-set: true
     type: grid
     grid-columns: 3
-    sort: "date desc"
+    sort: "date asc"
     categories: false
     sort-ui: false
     filter-ui: false
@@ -145,62 +153,43 @@ flowchart TD
 
 ```{mermaid}
 %%| fig-width: 10
-flowchart LR
+flowchart TD
     N1(Causal Inference) --> N2(Randomized Control Trials)
-    
-    
-    
-    %% PS4([Problem Set 4])
-    %% PS5([Problem Set 5])
+    N1 --> N3(Regression Discontinuity Designs)
+    N1 --> N4(Matching/Selection on Observables)
+    N1 --> N5(Difference in Differences)
+    N1 --> N6(Synthetic Control Methods)
+  
+    PS4([Problem Set 4])
+    PS5([Problem Set 5])
 
     %% Invisible link to nudge P near C/D without drawing a line
-    %% N4 ~~~ PS4
-    %% N9 ~~~ PS5
+    N2 ~~~ PS4
+    N4 ~~~ PS5
 
     click N1 "Notes/14causal/causal_intro.html" "Go to Causal Inference Notes"
     click N2 "Notes/15rcts/rcts.html" "Go to RCTs Notes"
-    %%click N3 "Notes/16 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N4 "Notes/17 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N5 "Notes/18 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N6 "Notes/19 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N7 "Notes/20 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N8 "Notes/21 rcts/rcts .html" "Go to RCTs Notes"
-    %%click N9 "Notes/22 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N10 "Notes/23 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N11 "Notes/24 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N12 "Notes/25 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N13 "Notes/26 RCTs/RCTs .html" "Go to RCTs Notes"
-    %%click N14 "Notes/27 RCTs/RCTs .html" "Go to RCTs Notes"
-    
-    %% click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
-    %% click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
+    click N3 "Notes/16rdds/rdds.html" "Go to RDDs Notes"
+    click N4 "Notes/17selection_matching/selection_matching.html" "Go to Selection/Matching Notes"
+    click N5 "Notes/18dids/dids.html" "Go to RCTs Notes"
+    click N6 "Notes/19scms/scts.html" "Go to RCTs Notes"
 
+    click PS4 "Problem_Sets/PS04/ps04.html" "Go to Problem Set 4"
+    click PS5 "Problem_Sets/PS05/ps05.html" "Go to Problem Set 5"
 
     %% Classes
-    class N1,N2 nav-node
-    %% class PS4,PS5 project-node
+    class N1,N2,N3,N4,N5,N6 nav-node
+    class PS4,PS5 project-node
 
     %% STYLE THE LINES
     linkStyle 0 stroke:#1e5636,stroke-width:2px;
     
-   %% green color palette: #1e5636, #578c49, #99be8f
-   %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
-   %% linkStyle 1 stroke:#9381FF,stroke-width:2px;
-   %% linkStyle 2 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 3 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 4 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 5 stroke:#9381FF,stroke-width:2px;
-   %% linkStyle 6 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 7 stroke:#B8B8FF,stroke-width:2px;
-   %% linkStyle 8 stroke:#A20021,stroke-width:2px;
-   %% linkStyle 9 stroke:#CC183C,stroke-width:2px;
-   %% linkStyle 10 stroke:#F52F57,stroke-width:2px;
-   %% linkStyle 11 stroke:#F52F57,stroke-width:2px;
-   %% linkStyle 12 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 13 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 14 stroke:#F75C7B,stroke-width:2px;
-   %% linkStyle 15 stroke:#CC183C,stroke-width:2px;
-   %% linkStyle 16 stroke:#F52F57,stroke-width:2px;
+     %% green color palette: #1e5636, #578c49, #99be8f
+     %% brown color palette: #8f8350, #b6a576 (nice forest scheme)
+    linkStyle 1 stroke:#578c49,stroke-width:2px;
+    linkStyle 2 stroke:#99be8f,stroke-width:2px;
+    linkStyle 3 stroke:#8f8350,stroke-width:2px;
+    linkStyle 4 stroke:#b6a576,stroke-width:2px;
 ```
 
 ## Class Notes

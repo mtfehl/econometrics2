@@ -8,6 +8,9 @@ class-notes: true
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory

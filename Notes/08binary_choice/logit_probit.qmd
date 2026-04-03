@@ -2,11 +2,15 @@
 title: "Binary Choice Models"
 description: "Logit & Probit Models"
 author: "Michael Fehl"
+image: "/images/binary.png"
 date: 01-21-2026
 class-notes: true
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
 
 # Theory
@@ -192,4 +196,23 @@ However, since both models are no longer linear in $\beta$, we <u>cannot</u> use
 
 # Applied
 
+```{stata}
+#| eval: false
+
+* --- linear probability model ---
+regress y x1 x2 x3
+* heteroskedastic by construction; always use robust SEs
+regress y x1 x2 x3, vce(robust)
+
+* --- logit ---
+logit y x1 x2 x3
+
+* --- probit ---
+probit y x1 x2 x3
+
+* --- predicted probabilities ---
+predict phat, pr
+
+* --- see MLE notes for marginal effects, LR tests, and goodness-of-fit ---
+```
 

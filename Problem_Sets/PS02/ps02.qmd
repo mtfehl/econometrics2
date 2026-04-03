@@ -2,255 +2,436 @@
 title: "Problem Set 02"
 author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones, Wu Chen"
 description: "Linear Models: Fixed Effects, First-Diffs, & Arellano-Bond"
+date: 02-02-2026
+image: "/images/ps02.png"
 problem-set: true
 format:
   html:
     embed-resources: true
     self-contained: true
+    
+execute:
+  eval: false
 ---
 
-# Question 1:
+# 1. Pooled OLS
 
-
-
-# Question 2:
-
-2. Consider the following model:
-$$y_{it} = \alpha + x_{it}\beta + z_{it}\gamma + f_i + u_{it} \quad \text{for } i=1,\dots,N \text{ and } t=1,\dots,T,$$
-where $x_{it}$ and $z_{it}$ are scalars, $f_i$ is a permanent unobserved effect and the error term $u_{it}$ is homoscedastic and serially uncorrelated. Furthermore, assume that $x_{it}$ is strictly exogenous:
-$$E(u_{it}|x_{i1}, \dots, x_{iT}, f_i) = 0. \tag{1}$$
-
-a) Suppose the only thing we can safely assume is that the orthogonality condition (1) holds and you take first differences to estimate the model. For different assumptions regarding the exogeneity of $z_{it}$ and the relationship between $z_{it}$ and $f_i$, state the properties of your estimator (consistency and efficiency) when OLS is used to estimate $\beta$ and $\gamma$ in the first differences model?
-
-*Note* that the FD model takes the form: $\Delta y_i = \Delta x_i' \beta + \Delta z_i' \gamma + \Delta \mu_i$
-
-Case 1.1: $E[f_i \mid z_i, x_i] = 0$ & Strict exo
-
-**Consistent**
-
-**Not efficient**: random effects would be efficient model here
+You have a sample of $N$ individuals for $T$ years. Suppose you estimate by Pooled OLS the annual income equation:
 
 $$
-
+y_{it} = \alpha_0 + \alpha_1\text{ed}_i + \alpha_2\text{age}_{it} + \alpha_3(\text{ed}_i \times \text{age}_{it}) + \gamma y_{i,t-1} + u_{it}
 $$
 
-Case 1.2: $E[f_i \mid z_i, x_i] \neq 0$ & Strict exo
+where $\text{ed}_i$ is years of education, $\text{age}_{it}$ is age of individual $i$ in period $t$, and $u_{it}$ represents all unobservables.
 
-**Consistent**
+## (a) Assumptions for POLS Consistency
 
-**Not efficient**: fixed effects would be efficient (serially correlated errors); for FD random walk is more efficient model
-
-b) Now suppose $T=5$ and the additional assumption holds:
-$$E(u_{it}|z_{i1}, \dots, z_{it-1}, f_i) = 0.$$
-
-Case 2.1: $E[f_i \mid z_i, x_i] = 0$ & weak exo
-
-**Inconsistent**: 
-$$
-\begin{align}
-  E[\Delta z_{it} \Delta \mu_{it}] &= \underbrace{E[z_{it} \mu_{it}]}_{=0} - \underbrace{E[z_{it-1} \mu_{it}]}_{\neq 0} \\
-  &- \underbrace{E[z_{it-1} \mu_{it}]}_{=0} - \underbrace{E[z_{it-1} \mu_{it-1}]}_{=0}
-  
-\end{align}
-$$
-
-Hence, when we try to apply asymptotic properties, it does **not** converge in probability to zero; rather, it converges to a non-zero value. Thus, it is not consistent.
-
-Case 2.2: $E[f_i \mid z_i, x_i] \neq 0$ & weak exo
-
-**Inconsistent**: 
-
-b) Now suppose $T=5$ and the additional assumption holds:
-$E(\mu_{it}|z_{i1}, ..., z_{it−1}, f_i) = 0$. (NOT weak exogenity; contemperous error terms)
-
-(i). How would you now estimate $\beta$ and $\gamma$ efficiently?
-
-We need instruments to estimate our FD model *efficiently*; specifically, an instrument for $\Delta z_{it}$
-
-Note that our error assumption does NOT include exogenity of the error term from the same time period of z. I.e., we need to make sure that our instrument does not include correlations between $\mu_{it}$ and $z_{it}$
-
-For example, let's explore AH (use $z_{it-1}$ as an IV): 
-
-$$E[z_{it-1} \Delta \mu_{it}] = E[z_{it-1} \mu_{it} - z_{it-1} \mu_{it-1}] \neq 0$$
-
-Does not work -- need to go further back in time. Let's try $z_{it-2}$ as an IV
-
-$$E[z_{it-2} \Delta \mu_{it}] = E[z_{it-2} \mu_{it} - z_{it-2} \mu_{it-1}] = 0$$
-
-So, as long as we take any IV that is at least $t-2$ periods prior (and that the regressor is still correlated with $x_{it}$)
-
-Since we have five periods; the first time period we can use is $t=3$; we cannot instrument anything earlier ($t=3, t=4, t=5$). In other words, the first regressors we can include in the model are from t=3 to t=5 ...? corresponding to ($\Delta z_{i3}, \Delta z_{i4}, \Delta z_{i5}$)
-
-Case 1: $\Delta z_{i3}$
-
-$E[z_{i1} \Delta \mu_{i3}] = 0$
-
-Case 2: $\Delta z_{i4}$
-
-$E[z_{i1} \Delta \mu_{i4}] = 0$
-$E[z_{i2} \Delta \mu_{i4}] = 0$
-
-Case 3: $\Delta z_{i5}$
-
-$E[z_{i1} \Delta \mu_{i5}] = 0$
-$E[z_{i2} \Delta \mu_{i5}] = 0$
-$E[z_{i3} \Delta \mu_{i5}] = 0$
-
-** These are all the moment conditions we can get; assuming we want to use this class of estimators to find all the orthogonality conditions in our model to instrument $\Delta z_{it}$
-
-Now the question is to how to combine all of these into one big instrument matrix that we then put into our GMM estimator. The instrument matrix that we select is the following:
+The POLS estimator takes the form:
 
 $$
-z_i =
-\begin{bmatrix}
-  z_{i1} &0 & 0& 0&0 &0 & \Delta x_{i3} \\
-  0 & z_{i1} & z_{i1} & 0 &0 & 0& \Delta x_{i4} \\
-  0 & 0 & 0 & z_{i1} & z_{i1} & z_{i1} & \Delta x_{i5} 
-\end{bmatrix}
+\hat{\beta}^{POLS} = \left(\frac{1}{N}\sum_{i=1}^N X_i'X_i\right)^{-1}\left(\frac{1}{N}\sum_{i=1}^N X_i'y_i\right)
 $$
 
-Such that we satisfy the condition:
+where $x_{it} = \begin{bmatrix} 1 & \text{ed}_i & \text{age}_{it} & \text{ed}_i \times \text{age}_{it} & y_{i,t-1} \end{bmatrix}'$.
+
+If the true model contains a time-invariant unobserved effect $f_i$, so that $u_{it} = f_i + v_{it}$, then the sampling error of POLS is:
 
 $$
-E[z_i' \mu_i] = E\left(
-\begin{bmatrix}
-  z_{i1} &0 & 0& 0&0 &0 & \Delta x_{i3} \\
-  0 & z_{i1} & z_{i1} & 0 &0 & 0& \Delta x_{i4} \\
-  0 & 0 & 0 & z_{i1} & z_{i1} & z_{i1} & \Delta x_{i5} 
-\end{bmatrix} '
-
-\begin{bmatrix}
-  \Delta \mu_{i3} \\
-  \Delta \mu_{i4} \\
-  \Delta \mu_{i4}
-\end{bmatrix}
-
-\right) = 0
-$$
-Which leads us to the decision to use AB estimator as we care about *efficiency*. We want each condition above to have its **own** moment condition; i.e., we use every orthogonality condition available in the model.
-
-Now we can define $k_i$ as the following:
-
-$$
-k_i = 
-\begin{bmatrix}
-  \Delta x_{i3} & \Delta z_{i3} \\
-  \Delta x_{i4} & \Delta z_{i4} \\
-  \Delta x_{i5} & \Delta z_{i5} 
-\end{bmatrix}
+\hat{\beta}^{POLS} - \beta = \left(\frac{1}{N}\sum_i X_i'X_i\right)^{-1}\left(\frac{1}{N}\sum_i X_i'(f_i + v_i)\right) \xrightarrow{p} \mathbb{E}[X_i'X_i]^{-1}\left(\mathbb{E}[X_i'f_i] + \mathbb{E}[X_i'v_i]\right)
 $$
 
-Which we plug into our standard GMM estimator form:
+For consistency, we need $\mathbb{E}[X_i'f_i] + \mathbb{E}[X_i'v_i] = 0$. The sufficient assumptions are:
+
+**1. No time-invariant unobservable** ($f_i = 0$). Since $y_{i,t-1}$ appears as a regressor, iterating the model backward gives:
 
 $$
-\hat{\beta}_{GMM} = \left( \left(\sum k_i'z_i \right) \hat{\Omega}^{-1} \left(\sum z_i'zk_i \right)^{-1}
-\left(\sum k_i'z_i \right) \hat{\Omega}^{-1} \left(\sum z_i'\Delta y_i \right)
-
-\right)
+y_{i,t-1} = \sum_{s=0}^{t-2}\gamma^s\left(\alpha_0 + \alpha_1\text{ed}_i + \alpha_2\text{age}_{i,t-1-s} + \alpha_3(\text{ed}_i \times \text{age}_{i,t-1-s}) + f_i + v_{i,t-1-s}\right) + \gamma^{t-1}y_{i0}
 $$
 
-Note that the weighting matrix form that gives us the min. variance takes the form:
+so $\mathbb{E}[y_{i,t-1}f_i]$ contains $\sum_{s=0}^{t-2}\gamma^s\mathbb{E}[f_i^2] \neq 0$ whenever $f_i \neq 0$. Thus, even with weak exogeneity of the other regressors, $\mathbb{E}[X_i'f_i] \neq 0$ unless $f_i = 0$. Note also that $|\gamma| < 1$ is required for stationarity, which is consistent with the estimated $\hat{\gamma} = 0.82$.
+
+**2. No serial correlation**: $\mathbb{C}\text{ov}(v_{it}, v_{is} \mid x_{i1}, \ldots, x_{iT}) = 0$ for $t \neq s$.
+
+This ensures that $\mathbb{E}[y_{i,t-1}v_{it}] = 0$. Without it, $y_{i,t-1}$ would contain $v_{i,t-1}$ which under serial correlation would be correlated with $v_{it}$.
+
+**3. Weak exogeneity**: $\mathbb{E}[v_{it} \mid \{x_{is}\}_{s \leq t}] = 0$.
+
+Since POLS only captures contemporaneous correlations:
+$$
+\mathbb{E}[X_i'v_i] = \sum_{t=1}^T \mathbb{E}[x_{it}'v_{it}] = 0
+$$
+under weak exogeneity.
+
+**4. No multicollinearity**: $\mathbb{E}[X_i'X_i]$ has full column rank (is invertible).
+
+Under all four assumptions, $\hat{\beta}^{POLS} \xrightarrow{p} \beta$.
+
+## (b) Alternative Estimator: Anderson-Hsiao IV
+
+For POLS we had to assume $f_i = 0$. If individual-level effects exist (random or fixed), we use the **Anderson-Hsiao IV estimator** on the first-differenced model.
+
+Rewrite the model as:
 
 $$
-plim \hat{ \Omega} = Var(z_i \Delta \mu_i)
+y_{it} = B_{it}'\alpha + y_{i,t-1}\gamma + f_i + u_{it}, \quad B_{it} = \begin{bmatrix} 1 & \text{ed}_i & \text{age}_{it} & \text{ed}_i \times \text{age}_{it} \end{bmatrix}'
 $$
 
-To achieve this, it depends on our error term assumption. If we assume homoskedasticity, we can derive the variance directly since we assume the functional form of the errors. If we have heteroskedasticity, we cannot do that (since we lack a functional for); for which we implement a two-step form. Since this problem assumes <u>homoskedasticity</u>, we can proceed with the first option.
-
-(ii). Derive the variance of your estimator.
-
-If homoskedastic: 
+Taking first differences eliminates $f_i$:
 
 $$
-\hat{\Omega} = \frac{1}{N}\sum_{i=1}^N z_i'
-\begin{bmatrix}
-  2 & -1 & 0 \\
-  -1 & 2 & -1 \\
-  0 & -1 & 2 \\
-\end{bmatrix}
-z_i
+\Delta y_{it} = \Delta B_{it}'\alpha_{\text{new}} + \Delta y_{i,t-1}\gamma + \Delta u_{it}
 $$
 
-Note that if $\mu_{it}$ were serially correlated, our model would fail here.
+where $\Delta B_{it} = \begin{bmatrix} \Delta\text{age}_{it} \\ \Delta(\text{ed}_i \times \text{age}_{it}) \end{bmatrix}$ and $\alpha_{\text{new}} = \begin{bmatrix} \alpha_2 \\ \alpha_3 \end{bmatrix}$. The constant and $\text{ed}_i$ drop out since they are time-invariant.
 
-Usually, we are heteroskedastic. So we must get an estimate of Var(zi'deltamu_i) in the first step:
+OLS on this model is inconsistent since $\Delta y_{i,t-1}$ contains $u_{i,t-1}$, which also appears in $\Delta u_{it}$. The instrument $y_{i,t-2}$ is valid:
 
-i.e. an estimate for $E[z_i'\Delta \mu_i \Delta \mu_i ' z_i]$
+* **Relevance**: $\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2}$ contains $y_{i,t-2}$ directly, so the correlation is non-zero as long as $\gamma \neq 0$ and $\gamma \neq 1$ (no unit root). Given $\hat{\gamma} = 0.82$ this is plausible.
+* **Exogeneity**: Under serially uncorrelated errors, $\mathbb{E}[y_{i,t-2}\Delta u_{it}] = \mathbb{E}[y_{i,t-2}(u_{it} - u_{i,t-1})] = 0$.
 
-step 1: use residuals from \beta_{gmm} using whatever weighting matrix we want (we can even compute it the same step as above, assuming homosked)
-
-$$
-\hat{\Omega}_{\text{optimal}} = \frac{1}{N}\sum z_i'\Delta \hat{\mu}_i \Delta \hat{\mu}_i ' z_i
-$$
-
-
-
-step 2: plug in this newly found 'optimal' weighting matrix back into our GMM equation, and we find the optimal variance to take the form:
+The instrument matrix for each $i$ is:
 
 $$
-\begin{align}
-  \widehat{Avar}(\hat{\beta}_{GMM}) = \frac{1}{N}\left(
-  \frac{\sum k_i' z_i}{N} \hat{\Omega}_{optimal}^{-1} \frac{\sum z_i' k_i}{N}
-  \right)^{-1}
-\end{align}
+Z_i = \begin{bmatrix} \Delta B_{i2}' & y_{i0} \\ \vdots & \vdots \\ \Delta B_{iT}' & y_{i,T-2} \end{bmatrix}, \quad \hat{\beta}^{AH} = \left(\sum_i Z_i'\Delta X_i\right)^{-1}\left(\sum_i Z_i'\Delta y_i\right)
 $$
 
+**Consistency**: Under the exclusion restriction $\mathbb{E}[Z_i'\Delta u_i] = 0$ and the rank condition, by LLN and CMT:
 
+$$
+\hat{\beta}^{AH} \xrightarrow{p} \beta + \mathbb{E}[Z_i'\Delta X_i]^{-1}\underbrace{\mathbb{E}[Z_i'\Delta u_i]}_{=0} = \beta
+$$
 
-c) Suppose $z_{it} = y_{it-1}$ and you know that $\gamma = 1$. How would you estimate the model? Provide the estimator and its variance matrix.
+**Implications for POLS**: A meaningful difference between $\hat{\beta}^{AH}$ and $\hat{\beta}^{POLS}$ provides evidence of time-invariant unobserved effects $f_i$, since AH is consistent under both fixed and random effects while POLS is not. The model is just-identified so we cannot test the exclusion restriction via Sargan-Hansen. We can, however, test instrument relevance ($\gamma \neq 0$, $\gamma \neq 1$) and test for second-order serial correlation in $\Delta u_{it}$ to validate the underlying assumptions.
 
-Our model would then take the form:
+---
 
-$$y_{it} = \alpha + x_{it}\beta + y_{it-1} + f_i + u_{it} $$
+# 2. Properties of the FD Estimator Under Alternative Exogeneity Assumptions
 
-Which leads us to the standard FE model:
+Consider the model:
 
-$$\Delta y_{it} = \alpha + x_{it}\beta + f_i + u_{it}$$
+$$
+y_{it} = \alpha + x_{it}\beta + z_{it}\gamma + f_i + u_{it} \quad i=1,\ldots,N, \quad t=1,\ldots,T
+$$
 
-Which leads us to the FE estimate:
+where $u_{it}$ is homoskedastic and serially uncorrelated, and $x_{it}$ is strictly exogenous: $E(u_{it} \mid x_{i1}, \ldots, x_{iT}, f_i) = 0$.
 
-$$\hat{\beta}_{FE} = \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i \right)^{-1} \sum_{i=1}^N \tilde{X}_i'\Delta \tilde{y}_i$$
+## (a) Properties of FD-OLS Under Different Assumptions on $z_{it}$
 
-Which has the following variance form:
+First differencing eliminates $f_i$, so its relationship with $z_{it}$ is no longer relevant to consistency. The FD model is:
 
-$$\widehat{Avar}(\hat{\beta}_{FE}) = \sigma^2 \left(\sum_{i=1}^N \tilde{X}_i'\tilde{X}_i \right)^{-1}$$
+$$
+\Delta y_i = \Delta X_i\theta + \Delta u_i, \quad \theta = \begin{bmatrix}\beta \\ \gamma\end{bmatrix}, \quad \Delta X_i = \begin{bmatrix}\Delta x_i & \Delta z_i\end{bmatrix}
+$$
 
-# Question 3: Empirical
+The FD-OLS estimator has the form:
 
-```{r}
-library(Statamarkdown)
-```
+$$
+\hat{\theta}^{FD} = \theta + \left(\frac{1}{N}\sum_i \Delta X_i'\Delta X_i\right)^{-1}\left(\frac{1}{N}\sum_i \Delta X_i'\Delta u_i\right) \xrightarrow{p} \theta + \mathbb{E}[\Delta X_i'\Delta X_i]^{-1}\mathbb{E}[\Delta X_i'\Delta u_i]
+$$
+
+so consistency requires $\mathbb{E}[\Delta X_i'\Delta u_i] = 0$.
+
+**Case 1: Strictly exogenous $z_{it}$** — $E(u_{it} \mid z_{i1}, \ldots, z_{iT}, f_i) = 0$
+
+By LIE, $\mathbb{E}[\Delta u_{it} \mid z_{i1}, \ldots, z_{iT}] = 0$ and similarly for $x_{it}$ under its strict exogeneity assumption. Thus $\mathbb{E}[\Delta X_i'\Delta u_i] = 0$ and $\hat{\theta}^{FD}$ is **consistent**.
+
+For asymptotic normality, note $\mathbb{E}[\Delta u_i\Delta u_i' \mid X_i, Z_i] = \sigma_u^2 H$ where:
+
+$$
+H = \begin{pmatrix} 2 & -1 & 0 & \cdots \\ -1 & 2 & -1 & \cdots \\ 0 & -1 & 2 & \cdots \\ \vdots & & & \ddots \end{pmatrix}_{(T-1)\times(T-1)}
+$$
+
+and $\sqrt{N}(\hat{\theta}^{FD} - \theta) \xrightarrow{d} \mathcal{N}(0, M_{\Delta X\Delta X}^{-1}\mathbb{E}[\Delta X_i'H\Delta X_i]M_{\Delta X\Delta X}^{-1})$.
+
+FD is **not efficient** here since $\mathbb{E}[\Delta u_i\Delta u_i'] \neq \sigma_e^2 I_{T-1}$ (i.e., $u_{it}$ is not a random walk). Efficiency depends on the structure of $f_i$:
+
+* If $\mathbb{E}[f_i \mid X_i, Z_i] = 0$ (random effects): the feasible GLS (RE) estimator is efficient.
+* If $\mathbb{E}[f_i \mid X_i, Z_i] \neq 0$ (fixed effects): the FE estimator is efficient.
+
+**Case 2: Weakly exogenous $z_{it}$** — $E(u_{it} \mid z_{i1}, \ldots, z_{it}, f_i) = 0$
+
+FD-OLS is **inconsistent**:
+
+$$
+\mathbb{E}[\Delta z_{it}\Delta u_{it}] = \mathbb{E}[z_{it}u_{it}] - \mathbb{E}[z_{it}u_{i,t-1}] - \mathbb{E}[z_{i,t-1}u_{it}] + \mathbb{E}[z_{i,t-1}u_{i,t-1}] = -\mathbb{E}[z_{it}u_{i,t-1}] \neq 0
+$$
+
+since weak exogeneity implies $z_{it}$ may be correlated with past errors. Since it is inconsistent, it cannot be efficient. A valid instrument for $\Delta z_{it}$ would be $z_{i,t-1}$, which is predetermined and relevant.
+
+**Case 3: Endogenous $z_{it}$** — $E(u_{it} \mid Z_i) \neq 0$
+
+FD-OLS is **inconsistent**. Lagged levels of $z_{it}$ no longer satisfy the exclusion restriction, so external instruments are required. If just-identified, use IV; if over-identified, use two-step GMM.
+
+## (b) Efficient Estimation When $T=5$ and $E(u_{it} \mid z_{i1}, \ldots, z_{i,t-1}, f_i) = 0$
+
+This is strictly weaker than weak exogeneity: contemporaneous $z_{it}$ is correlated with $u_{it}$, so $z_{i,t-1}$ fails as an instrument. We need $z_{i,t-2}$ as the instrument for $\Delta z_{it}$.
+
+### (i) The Estimator
+
+With $T = 5$, first differencing gives $T - 2 = 3$ usable periods ($t = 3, 4, 5$), since $\Delta z_{i2}$ would require $z_{i0}$ as instrument. The vectors are:
+
+$$
+\Delta y_i = \begin{bmatrix}\Delta y_{i3}\\\Delta y_{i4}\\\Delta y_{i5}\end{bmatrix}, \quad \Delta X_i = \begin{bmatrix}\Delta x_{i3} & \Delta z_{i3}\\\Delta x_{i4} & \Delta z_{i4}\\\Delta x_{i5} & \Delta z_{i5}\end{bmatrix}, \quad Z_i = \begin{bmatrix}\Delta x_{i3} & z_{i1}\\\Delta x_{i4} & z_{i2}\\\Delta x_{i5} & z_{i3}\end{bmatrix}
+$$
+
+The instrument $z_{i,t-2}$ is valid since:
+
+$$
+\mathbb{E}[z_{i,t-2}\Delta u_{it}] = \mathbb{E}\left[z_{i,t-2}\mathbb{E}[u_{it} - u_{i,t-1} \mid z_{i1}, \ldots, z_{i,t-1}, f_i]\right] = 0
+$$
+
+by the stated assumption. The **first-step IV estimator** is:
+
+$$
+\hat{\theta}^{IV1} = \left(\frac{1}{N}\sum_i Z_i'\Delta X_i\right)^{-1}\left(\frac{1}{N}\sum_i Z_i'\Delta y_i\right)
+$$
+
+which is consistent: $\mathbb{E}[Z_i'\Delta u_i] = 0$ by strict exogeneity of $x_{it}$ and the instrument assumption for $z_{it-2}$.
+
+Since $\mathbb{E}[\Delta u_i\Delta u_i' \mid X_i, Z_i] = \sigma_u^2 H_{3\times 3}$, efficient estimation requires feasible GLS. Using residuals from the first step $\hat{\Delta u}_i = \Delta y_i - \Delta X_i\hat{\theta}^{IV1}$, estimate:
+
+$$
+\hat{\sigma}_u^2 = \frac{1}{2} \cdot \frac{1}{3N - 2}\sum_{i=1}^N\sum_{t=3}^5\hat{\Delta u}_{it}^2, \qquad \hat{V} = \hat{\sigma}_u^2\begin{pmatrix}2 & -1 & 0\\-1 & 2 & -1\\0 & -1 & 2\end{pmatrix}
+$$
+
+The **efficient two-step IV estimator** is:
+
+$$
+\hat{\theta}^{IV2} = \left(\sum_i Z_i'\hat{V}^{-1}\Delta X_i\right)^{-1}\left(\sum_i Z_i'\hat{V}^{-1}\Delta y_i\right)
+$$
+
+### (ii) Asymptotic Variance
+
+$$
+\sqrt{N}(\hat{\theta}^{IV2} - \theta) \xrightarrow{d} \mathcal{N}\left(0,\ \mathbb{E}[Z_i'V^{-1}\Delta X_i]^{-1}\mathbb{E}[Z_i'V^{-1}Z_i]\mathbb{E}[Z_i'V^{-1}\Delta X_i]^{-1}\right)
+$$
+
+The middle term simplifies via LIE:
+
+$$
+\mathbb{E}[Z_i'V^{-1}\Delta u_i\Delta u_i'V^{-1}Z_i] = \mathbb{E}[Z_i'V^{-1}\underbrace{\mathbb{E}[\Delta u_i\Delta u_i'\mid X_i, Z_i]}_{=V}V^{-1}Z_i] = \mathbb{E}[Z_i'V^{-1}Z_i]
+$$
+
+so the asymptotic variance is $\mathbb{E}[Z_i'V^{-1}\Delta X_i]^{-1}\mathbb{E}[Z_i'V^{-1}Z_i]\mathbb{E}[Z_i'V^{-1}\Delta X_i]^{-1}$.
+
+## (c) When $z_{it} = y_{i,t-1}$ and $\gamma = 1$
+
+The model becomes:
+
+$$
+y_{it} = \alpha + x_{it}\beta + y_{i,t-1} + f_i + u_{it}
+$$
+
+Since $\gamma = 1$ is known, we do not need to estimate it. First differencing eliminates both $f_i$ and the $y_{i,t-1}$ term:
+
+$$
+\Delta y_{it} = \Delta x_{it}\beta + \Delta u_{it}
+$$
+
+so the model reduces to a univariate FD regression with $T - 1 = 4$ usable periods ($t = 2, \ldots, 5$). Since $x_{it}$ is strictly exogenous, OLS on the FD model is consistent.
+
+**Step 1 — FD-OLS:**
+
+$$
+\hat{\beta}^{FD1} = \left(\sum_i \Delta x_i'\Delta x_i\right)^{-1}\left(\sum_i \Delta x_i'\Delta y_i\right)
+$$
+
+By strict exogeneity and LIE, $\mathbb{E}[\Delta x_i'\Delta u_i] = 0$, so $\hat{\beta}^{FD1} \xrightarrow{p} \beta$. Its asymptotic variance is $\mathbb{E}[\Delta x_i'\Delta x_i]^{-1}\mathbb{E}[\Delta x_i'V_{4\times4}\Delta x_i]\mathbb{E}[\Delta x_i'\Delta x_i]^{-1}$ where:
+
+$$
+V_{4\times4} = \sigma_u^2\begin{pmatrix}2 & -1 & 0 & 0\\-1 & 2 & -1 & 0\\0 & -1 & 2 & -1\\0 & 0 & -1 & 2\end{pmatrix}
+$$
+
+**Step 2 — Feasible GLS:** Estimate $\hat{V}$ using residuals $\hat{\Delta u}_{it} = \Delta y_{it} - \Delta x_{it}\hat{\beta}^{FD1}$:
+
+$$
+\hat{\sigma}_u^2 = \frac{1}{2}\cdot\frac{1}{4N-1}\sum_{i=1}^N\sum_{t=2}^5\hat{\Delta u}_{it}^2, \qquad \hat{V} \xrightarrow{p} V
+$$
+
+The **efficient estimator** is:
+
+$$
+\hat{\beta}^{FD2} = \left(\sum_i \Delta x_i'\hat{V}^{-1}\Delta x_i\right)^{-1}\left(\sum_i \Delta x_i'\hat{V}^{-1}\Delta y_i\right)
+$$
+
+with asymptotic variance:
+
+$$
+\text{A}\mathbb{V}\text{ar}(\hat{\beta}^{FD2}) = \mathbb{E}[\Delta x_i'V^{-1}\Delta x_i]^{-1}
+$$
+
+---
+
+# 3. Empirical Application: Children and Life Satisfaction
+
+## (a) FD vs. FE When $T = 2$
+
+Recalling Question 3 of Problem Set 1, when $T = 2$ the FD and FE estimators produce numerically identical coefficient estimates and standard errors. Our results below confirm this: the coefficient on `has_kids`, `health_std`, and `education` are identical across the two specifications.
+
+The coefficient on `has_kids` is $-0.00762$ (not statistically significant), suggesting that having children is negatively but weakly associated with life satisfaction. The `health_std` coefficient is $0.219$ (significant), and `education` is $0.0525$ (not significant).
+
+{{< include tables_html/fd_fe_T=2.html >}}
+
+## (b) FD vs. FE on the Full Sample
+
+With all time periods included, FE and FD produce different estimates. This is expected: FE subtracts each individual's time mean (computed over all available $T$), while FD takes differences between adjacent periods. They are different transformations of the data and, for $T > 2$, exploit different variation.
+
+There is also a practical difference in handling unbalanced panels: FE can use individuals with gaps (e.g., observed at $t = 1$ and $t = 3$ but not $t = 2$) by averaging over all available periods, while FD requires consecutive observations and will drop or truncate such individuals.
+
+**Efficiency:** FD is efficient when $u_{it}$ follows a random walk ($\Delta u_{it}$ is i.i.d.). FE is efficient when $u_{it}$ is i.i.d. over time (no serial correlation). In practice, the truth typically lies somewhere between these extremes. We would generally expect FE to be more efficient when serial correlation in $u_{it}$ is low, which is the more common assumption for short panels.
+
+The FD estimator tends to have a higher standard error than FE when $u_{it}$ is close to i.i.d., since differencing amplifies noise.
+
+**Making SEs robust:** To allow for arbitrary heteroskedasticity and serial correlation in $u_{it}$ within individuals, cluster standard errors at the individual level. This imposes no parametric assumption on $\mathbb{E}[u_iu_i']$ and is valid as $N \to \infty$.
+
+{{< include tables_html/fd_fe_T!=2.html >}}
+
+{{< include tables_html/fd_fe_T!=2_clustered.html >}}
+
+## (c) Dynamic FE with Lagged Life Satisfaction
+
+Including $y_{i,t-1}$ as a regressor in the FE model:
+
+$$
+y_{it} = \alpha + y_{i,t-1}\gamma + \mathbf{x}_{it}'\beta + f_i + u_{it}
+$$
+
+the FE estimator is **inconsistent** due to the Nickell (1981) bias. The demeaned lagged variable $\tilde{y}_{i,t-1} = y_{i,t-1} - \bar{y}_{i-}$ is correlated with the demeaned error $\tilde{u}_{it} = u_{it} - \bar{u}_{i+}$ because $\bar{u}_{i+}$ includes $u_{i,t-1}$ while $y_{i,t-1}$ depends on $u_{i,t-1}$. This bias is of order $O(1/T)$ and is substantial in short panels.
+
+{{< include tables_html/fe_dynamic_singlelag.html >}}
+
+## (d) Arellano-Bond
+
+To consistently estimate the dynamic model, we use the **Arellano-Bond estimator**. First differencing removes $f_i$:
+
+$$
+\Delta y_{it} = \gamma\Delta y_{i,t-1} + \Delta\mathbf{x}_{it}'\beta + \Delta u_{it}
+$$
+
+Under serially uncorrelated $u_{it}$, $y_{i,t-2}$ and deeper lags are valid instruments for $\Delta y_{i,t-1}$. Arellano-Bond exploits all available moment conditions simultaneously in a GMM framework.
+
+We implement the two-step estimator (`xtabond` with `lags(1) maxldep(2) twostep`). The two-step estimator is asymptotically efficient but standard errors in finite samples are typically downward biased; the Windmeijer (2005) correction addresses this.
+
+We test for serial correlation in the differenced residuals via the Arellano-Bond $m_1$ and $m_2$ statistics:
+
+* $m_1$: AR(1) in $\widehat{\Delta u}_{it}$ — expected to be significant even under correct specification, since $\Delta u_{it}$ and $\Delta u_{i,t-1}$ share $u_{i,t-1}$.
+* $m_2$: AR(2) in $\widehat{\Delta u}_{it}$ — under $H_0$ (no serial correlation in $u_{it}$), this should be zero. A significant $m_2$ indicates that $y_{i,t-2}$ is not a valid instrument.
+
+{{< include tables_html/abond_serialcorr_results.html >}}
+
+{{< include tables_html/fe_abond_singlelag.html >}}
+
+---
+
+# Stata Code
 
 ```{stata}
+#| eval: false
+
+// Problem Set 2 //
+cd "C:\Users\T14\7Programming\STATA\02Classes\01EconometricsII\Problem_Sets\PS02"
 use "soep_lebensz_en.dta", clear
 
-// question 1 //
-gen has_kids = (no_kids > 0 & no_kids != .) // has_kids dummy
+
+// --- Q3(a): T=2 restriction, FD vs FE ---
+gen has_kids = (no_kids > 0 & no_kids != .)
 label var has_kids "kids dummy"
 
 sort id year
-by id: gen obs_no = _n 
-keep if obs_no <= 2  // only keep the first two obs for an individal
+by id: gen obs_no = _n
+keep if obs_no <= 2              // keep first two obs per individual
 
 by id: gen total_obs = _N
-keep if total_obs == 2 // only keep obs with exactly two obs
+keep if total_obs == 2           // keep only individuals with exactly two obs
 
-by id: gen year_gap = (year-year[_n-1])
+by id: gen year_gap = (year - year[_n-1])
 by id: egen total_gap = max(year_gap)
-keep if total_gap == 1 // only keep obs with exactly one year differences
+keep if total_gap == 1           // keep only consecutive years
 
 sort id year
 xtset id year
-```
 
-
-```{stata}
-// first-diff 
+// First difference
 reg d.satisf_std d.has_kids d.health_std d.education, noconstant
-estimate store firstdiff1
+estimates store firstdiff1
 
-// fixed effects
+// Fixed effects
 xtreg satisf_std has_kids health_std education, fe
-estimate store fixed1
+estimates store fixed1
 
+esttab firstdiff1 fixed1 using "fd_fe_T=2.tex", replace tex ///
+    rename(D.has_kids has_kids D.health_std health_std D.education education) ///
+    mtitles("First Difference" "Fixed Effects") ///
+    main(b) se parentheses nonumbers ///
+    star(* 0.10 ** 0.05 *** 0.01) ///
+    title("Comparison of FE and FD Estimates when T=2")
+
+
+// --- Q3(b): Full sample, FD vs FE ---
+use "soep_lebensz_en.dta", clear
+gen has_kids = (no_kids > 0 & no_kids != .)
+xtset id year
+
+// First difference (unclustered)
+reg d.satisf_std d.has_kids d.health_std d.education, noconstant
+estimates store firstdiff2
+
+// Fixed effects (unclustered)
+xtreg satisf_std has_kids health_std education, fe
+estimates store fixed2
+
+esttab firstdiff2 fixed2 using "fd_fe_T!=2.tex", replace tex ///
+    rename(D.has_kids has_kids D.health_std health_std D.education education) ///
+    mtitles("First Difference" "Fixed Effects") ///
+    main(b) se parentheses nonumbers ///
+    star(* 0.10 ** 0.05 *** 0.01)
+
+// Clustered at individual level
+reg d.satisf_std d.has_kids d.health_std d.education, noconstant vce(cluster id)
+estimates store fdclustered
+
+xtreg satisf_std has_kids health_std education, fe vce(cluster id)
+estimates store feclustered
+
+esttab fdclustered feclustered using "fd_fe_T!=2_clustered.tex", replace tex ///
+    rename(D.has_kids has_kids D.health_std health_std D.education education) ///
+    mtitles("First Difference (Clustered)" "Fixed Effects (Clustered)") ///
+    main(b) se parentheses nonumbers ///
+    star(* 0.10 ** 0.05 *** 0.01)
+
+
+// --- Q3(c): Dynamic FE with single lag ---
+xtreg satisf_std l.satisf_std has_kids health_std education, fe
+estimates store lagfixed
+
+esttab lagfixed using "fe_dynamic_singlelag.tex", replace tex ///
+    mtitles("Fixed Effects (Dynamic)") ///
+    main(b) se parentheses nonumbers ///
+    star(* 0.10 ** 0.05 *** 0.01)
+
+
+// --- Q3(d): Arellano-Bond ---
+xtabond satisf_std has_kids health_std education, lags(1) maxldep(2) twostep
+estimates store bond
+
+esttab lagfixed bond using "fe_abond_singlelag.tex", replace tex ///
+    mtitles("Fixed Effects" "Arellano-Bond") ///
+    main(b) se parentheses nonumbers ///
+    star(* 0.10 ** 0.05 *** 0.01)
+
+// Arellano-Bond serial correlation test
+estat abond
+
+return list
+matrix list r(arm)
+matrix AB = J(2,2,.)
+matrix colnames AB = z p-value
+matrix rownames AB = AR1 AR2
+
+matrix AB[1,1] = round(r(arm)[1,2], 0.001)
+matrix AB[1,2] = round(r(arm)[1,3], 0.001)
+matrix AB[2,1] = round(r(arm)[2,2], 0.001)
+matrix AB[2,2] = round(r(arm)[2,3], 0.001)
+
+esttab matrix(AB) using "abond_serialcorr_results.tex", replace tex
 ```

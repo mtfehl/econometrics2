@@ -1,58 +1,316 @@
 ---
 title: "First Differences"
 author: "Michael Fehl"
+description: " "
 date: 01-12-2026
+image: "/images/first_diff.png"
 class-notes: true
 format:
   html:
     embed-resources: true
+    
+execute:
+  eval: false
 ---
-
 
 # Theory
 
 ## Motivation: Alternative Error Covariance Structure
 
+The FE estimator eliminates $f_i$ by subtracting individual-specific time means. First differencing is an alternative: subtract consecutive observations rather than group means. Both transformations remove $f_i$ and yield consistent estimators under the same exogeneity assumption, but they impose different homoskedasticity conditions and differ in efficiency depending on the structure of $\mu_{it}$.
+
+Under the FE homoskedasticity assumption ($\mu_{it}$ i.i.d. over $t$), first differencing introduces MA(1) serial correlation into $\Delta\mu_{it}$ and FE is more efficient. Under the FD homoskedasticity assumption ($\Delta\mu_{it}$ i.i.d., i.e., $\mu_{it}$ follows a random walk), FD is the more efficient estimator. When $T = 2$, the two estimators are numerically identical.
+
 ## Assumptions
 
-### Linearity
+### 1. Linearity
 
-same
+Same as before:
 
-### Fixed Effects
+$$
+y_{it} = \mathbf{x}_{it}'\beta + \mathbf{z}_{i}'\gamma + f_i + \mu_{it}
+$$
 
-same
+### 2. Fixed Individual Effects
 
-### Strictly Exogenous Regressors
+Same as FE:
 
-same
+$$
+E(f_i \mid X_i) \neq 0
+$$
 
-### Homoskedasticity
+$f_i$ can be correlated with the regressors and is eliminated by first differencing.
 
-NEW: after FD
+### 3. Strictly Exogenous Regressors
 
-### Linearly Independent Regressors
+Same as before:
 
-NEW: rank is num of time-varying regs on FD x's
+$$
+\mathbb{E}[\mu_{it} \mid \mathbf{x}_{i1}, \ldots, \mathbf{x}_{iT}, f_i] \equiv \mathbb{E}[\mu_{it} \mid X_i, f_i] = 0
+$$
 
-### Implications
+### 4. Homoskedasticity (After First Differencing)
+
+**NEW.** The homoskedasticity condition is imposed on the **first-differenced** error $\Delta\mu_{it} = \mu_{it} - \mu_{i,t-1}$:
+
+$$
+\begin{cases}
+1. \ \mathbb{V}\text{ar}(\Delta\mu_{it} \mid X_i, f_i) = \sigma_{e}^2 & \text{Constant Variance After Differencing} \\
+2. \ \mathbb{C}\text{ov}(\Delta\mu_{it}, \Delta\mu_{is} \mid X_i, f_i) = 0 \quad \forall_{t \neq s} & \text{No Serial Correlation After Differencing}
+\end{cases}
+$$
+
+$\star$ This implies $\mu_{it} = \mu_{i,t-1} + e_{it}$ where $e_{it}$ is i.i.d. with variance $\sigma_e^2$; in other words, $\mu_{it}$ follows a **random walk**. This is qualitatively different from the FE homoskedasticity assumption and is not nested in it (for $T > 2$).
+
+### 5. Linearly Independent Regressors (After Differencing)
+
+**NEW.** The rank condition is imposed on the first-differenced regressors $\Delta X_i$:
+
+$$
+\frac{1}{N}\sum_{i=1}^N \Delta X_i'\Delta X_i \xrightarrow{p} \underbrace{\mathbb{E}(\Delta X_i'\Delta X_i)}_{M_{\Delta X \Delta X}: \text{ (K x K)}} \text{ has rank } K^*
+$$
 
 
+Where $K^*$ represents the number of **time-varying** regressors. Time-constant regressors satisfy $\Delta z_i = 0$ and cannot enter the first-differenced model; like FE, FD cannot identify the coefficients on time-invariant covariates. 
 
-## Properties of POLS Regressor
+### Implications: The First-Difference Operator
+
+Taking first differences of the model for $t = 2, \ldots, T$:
+
+$$
+\underbrace{y_{it} - y_{i,t-1}}_{\Delta y_{it}} = \underbrace{(\mathbf{x}_{it} - \mathbf{x}_{i,t-1})'}_{\Delta\mathbf{x}_{it}'}\beta + \underbrace{(\mathbf{z}_{i} - \mathbf{z}_{i})}_{=0}'\gamma + \underbrace{(f_i - f_i)}_{=0} +  \underbrace{(\mu_{it} - \mu_{i,t-1})}_{\Delta\mu_{it}}
+$$
+
+since $\Delta f_i = f_i - f_i = 0$ and $\Delta \mathbf{z}_{i} = \mathbf{z}_{i} - \mathbf{z}_{i} =0$. In matrix notation, the $(T-1) \times T$ **first-difference matrix** is:
+
+$$
+D_T = \begin{bmatrix}
+-1 & 1 & 0 & \cdots & 0 \\
+0 & -1 & 1 & \cdots & 0 \\
+\vdots & & \ddots & \ddots & \vdots \\
+0 & \cdots & 0 & -1 & 1
+\end{bmatrix}
+$$
+
+so that $\Delta\mathbf{y}_i = D_T\mathbf{y}_i$, $\Delta X_i = D_T X_i$, and $\Delta\mu_i = D_T\mu_i$. We lose one time period per individual, giving $N(T-1)$ total observations. 
+
+The **FD estimator** is OLS applied to the first-differenced model:
+
+$$
+\hat{\beta}_{FD} = \left(\sum_{i=1}^N \Delta X_i'\Delta X_i\right)^{-1}\left(\sum_{i=1}^N \Delta X_i'\Delta\mathbf{y}_i\right)
+$$
+
+## Properties of the FD Estimator
 
 ### Unbiasedness
 
+The sampling error is:
 
+$$
+\begin{aligned}
+\hat{\beta}_{FD} - \beta &= \left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}\sum_i \Delta X_i'\Delta\mathbf{y}_i - \beta \\
+&= \left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}\sum_i \Delta X_i'(\Delta X_i\beta + \Delta\mu_i) - \beta \\
+&= \left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}\sum_i \Delta X_i'\Delta\mu_i
+\end{aligned}
+$$
+
+Taking conditional expectations:
+
+$$
+\begin{aligned}
+\mathbb{E}[\hat{\beta}_{FD} - \beta \mid X, f] &= \left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}\sum_i \Delta X_i' \underbrace{\mathbb{E}[\Delta\mu_i \mid X_i, f_i]}_{\text{=0 via A3}} = 0 \\
+\Rightarrow \mathbb{E}[\hat{\beta}_{FD}] &= \beta \qquad \blacksquare
+\end{aligned}
+$$
 
 ### Consistency
 
-
+$$
+\begin{aligned}
+\hat{\beta}_{FD} - \beta &= \underbrace{\left(\frac{1}{N}\sum_i \Delta X_i'\Delta X_i\right)^{-1}}_{(1)} \underbrace{\frac{1}{N}\sum_i \Delta X_i'\Delta\mu_i}_{(2)} \\
+(1) &\xrightarrow{p} M_{\Delta X \Delta X}^{-1} \text{ via LLN and CMT} \\
+(2) &\xrightarrow{p} \mathbb{E}[\Delta X_i'\Delta\mu_i] = 0 \text{ via LLN and strict exogeneity (A3)} \\
+\hat{\beta}_{FD} &\xrightarrow{p} \beta \qquad \blacksquare
+\end{aligned}
+$$
 
 ### Asymptotic Normality
 
+$$
+\begin{aligned}
+\sqrt{N}(\hat{\beta}_{FD} - \beta) &= \underbrace{\left(\frac{1}{N}\sum_i \Delta X_i'\Delta X_i\right)^{-1}}_{(1)} \underbrace{\frac{1}{\sqrt{N}}\sum_i \Delta X_i'\Delta\mu_i}_{(2)} \\
+(1) &\xrightarrow{p} M_{\Delta X \Delta X}^{-1} \text{ via LLN and CMT} \\
+(2) &\xrightarrow{d} \mathcal{N}\left(0, \mathbb{V}\text{ar}(\Delta X_i'\Delta\mu_i)\right) \text{ via CLT}
+\end{aligned}
+$$
+
+Under assumption 4, $\mathbb{E}[\Delta\mu_i\Delta\mu_i' \mid X_i, f_i] = \sigma_e^2 I_{T-1}$, so $\mathbb{V}\text{ar}(\Delta X_i'\Delta\mu_i) = \sigma_e^2 M_{\Delta X \Delta X}$. Thus:
+
+$$
+\sqrt{N}(\hat{\beta}_{FD} - \beta) \xrightarrow{d} \mathcal{N}\left(0, \sigma_e^2 M_{\Delta X \Delta X}^{-1}\right) \qquad \blacksquare
+$$
+
+#### Issue: Estimating A$\mathbb{V}$AR
+
+The A$\mathbb{V}$AR under assumption 4 is $\sigma_e^2 M_{\Delta X \Delta X}^{-1}$. To estimate $\sigma_e^2$, compute FD residuals $\hat{e}_{it} = \Delta y_{it} - \Delta\mathbf{x}_{it}'\hat{\beta}_{FD}$ and use:
+
+$$
+\hat{\sigma}_e^2 = \frac{1}{N(T-1) - K}\sum_{i=1}^N\sum_{t=2}^T \hat{e}_{it}^2
+$$
+
+Using the analogy principle:
+
+$$
+\hat{\sigma}_e^2\left(\frac{1}{N}\sum_{i=1}^N \Delta X_i'\Delta X_i\right)^{-1} \xrightarrow{p} \sigma_e^2\,\mathbb{E}[\Delta X_i'\Delta X_i]^{-1}
+$$
+
+If assumption 4 fails, we instead use the **cluster-robust 'sandwich' estimator**:
+
+$$
+\widehat{\text{A}\mathbb{V}\text{ar}}(\hat{\beta}_{FD}) = \left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}\left(\sum_i \Delta X_i'\hat{e}_i\hat{e}_i'\Delta X_i\right)\left(\sum_i \Delta X_i'\Delta X_i\right)^{-1}
+$$
+
+$\star$ In practice, standard errors should always be clustered at the individual level in a first-difference model, since the true structure of $\mathbb{E}[\Delta\mu_i\Delta\mu_i']$ is generally unknown.
+
+## FD vs. FE
+
+* When $T = 2$: FE and FD produce numerically identical estimates and inference. (to see this, check out [Q3](../../Problem_Sets/PS01/ps01.qmd#question-3) of PS1)
+* When $T > 2$ and $\mu_{it}$ is i.i.d. over $t$: FE is more efficient. Differencing introduces MA(1) serial correlation into $\Delta\mu_{it}$, which loses information relative to the within transformation.
+* When $T > 2$ and $\mu_{it}$ follows a random walk: FD is more efficient, since $\Delta\mu_{it} = e_{it}$ is then i.i.d. and assumption 4 holds exactly.
+* If FE and FD estimates differ in ways that cannot be attributed to sampling error, this signals a violation of strict exogeneity: if $\mu_{it}$ is correlated with $\mathbf{x}_{is}$ for any $t$ and $s$, both estimators are inconsistent but will generally have different probability limits.
+
+To see the difference in FE and FD being blue under different assumptions of serial correlation of the error terms, suppose that $\mu_{it}$is serially uncorrelated such that $\text{cov}(\mu_{it}, \mu_{is}) = 0, \quad \forall_{t \neq s}$. 
+
+In this case, estimating the variance-covariance matrix on the first-differenced idiosyncratic errors takes the following form:
+
+$$
+\mathbb{E}[\Delta \mu_i ' \Delta \mu_i \mid X_i] = \sigma_{\mu}^2
+\begin{bmatrix}
+  2 & -1 & 0 & \cdots & 0 \\
+  -1 & 2 & -1 & \cdots & 0 \\
+  0 & -1 & 2 & \ddots & \vdots \\
+  \vdots & \vdots & \ddots & \ddots & -1 \\
+  0 & 0 & \cdots & -1 & 2
+\end{bmatrix}
+$$
+
+To derive this matrix, we simply calculate the variance-covariance between first-differenced errors at different $t$:
+
+$$
+\begin{align}
+\text{1. Diagonal } (t=2):
+  & \quad \mathbb{E}[\Delta \mu_{i2} \Delta \mu_{i2} \mid X_i] \\
+  &= \mathbb{E}[(\mu_{i2} - \mu_{i1}) (\mu_{i2} - \mu_{i1}) \mid X_i] \\
+  &= \mathbb{E}[\mu_{i2}\mu_{i2} - 2\mu_{i2}\mu_{i1} + \mu_{i1}\mu_{i1} \mid X_i] \\
+  &= \mathbb{E}[\mu_{i2}^2 \mid X_i]  - 2\mathbb{E}[\mu_{i2}\mu_{i1} \mid X_i] + \mathbb{E}[\mu_{i1}^2 \mid X_i] \\
+  &= \sigma_{\mu}^2 - 0 + \sigma_{\mu}^2 = 2\sigma_{\mu}^2
+  \\ \\
+  \text{2. Off-Diagonal }(t=3): 
+  & \quad \mathbb{E}[\Delta \mu_{i3} \Delta \mu_{i2} \mid X_i] \\
+  &= \mathbb{E}[(\mu_{i3} - \mu_{i2}) (\mu_{i2} - \mu_{i1}) \mid X_i] \\
+  &= \mathbb{E}[\mu_{i3}\mu_{i2} - \mu_{i3}\mu_{i1} - \mu_{i2}\mu_{i2} +  \mu_{i2}\mu_{i1} \mid X_i] \\
+  &= \mathbb{E}[\mu_{i3}\mu_{i2} \mid X_i]  - \mathbb{E}[\mu_{i3}\mu_{i1} \mid X_i] - \mathbb{E}[\mu_{i2}^2 \mid X_i] + \mathbb{E}[\mu_{i2}\mu_{i1} \mid X_i] \\
+  &= 0 - 0 - \sigma_{\mu}^2 + 0 = -\sigma_{\mu}^2
+  \\ \\
+  \text{3. Off-Diagonal }(t \geq 4): 
+  & \quad \mathbb{E}[\Delta \mu_{i4} \Delta \mu_{i2} \mid X_i] \\
+  &= \mathbb{E}[(\mu_{i4} - \mu_{i3}) (\mu_{i2} - \mu_{i1}) \mid X_i] \\
+  &= \mathbb{E}[\mu_{i4}\mu_{i2} - \mu_{i4}\mu_{i1} - \mu_{i3}\mu_{i2} +  \mu_{i3}\mu_{i1} \mid X_i] \\
+  &= \mathbb{E}[\mu_{i4}\mu_{i2} \mid X_i]  - \mathbb{E}[\mu_{i4}\mu_{i1} \mid X_i] - \mathbb{E}[\mu_{i3}\mu_{i2} \mid X_i] + \mathbb{E}[\mu_{i3}\mu_{i1} \mid X_i] \\
+  &= 0 - 0 - 0 + 0 = 0
+\end{align}
+$$
+
+Thus, if $\mu_{it}$ are i.i.d. (no serial correlation) rather than a random walk, applying FD now introduces serial correlation! Hence, FE would be BLUE.
+
+### Additional: $\mu_{it} = \rho \mu_{it-1} + e_{it}$
+
+There exists a third case wherein the idiosyncratic errors are serially correlated, but do NOT follow a random walk.
+
+:::{.callout-warning}
+In reality, it is very hard for the random walk assumption to hold in this setting; it would imply that a shock from 10-20 years ago is still perfectly persistent today, with no decay whatsoever. 
+:::
+
+More formally, $\mu_{it} = \rho \mu_{it-1} + e_{it}$ where $0 < \rho < 1$; this means our errors follow an AR(1) error structure (see [ARMA notes](../../../../../R/class/finc_ecm/notes/02/models.qmd) for an extensive overview of AR(p) and MA(q) models). $\rho$ is a measure of "persistence," telling us how much a shock from last period ($t-1$) is carried over to today, $t$. When $\rho$ is between zero and one, the shock decays over time, eventually converging to zero, determined by how close the value is to zero.
+
+In such a case, neither FD nor FE are BLUE! As a result, if we run either estimator **without corrections**, our standard errors will be incorrectly estimated (typically underestimated). This leads to inflated t-statistics, artificially tight confidence intervals, and a high risk of Type I errors (finding statistical significance where there is none).
+
+While neither estimator is BLUE, their relative efficiency depends entirely on the value of $\rho$:
+
+* As $\rho \rightarrow 0$, FE becomes closer to being efficient.
+
+* As $\rho \rightarrow 1$, FD becomes closer to being efficient.
+
+* If $\rho \approx 0.5$, both estimators suffer from significant inefficiency.
+
+There are two different approaches to take when dealing with such a situation:
+
+::: {.grid}
+
+::: {.g-col-6}
+
+## Cluster (Robust)
+
+In modern empirical practice, researchers generally care more about consistency than absolute efficiency, provided they can get inference right. 
+
+The idea here is to stick with the Fixed Effects (FE) estimator (or FD, if $\rho$ is empirically very high), but now estimate the model using clustered (robust) standard errors.
+
+Clustering here allows the variance-covariance matrix to be completely agnostic about the exact nature of the serial correlation within an pre-defined cluster. It corrects the standard errors for any pattern of autocorrelation (and heteroskedasticity) over time.
+
+:::
+  
+::: {.g-col-6}
+
+## FGLS (BLUE)
+
+To strictly achieve BLUE (or asymptotically efficient estimates), you must explicitly model the AR(1) process using Feasible Generalized Least Squares (FGLS). The process is multi-step:
+
+1. Estimate the model using FE to get consistent residuals.
+2. Use those residuals to get $\hat{\rho}$.
+3. Apply a quasi-differencing transforatmion to the panel data. Instead of subtracting 100% of the previous period (like FD) or the total average (like FE), you subtract $\hat{\rho}$ of the previous period:
+
+$$
+y_{it}− \hat{\rho} y_{it-1} = (x_{it}−\hat{\rho}x_{it−1})'\beta + f_i(1−\hat{\rho})+e_{it}
+$$
+
+*Note*: FGLS requires strict assumptions about the exact structure of the error variance. If your estimate of $\rho$ is wrong, or if the true process is actually AR(2) or MA(1), FGLS can perform worse than FE.
+
+:::
+  
+:::  
 
 
-#### Issue: Estimating AVAR
 
 # Applied
+
+```{stata}
+#| eval: false
+
+* --- declare panel structure ---
+xtset id year
+
+* --- first difference estimator ---
+* Stata's d. prefix applies the first-difference operator
+* noconstant is required: the within-individual mean of the differenced model is zero
+reg d.y d.x1 d.x2 d.x3, noconstant
+
+* --- FD with cluster-robust standard errors ---
+* the true structure of E[Delta_u_i Delta_u_i'] is generally unknown,
+* so clustering at the individual level is standard practice
+reg d.y d.x1 d.x2 d.x3, noconstant vce(cluster id)
+
+* --- FD with year dummies (time fixed effects) ---
+* first-differencing year dummies removes the constant, leaving T-2 year indicators
+reg d.y d.x1 d.x2 d.x3 d.i.year, noconstant vce(cluster id)
+
+* --- compare FE and FD point estimates ---
+* if T=2 these should be identical; for T>2 differences signal serial correlation
+xtreg y x1 x2 x3, fe vce(cluster id)
+estimates store fe_est
+
+reg d.y d.x1 d.x2 d.x3, noconstant vce(cluster id)
+estimates store fd_est
+
+esttab fe_est fd_est, mtitles("Fixed Effects" "First Difference")
+```
+

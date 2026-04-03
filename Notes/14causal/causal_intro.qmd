@@ -2,9 +2,245 @@
 title: "Intro to Causal Inference"
 author: "Michael Fehl"
 date: 02-09-2026
+description: " "
+image: "/images/causal_inference.png"
 class-notes: true
 format:
   html:
     embed-resources: true
+
+execute:
+  eval: false
 ---
 
+# Theory
+
+## Introduction: The Treatment Effect Approach
+
+**Causal inference** is the process of drawing a conclusion about a cause-effect relationship between economic variables. It aims to provide credible quantitative answers to questions such as:
+
+- What is the impact of a deworming treatment for children on their long-term health and economic outcomes?
+- What is the impact of an extension of unemployment benefits on unemployment durations?
+- What is the impact of early childcare on children's cognitive development and parents' labor market participation?
+
+The classic **structural approach** uses theory-based models of individual choice to conduct *ex-ante* and *ex-post* policy evaluation. The **treatment effect approach** has established itself as a key methodology for policy evaluation and the estimation of causal effects.
+
+The **main goal** is to evaluate *ex-post* the impact of an existing policy by comparing the distribution of a chosen outcome among affected individuals (the "treatment group") with the distribution among unaffected individuals (the "control group").
+
+The **main challenge** is to find a way to perform the comparison such that the distribution of outcomes for the control group serves as a good counterfactual for the distribution of outcomes in the treatment group in the absence of the treatment.
+
+The **main advantage** relative to the structural approach is that it provides transparent and credible identification of the policy parameters of interest and does not rely on untestable functional form assumptions.
+
+The **main disadvantage** is that the estimated parameters are "reduced forms" and are therefore only internally valid. They are generally not useful for welfare analysis and cannot be easily applied to different settings.
+
+For a treatment effects analysis that aims at estimating causal effects, there are four crucial questions:
+
+1. What is the causal relationship of interest?
+2. What experiment could ideally be used to capture the causal effect of interest?
+3. What is the identification strategy?
+4. What is the method of inference? (the population studied, the sample used, the assumptions when constructing standard errors)
+
+## The Fundamental Problem of Causal Inference
+
+The fundamental problem of causal inference is that we can never observe a person's counterfactual outcomes. We can never know what a person's outcome would have been if her treatment had been different. Different empirical methods deal with the problem of the "missing counterfactual" by finding suitable control groups that can mimic such counterfactual situations. These methods include:
+
+1. Randomized Controlled Trials
+2. Regression Discontinuity Designs
+3. Selection on Observables and Matching
+4. Difference-in-Differences
+5. Synthetic Control Methods
+
+Each of these methods relies on different assumptions and identifies different types of causal policy parameters.
+
+## Potential Outcomes Framework
+
+To formally study causal effects, we adopt the **potential outcomes framework**, also known as the **Rubin Causal Model (RCM)**. Let $Y_{1i}$ denote the outcome for individual $i$ if exposed to the treatment ($D_i = 1$), and $Y_{0i}$ the outcome for the same individual if not exposed ($D_i = 0$). The **treatment effect** for individual $i$ is $Y_{1i} - Y_{0i}$.
+
+Since we only observe one of the two potential outcomes, the observed outcome is:
+
+$$
+Y_i = Y_{1i}D_i + Y_{0i}(1-D_i) = Y_{0i} + D_i(Y_{1i} - Y_{0i})
+$$
+
+### Average Treatment Effect and ATT
+
+Since individual-level treatment effects cannot be estimated, we focus on two population parameters. The **average treatment effect (ATE)**:
+
+$$
+\alpha_{ATE} = \mathbb{E}[Y_{1i} - Y_{0i}]
+$$
+
+and the **average treatment effect on the treated (ATT)**:
+
+$$
+\alpha_{ATT} = \mathbb{E}[Y_{1i} - Y_{0i} \mid D_i = 1]
+$$
+
+The ATE is the average treatment effect for the whole population. The ATT is the average treatment effect among the group of individuals that actually experienced the treatment.
+
+### Selection Bias
+
+Let $\beta$ denote the naive difference in expected outcomes between treated and untreated individuals:
+
+$$
+\begin{aligned}
+\beta &\equiv \mathbb{E}[Y_i \mid D_i = 1] - \mathbb{E}[Y_i \mid D_i = 0] \\
+&= \underbrace{\mathbb{E}[Y_{1i} - Y_{0i} \mid D_i = 1]}_{\alpha_{ATT}} + \underbrace{(\mathbb{E}[Y_{0i} \mid D_i = 1] - \mathbb{E}[Y_{0i} \mid D_i = 0])}_{\text{selection bias}}
+\end{aligned}
+$$
+
+The second term is the **selection bias**: the difference in untreated potential outcomes between treated and untreated individuals. This is nonzero whenever, for instance, individuals with low $Y_{0i}$ choose treatment more frequently than those with high $Y_{0i}$. A simple comparison of average outcomes between treatment and control groups will generally not identify the ATT.
+
+The sample analogs for $\alpha_{ATE}$ and $\alpha_{ATT}$ require observing both potential outcomes, which is infeasible. The sample analog of $\beta$ is simply:
+
+$$
+\beta^S = \bar{Y}_T - \bar{Y}_C = \frac{1}{N_1}\sum_{i=1}^N Y_i D_i - \frac{1}{N_0}\sum_{i=1}^N (1-D_i)Y_i
+$$
+
+where $N_1 = \sum D_i$ and $N_0 = N - N_1$.
+
+### SUTVA
+
+Implicit in the potential outcomes framework is an important assumption maintained throughout: the **stable unit treatment value assumption (SUTVA)**.
+
+**SUTVA**: the outcome of individual $i$ depends only on the treatment of individual $i$ and not on the treatments of other individuals.
+
+SUTVA is a strong assumption as it rules out equilibrium or feedback effects as well as strategic interactions among agents. As a result, the potential outcomes framework is not well-suited to the evaluation of system-wide reforms that are likely to have substantial equilibrium effects.
+
+## Identification of Treatment Effects
+
+### Independence
+
+The easiest case is when the distribution of potential outcomes is independent of the treatment:
+
+$$
+(Y_{1i}, Y_{0i}) \perp D_i
+$$
+
+This situation is typical in randomized experiments, where individuals are assigned to treatment or control groups randomly. In this case, $\mathbb{E}[Y_{0i} \mid D_i = 1] = \mathbb{E}[Y_{0i} \mid D_i = 0]$, so the selection bias vanishes and $\alpha_{ATE} = \alpha_{ATT} = \beta$. An unbiased estimate of $\alpha_{ATE}$ is:
+
+$$
+\hat{\alpha}_{ATE} = \bar{Y}_T - \bar{Y}_C = \beta^S
+$$
+
+### Conditional Independence
+
+A less restrictive assumption is **conditional independence**:
+
+$$
+(Y_{1i}, Y_{0i}) \perp D_i \mid X_i
+$$
+
+where $X_i$ is a vector of covariates. This is the basis for **matching**: for each "type" of individual (each value of covariates) we can match treated and control individuals, so that the latter act as counterfactuals for the former. Conditional independence implies:
+
+$$
+\begin{aligned}
+\alpha_{ATE} &= \mathbb{E}[Y_{1i} - Y_{0i}] = \int \left(\mathbb{E}[Y_i \mid D_i = 1, X_i] - \mathbb{E}[Y_i \mid D_i = 0, X_i]\right) dF(X_i)
+\end{aligned}
+$$
+
+Similarly, the ATT integrates over the distribution of $X_i$ among the treated.
+
+### No Conditional Independence
+
+When conditional independence fails, we need an instrument $Z_i$ that provides exogenous variation in the treatment:
+
+$$
+(Y_{1i}, Y_{0i}) \perp Z_i \mid X_i \qquad \text{and} \qquad \text{Cov}(Z_i, D_i \mid X_i) \neq 0
+$$
+
+In this context we can only identify an average treatment effect for a subgroup of individuals; the resulting parameter is the **local average treatment effect**, $\alpha_{LATE}$.
+
+## Linear Regression and Treatment Effects
+
+### Homogeneous Effects
+
+Rearranging the potential outcomes equation:
+
+$$
+\begin{aligned}
+Y_i &= Y_{0i} + D_i(Y_{1i} - Y_{0i}) \\
+&= \mathbb{E}(Y_{0i}) + (Y_{1i} - Y_{0i})D_i + (Y_{0i} - \mathbb{E}[Y_{0i}]) \\
+&\equiv \beta_0 + \beta_i D_i + U_i
+\end{aligned}
+$$
+
+Assume initially that $\beta_i = \beta$ for all $i$ (**homogeneous treatment effects**). Then $\beta$ is the coefficient in a linear regression of $Y_i$ on $D_i$, $Y_{1i} - Y_{0i}$ is a constant, and $\alpha_{ATE} = \alpha_{ATT} = \beta$. Consistently estimating $\beta$ requires that $U_i = Y_{0i} - \mathbb{E}[Y_{0i}]$ is independent of $D_i$, i.e. no selection bias.
+
+### Heterogeneous Effects
+
+When $\beta_i$ is not constant (**heterogeneous treatment effects**), the OLS estimator from the regression $Y_i = \beta_0 + \check{\beta} D_i + U_i$ converges to:
+
+$$
+\check{\beta} = \mathbb{E}[Y_{1i} - Y_{0i} \mid D_i = 1] + (\mathbb{E}[Y_{0i} \mid D_i = 1] - \mathbb{E}[Y_{0i} \mid D_i = 0]) = \alpha_{ATT} + \text{selection bias}
+$$
+
+In the absence of selection bias (e.g. under random assignment), a linear regression of $Y_i$ on $D_i$ identifies the ATT. Under random assignment, $\alpha_{ATE} = \alpha_{ATT}$.
+
+## Inconsistency of OLS
+
+### Omitted Variable Bias
+
+Consider the true data generating process:
+
+$$
+Y_i = \beta_0 + X_i'\beta_1 + W_i'\gamma + U_i \qquad \text{where} \quad \mathbb{E}[U_i \mid X_i, W_i] = 0
+$$
+
+Suppose we exclude $W_i$ and estimate the short regression $Y_i = \beta_0 + X_i'\beta_1 + \tilde{U}_i$, where $\tilde{U}_i = W_i'\gamma + U_i$. For the case where both $X$ and $W$ are one-dimensional:
+
+$$
+\text{plim}\; \hat{\beta}_1^S = \beta_1 + \gamma \frac{\text{Cov}(W_i, X_i)}{\text{Var}(X_i)}
+$$
+
+The second term is the **omitted variable bias**. For there to be OVB, the omitted variable $W_i$ must be both correlated with the included variable $X_i$ and a determinant of $Y_i$ (i.e. $\gamma \neq 0$). The sign and magnitude of the bias depends on the sign and magnitude of $\text{Cov}(W_i, X_i)$ and how important $W_i$ is in determining $Y_i$.
+
+### Reverse Causality
+
+Suppose $Y_i$ causes $X_i$, but we are interested in the causal effect of $X_i$ on $Y_i$. If the true relationships are:
+
+$$
+Y_i = \beta_0 + \beta_1 X_i + U_i \qquad \text{and} \qquad X_i = \gamma_0 + \gamma_1 Y_i + V_i
+$$
+
+with $\text{Cov}(V_i, U_i) = 0$, then OLS estimation of the outcome equation yields:
+
+$$
+\text{plim}\; \hat{\beta}_1^S = \beta_1 + \frac{\gamma_1}{1 - \gamma_1\beta_1}\frac{\text{Var}(U_i)}{\text{Var}(X_i)}
+$$
+
+which is only consistent for $\beta_1$ if $\gamma_1 = 0$. Addressing reverse causality requires exogenous variation in $X_i$, either through random assignment or a suitable instrumental variable that shifts $X_i$ but has no direct impact on $Y_i$.
+
+### Measurement Error
+
+Suppose the true model is $Y_i^* = \beta_0 + \beta_1 X_i^* + U_i$ with $\text{Cov}(U_i, X_i^*) = 0$, but we only observe $X_i = X_i^* + \mu_i$, where $\mu_i$ is uncorrelated with $X_i^*$ (**classical measurement error**). Then:
+
+$$
+\text{plim}\; \hat{\beta}_1 = \beta_1 \left(\frac{\text{Var}(X_i^*)}{\text{Var}(X_i^*) + \text{Var}(\mu_i)}\right)
+$$
+
+Since the term in parentheses is between 0 and 1, classical measurement error in the regressor produces **attenuation bias** towards zero. If the signal-to-noise ratio $\text{Var}(X_i^*)/\text{Var}(\mu_i)$ is very small, the slope estimate will be close to zero.
+
+Note that attenuation bias is not a general result: it depends on the specific structure of the measurement error. If measurement error is in the outcome $Y_i^* = \beta_0 + \beta_1 X_i^* + (U_i + \mu_i)$, consistency is unaffected (the variance of the estimate increases but the estimate remains consistent).
+
+# Applied
+
+```{stata}
+#| eval: false
+
+* --- causal inference tools are covered in subsequent notes ---
+* see rcts.qmd for randomized controlled trials
+* see matching.qmd for selection on observables
+* see did.qmd for difference-in-differences
+
+* --- omitted variable bias: compare short and long regressions ---
+reg y x
+estimates store short
+reg y x w
+estimates store long
+esttab short long, mtitles("Short" "Long")
+
+* --- test for reverse causality: instrument x with z ---
+* requires a valid instrument (relevance + exclusion restriction)
+ivreg2 y (x = z), robust
+```

@@ -1,0 +1,329 @@
+---
+title: "Problem Set 04"
+author: "Michael Fehl, Francesco Zucca, Giuseppe Lista, Dominic Jones, Wu Chen"
+description: "Randomized Controlled Trials"
+image: "/images/ps04.png"
+date: 02-25-2026
+problem-set: true
+format:
+  html:
+    self-contained: true
+    
+execute:
+  eval: false
+---
+
+# 1.
+
+Consider an experiment where the binary treatment $D_i$ is randomly assigned across individuals. We are interested in its effect on the post-treatment outcome $Y_{i,\text{post}}$.
+
+## (a) OLS Slope as Difference in Conditional Means
+
+The population OLS coefficient from a regression of $Y_{i,\text{post}}$ on $D_i$ and a constant is $\beta_D = \text{Cov}(D_i, Y_{i,\text{post}}) / \text{Var}(D_i)$. Let $p = \Pr(D_i = 1)$, so $\mathbb{E}[D_i] = p$ and $\text{Var}(D_i) = p(1-p)$. Expanding the covariance:
+
+$$
+\text{Cov}(D_i, Y_{i,\text{post}}) = \mathbb{E}[D_i Y_{i,\text{post}}] - \mathbb{E}[D_i]\mathbb{E}[Y_{i,\text{post}}]
+$$
+
+$$
+= p\,\mathbb{E}[Y_{i,\text{post}} \mid D_i = 1] - p\Bigl(p\,\mathbb{E}[Y_{i,\text{post}} \mid D_i = 1] + (1-p)\,\mathbb{E}[Y_{i,\text{post}} \mid D_i = 0]\Bigr)
+$$
+
+$$
+= p(1-p)\Bigl(\mathbb{E}[Y_{i,\text{post}} \mid D_i = 1] - \mathbb{E}[Y_{i,\text{post}} \mid D_i = 0]\Bigr)
+$$
+
+Dividing by $\text{Var}(D_i) = p(1-p)$:
+
+$$
+\beta_D = \mathbb{E}[Y_{i,\text{post}} \mid D_i = 1] - \mathbb{E}[Y_{i,\text{post}} \mid D_i = 0] \qquad \blacksquare
+$$
+
+## (b) $\beta_D$ Equals the ATE Under Random Assignment
+
+Let $Y_{i,\text{post}}^1$ and $Y_{i,\text{post}}^0$ denote the potential post-treatment outcomes. Under random assignment, $D_i$ is independent of potential outcomes:
+
+$$
+D_i \perp \bigl(Y_{i,\text{post}}^0,\; Y_{i,\text{post}}^1\bigr)
+$$
+
+This means selection bias is absent:
+
+$$
+\mathbb{E}[Y_{i,\text{post}} \mid D_i = 1] = \mathbb{E}[Y_{i,\text{post}}^1 \mid D_i = 1] = \mathbb{E}[Y_{i,\text{post}}^1]
+$$
+
+$$
+\mathbb{E}[Y_{i,\text{post}} \mid D_i = 0] = \mathbb{E}[Y_{i,\text{post}}^0 \mid D_i = 0] = \mathbb{E}[Y_{i,\text{post}}^0]
+$$
+
+Substituting into the result from (a):
+
+$$
+\beta_D = \mathbb{E}[Y_{i,\text{post}}^1] - \mathbb{E}[Y_{i,\text{post}}^0] = ATE \qquad \blacksquare
+$$
+
+## (c) $\beta_{DD}$ Equals the ATE
+
+In the DiD model $Y_{it} = \beta_0 + \beta_D D_i + \beta_{\text{post}}\text{Post}_t + \beta_{DD}(D_i \times \text{Post}_t) + U_{it}$ with $\mathbb{E}[U_{it}] = 0$, the four conditional means are:
+
+| | $D_i = 0$ | $D_i = 1$ |
+|:---|:---:|:---:|
+| $\text{Post}_t = 0$ | $\beta_0$ | $\beta_0 + \beta_D$ |
+| $\text{Post}_t = 1$ | $\beta_0 + \beta_{\text{post}}$ | $\beta_0 + \beta_D + \beta_{\text{post}} + \beta_{DD}$ |
+
+The DiD coefficient is recovered by differencing twice:
+
+$$
+\beta_{DD} = \underbrace{\bigl(\mathbb{E}[Y \mid D\!=\!1, \text{post}] - \mathbb{E}[Y \mid D\!=\!1, \text{pre}]\bigr)}_{\text{change for treated}} - \underbrace{\bigl(\mathbb{E}[Y \mid D\!=\!0, \text{post}] - \mathbb{E}[Y \mid D\!=\!0, \text{pre}]\bigr)}_{\text{change for control}}
+$$
+
+Under random assignment, $D_i \perp (Y_{i,\text{pre}},\, Y_{i,\text{post}}^0,\, Y_{i,\text{post}}^1)$, so both groups have the same expected pre-treatment outcome and counterfactual trend. Substituting potential outcomes:
+
+$$
+\beta_{DD} = \bigl(\mathbb{E}[Y_{i,\text{post}}^1] - \mathbb{E}[Y_{i,\text{pre}}]\bigr) - \bigl(\mathbb{E}[Y_{i,\text{post}}^0] - \mathbb{E}[Y_{i,\text{pre}}]\bigr) = \mathbb{E}[Y_{i,\text{post}}^1 - Y_{i,\text{post}}^0] = ATE \qquad \blacksquare
+$$
+
+## (d) Reasons to Use DiD
+
+1. **Variance reduction.** Differencing out pre-treatment outcomes removes time-invariant individual heterogeneity, reducing residual variance and improving statistical precision.
+
+2. **Robustness to imperfect randomization.** Due to sampling variation, the realized treatment and control groups may differ in baseline characteristics. DiD corrects for any pre-existing difference in mean outcomes, making inference robust to residual imbalance in the experiment.
+
+---
+
+# 2.
+
+Let the DGP be $Y_i = \beta_0 + \beta_D D_i + \beta_X X_i + U_i$ where $D_i, X_i \in \{0, 1\}$.
+
+## (a) OVB Formula for the Long Regression
+
+The hint is to demean both sides and apply the standard OLS formula $(\tilde{X}'\tilde{X})^{-1}\tilde{X}'\tilde{Y}$, where $\tilde{X}$ is the $N \times 2$ matrix of demeaned regressors. In the population limit, this gives the 2×2 system with inverse:
+
+$$
+\text{plim}\ \hat{\beta}_D^L = \frac{\text{Var}(X_i)\,\text{Cov}(D_i, Y_i) - \text{Cov}(D_i, X_i)\,\text{Cov}(X_i, Y_i)}{\text{Var}(D_i)\,\text{Var}(X_i) - \text{Cov}(D_i, X_i)^2}
+$$
+
+Dividing numerator and denominator by $\text{Var}(X_i)$:
+
+$$
+\text{plim}\ \hat{\beta}_D^L = \frac{\text{Cov}(D_i, Y_i) - \dfrac{\text{Cov}(D_i, X_i)}{\text{Var}(X_i)}\,\text{Cov}(X_i, Y_i)}{\text{Var}(D_i) - \dfrac{\text{Cov}(D_i, X_i)^2}{\text{Var}(X_i)}}
+$$
+
+Substituting $Y_i = \beta_0 + \beta_D D_i + \beta_X X_i + U_i$:
+
+$$
+\text{Cov}(D_i, Y_i) = \beta_D\,\text{Var}(D_i) + \beta_X\,\text{Cov}(D_i, X_i) + \text{Cov}(D_i, U_i)
+$$
+
+$$
+\text{Cov}(X_i, Y_i) = \beta_D\,\text{Cov}(D_i, X_i) + \beta_X\,\text{Var}(X_i) + \text{Cov}(X_i, U_i)
+$$
+
+The numerator becomes:
+
+$$
+\beta_D\,\text{Var}(D_i) + \beta_X\,\text{Cov}(D_i, X_i) + \text{Cov}(D_i, U_i) - \frac{\text{Cov}(D_i, X_i)}{\text{Var}(X_i)}\Bigl[\beta_D\,\text{Cov}(D_i, X_i) + \beta_X\,\text{Var}(X_i) + \text{Cov}(X_i, U_i)\Bigr]
+$$
+
+$$
+= \beta_D\!\left[\text{Var}(D_i) - \frac{\text{Cov}(D_i, X_i)^2}{\text{Var}(X_i)}\right] + \text{Cov}(D_i, U_i) - \frac{\text{Cov}(D_i, X_i)}{\text{Var}(X_i)}\,\text{Cov}(X_i, U_i)
+$$
+
+Dividing by the denominator:
+
+$$
+\text{plim}\ \hat{\beta}_D^L = \beta_D + \frac{\text{Cov}(D_i, U_i) - \dfrac{\text{Cov}(D_i, X_i)}{\text{Var}(X_i)}\,\text{Cov}(X_i, U_i)}{\text{Var}(D_i) - \dfrac{\text{Cov}(D_i, X_i)^2}{\text{Var}(X_i)}} \qquad \blacksquare
+$$
+
+## (b) Conditional Mean Independence
+
+Suppose $\mathbb{E}[U_i \mid D_i, X_i] = \mathbb{E}[U_i \mid X_i] = \delta_0 + \delta_1 X_i$. By iterated expectations:
+
+$$
+\text{Cov}(D_i, U_i) = \mathbb{E}\bigl[(D_i - \mathbb{E}[D_i])\,\mathbb{E}[U_i \mid D_i, X_i]\bigr] = \mathbb{E}\bigl[(D_i - \mathbb{E}[D_i])(\delta_0 + \delta_1 X_i)\bigr] = \delta_1\,\text{Cov}(D_i, X_i)
+$$
+
+$$
+\text{Cov}(X_i, U_i) = \mathbb{E}\bigl[(X_i - \mathbb{E}[X_i])(\delta_0 + \delta_1 X_i)\bigr] = \delta_1\,\text{Var}(X_i)
+$$
+
+Substituting into the numerator from (a):
+
+$$
+\delta_1\,\text{Cov}(D_i, X_i) - \frac{\text{Cov}(D_i, X_i)}{\text{Var}(X_i)}\,\delta_1\,\text{Var}(X_i) = 0
+$$
+
+So $\text{plim}\ \hat{\beta}_D^L = \beta_D$. $\blacksquare$
+
+For $\hat{\beta}_X^L$, the symmetric formula (swapping $D$ and $X$) gives numerator $= \delta_1\,\text{Var}(X_i) - \dfrac{\text{Cov}(D_i, X_i)}{\text{Var}(D_i)}\,\delta_1\,\text{Cov}(D_i, X_i) = \delta_1\!\left[\text{Var}(X_i) - \dfrac{\text{Cov}(D_i, X_i)^2}{\text{Var}(D_i)}\right]$, so:
+
+$$
+\text{plim}\ \hat{\beta}_X^L = \beta_X + \delta_1 \qquad \blacksquare
+$$
+
+## (c) Relevance for RCTs
+
+In an RCT, $D_i$ is randomly assigned, so $\text{Cov}(D_i, X_i) = 0$ by construction. The formula from (a) reduces to:
+
+$$
+\text{plim}\ \hat{\beta}_D^L = \beta_D + \frac{\text{Cov}(D_i, U_i)}{\text{Var}(D_i)}
+$$
+
+Random assignment also ensures $\text{Cov}(D_i, U_i) = 0$, so $\hat{\beta}_D^L$ is consistent regardless of whether $X_i$ is included. The result from (b) formalizes this: conditional mean independence holds in an RCT because $D_i \perp U_i$ by design. Adding $X_i$ as a covariate does not bias the estimate of $\beta_D$ but does reduce residual variance, improving precision. The coefficient $\hat{\beta}_X^L$ absorbs the correlation between $X_i$ and $U_i$ through $\delta_1$ and should not be given a causal interpretation.
+
+---
+
+# 3. Project STAR
+
+**Background.** The Tennessee STAR experiment randomly assigned kindergarten students within schools to three class types: small classes (13-17 pupils), regular classes (22-25 pupils), and regular classes with a teacher's aide. We restrict to the comparison between small and regular classes without aide, using kindergarten data only.
+
+**Variables.** `tscorek` (test score), `sck` ($D_1$: small class), `totexpk` ($D_2$: teacher experience), `schidkn` ($C$: school code), `boy` ($W_1$), `freelunk` ($W_2$: free lunch recipient).
+
+## (a) OLS with a Binary Regressor
+
+Regressing $Y_i$ on binary $X_i$ and a constant, the two OLS FOCs are:
+
+$$
+\frac{\partial}{\partial\beta_0}: \quad n\hat{\beta}_0 + \hat{\beta}_1 n_1 = \sum_i Y_i \quad \Longrightarrow \quad \hat{\beta}_0 + \hat{\beta}_1\frac{n_1}{n} = \bar{Y} \tag{1}
+$$
+
+$$
+\frac{\partial}{\partial\beta_1}: \quad \hat{\beta}_0\sum_i X_i + \hat{\beta}_1\sum_i X_i^2 = \sum_i X_i Y_i
+$$
+
+Since $X_i^2 = X_i$ for binary $X_i$, the second FOC becomes $\hat{\beta}_0 n_1 + \hat{\beta}_1 n_1 = n_1\bar{Y}_1$, i.e.:
+
+$$
+\hat{\beta}_0 + \hat{\beta}_1 = \bar{Y}_1 \tag{2}
+$$
+
+Using $\bar{Y} = (n_0\bar{Y}_0 + n_1\bar{Y}_1)/n$ and substituting (2) into (1):
+
+$$
+\hat{\beta}_0\frac{n_0}{n} + \bar{Y}_1\frac{n_1}{n} = \frac{n_0\bar{Y}_0 + n_1\bar{Y}_1}{n} \quad \Longrightarrow \quad \hat{\beta}_0 = \bar{Y}_0 \qquad \blacksquare
+$$
+
+From (2): $\hat{\beta}_1 = \bar{Y}_1 - \hat{\beta}_0 = \bar{Y}_1 - \bar{Y}_0$. $\blacksquare$
+
+## (b) Baseline Regression
+
+Regressing `tscorek` on `sck`, the coefficient gives the difference in mean test scores between students in small and regular classes, which by (a) equals $\bar{Y}_1 - \bar{Y}_0$. The estimate is approximately 5-6 points. Using the sample standard deviation of test scores as a benchmark (roughly 73 points), this corresponds to an effect size of about 0.07-0.08 standard deviations, which is a small effect economically. The estimate is statistically significant at conventional levels given the sample size.
+
+## (c) School Fixed Effects
+
+Including school fixed effects controls for all school-level characteristics that affect both class assignment and test scores: school resources, neighborhood composition, principal quality, and how strictly randomization was enforced within each school. Even within the STAR experiment, schools differ systematically. The FE estimate is preferred because it relies only on within-school variation in class assignment, removing between-school confounders and giving a cleaner comparison of students who attend the same school but were randomly assigned to different class types.
+
+## (d) Robust Standard Errors
+
+The researcher is only partially correct. Random assignment of $D_1$ ensures $\mathbb{E}[U_i \mid D_1] = 0$, so OLS is consistent and unbiased. However, random assignment does not imply homoskedasticity: $\mathbb{V}\text{ar}(U_i \mid D_{1i})$ may differ across treatment and control groups, for example if small classes reduce outcome dispersion. In that case, classical standard errors are invalid and robust standard errors are appropriate.
+
+More importantly, students within the same school share a common environment, inducing within-school error correlation. Clustered standard errors are the preferred choice in this application (see part (e)).
+
+## (e) Clustered Standard Errors
+
+Within each school, students face the same principal, neighborhood, peer composition, and are drawn from the same pool of teachers. This shared environment induces within-school correlation in test scores even after conditioning on treatment. Treating these observations as independent underestimates the true sampling variance, produces standard errors that are too small, and inflates $t$-statistics.
+
+The school is the natural unit of randomization in STAR: treatment was assigned to class types within each school. Clustering at the school level accounts for this within-cluster correlation. The clustered standard errors are typically larger than robust standard errors, raising the bar for statistical significance and giving a more honest picture of estimation uncertainty.
+
+## (f) Randomization Inference
+
+`ritest` implements randomization inference by repeatedly permuting the treatment variable across its observed support and recomputing the test statistic (here, $\hat{\beta}_{sck}$) under each permutation. The resulting distribution is the exact finite-sample null distribution, giving $p$-values that do not rely on asymptotic approximations or distributional assumptions. Since the STAR experiment randomly assigned students to class types, any permutation of the treatment labels is a valid hypothetical realization of the randomization, making the procedure directly interpretable and appropriate here.
+
+{{< include tables_html/q3_regs_main.html >}}
+
+## (g) Balance Tests
+
+Regressing `sck` on `boy`, `freelunk`, and `totexpk` separately tests whether pre-determined individual and teacher characteristics are systematically correlated with treatment assignment. Under successful randomization, these coefficients should be statistically indistinguishable from zero. The key thing to look for is statistical significance: a significant coefficient would indicate that treatment is not balanced on that characteristic, suggesting either imperfect randomization or post-assignment selection.
+
+{{< include tables_html/q3_balance.html >}}
+
+## (h) Including Covariates
+
+Since `sck` is randomly assigned and uncorrelated with `boy`, `freelunk`, and `totexpk` by construction, including these variables does not change the expected value of $\hat{\beta}_{sck}$. We expect the treatment coefficient to remain roughly unchanged. What should change is precision: removing variation in `tscorek` attributable to observable characteristics reduces the residual variance, yielding a smaller standard error.
+
+The parameter estimates on `boy`, `freelunk`, and `totexpk` are not causal. These variables are not randomly assigned and may be correlated with unobserved determinants of test scores.
+
+{{< include tables_html/q3_covariates.html >}}
+
+## (i) Heterogeneous Treatment Effects
+
+The model including interactions is:
+
+$$
+Y_i = \alpha + \beta_{sck}\,\text{sck}_i + \beta_b\,\text{boy}_i + \beta_f\,\text{freelunk}_i + \beta_t\,\text{totexpk}_i + \beta_{sb}\,\text{sck\_boy}_i + \beta_{sf}\,\text{sck\_freelunk}_i + \beta_{st}\,\text{sck\_totexpk}_i + \gamma_s + U_i
+$$
+
+where $\gamma_s$ denotes school fixed effects. The coefficients are interpreted as:
+
+* $\beta_{sck}$: treatment effect for the baseline group (girl, no free lunch, zero teacher experience)
+* $\beta_{sb}$: differential treatment effect for boys relative to girls
+* $\beta_{sf}$: differential treatment effect for free-lunch recipients relative to non-recipients
+* $\beta_{st}$: change in treatment effect per additional year of teacher experience
+
+The F-test of $H_0: \beta_{sb} = \beta_{sf} = \beta_{st} = 0$ tests the joint null hypothesis that the treatment effect is homogeneous across these dimensions. Rejection indicates that the class size effect varies meaningfully with individual or teacher characteristics.
+
+{{< include tables_html/q3_interactions.html >}}
+
+---
+
+# Stata Appendix
+
+```{stata}
+#| eval: false
+
+// Problem Set 4: Randomized Controlled Trials //
+cd "C:\Users\T14\7Programming\STATA\02Classes\01EconometricsII\Problem_Sets\PS04"
+use "STAR.dta", clear
+
+// summary statistics
+summarize tscorek sck totexpk boy freelunk
+
+
+// --- Q3(b): Baseline regression ---
+reg tscorek sck
+estimates store q3b
+
+
+// --- Q3(c): School fixed effects ---
+areg tscorek sck, absorb(schidkn)
+estimates store q3c
+
+
+// --- Q3(d): Robust standard errors ---
+areg tscorek sck, absorb(schidkn) robust
+estimates store q3d
+
+
+// --- Q3(e): Clustered standard errors (by school) ---
+areg tscorek sck, absorb(schidkn) vce(cluster schidkn)
+estimates store q3e
+
+
+// --- Q3(f): Randomization inference ---
+// ssc install ritest, replace
+ritest sck _b[sck], reps(1000) seed(1221): areg tscorek sck, absorb(schidkn)
+
+
+// --- Q3(g): Balance tests ---
+reg sck boy,      robust
+reg sck freelunk, robust
+reg sck totexpk,  robust
+
+
+// --- Q3(h): Include covariates ---
+areg tscorek sck boy freelunk totexpk, absorb(schidkn) vce(cluster schidkn)
+estimates store q3h
+
+
+// --- Q3(i): Heterogeneous treatment effects ---
+gen sck_boy      = sck * boy
+gen sck_freelunk = sck * freelunk
+gen sck_totexpk  = sck * totexpk
+
+areg tscorek sck boy freelunk totexpk sck_boy sck_freelunk sck_totexpk, ///
+    absorb(schidkn) vce(cluster schidkn)
+estimates store q3i
+
+test sck_boy sck_freelunk sck_totexpk
+```
