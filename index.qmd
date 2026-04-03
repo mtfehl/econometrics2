@@ -47,20 +47,6 @@ listing:
     sort-ui: false
     filter-ui: false
     fields: [image, title, reading-time, description]
-    
-  - id: projects
-    contents: 
-      - Projects/Project01
-      #- projects/project02
-    include:
-      project: true
-    type: grid
-    grid-columns: 3
-    sort: "date desc"
-    categories: false
-    sort-ui: false
-    filter-ui: false
-    fields: [image, title, reading-time, description]
 ---
 
 ## Road Map
@@ -201,12 +187,5 @@ flowchart TD
 ## Problem Sets
 
 ::: {#problem-sets}
-
-:::
-
-
-## Projects
-
-::: {#projects}
 
 :::

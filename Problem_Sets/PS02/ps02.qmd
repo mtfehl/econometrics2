@@ -7,7 +7,7 @@ image: "/images/ps02.png"
 problem-set: true
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     self-contained: true
     
 execute:

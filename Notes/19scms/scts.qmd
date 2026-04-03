@@ -7,7 +7,7 @@ class-notes: true
 image: "/images/SCM.png"
 format:
   html:
-    embed-resources: true
+    embed-resources: false
 
 execute:
   eval: false

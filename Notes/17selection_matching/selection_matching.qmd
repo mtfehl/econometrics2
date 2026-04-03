@@ -7,7 +7,7 @@ class-notes: true
 image: "/images/matching.png"
 format:
   html:
-    embed-resources: true
+    embed-resources: false
 
 execute:
   eval: false

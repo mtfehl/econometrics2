@@ -7,7 +7,7 @@ class-notes: true
 image: "/images/heckman.png"
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     
 execute:
   eval: false

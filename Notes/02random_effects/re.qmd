@@ -7,7 +7,7 @@ date: 01-09-2026
 image: "/images/random_effects.png"
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     
 execute:
   eval: false

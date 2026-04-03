@@ -7,7 +7,7 @@ image: "/images/gmm.png"
 class-notes: true
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     
 execute:
   eval: false

@@ -7,7 +7,7 @@ date: 01-27-2026
 class-notes: true
 format:
   html:
-    embed-resources: true
+    embed-resources: false
     
 execute:
   eval: false
